@@ -1,7 +1,10 @@
 package pab.lop.illustrashopandroid.data.api
 
+import android.media.Image
 import com.orhanobut.logger.Logger
 import pab.lop.illustrashopandroid.data.model.UserModel
+import pab.lop.illustrashopandroid.utils.URL_HEAD_API
+import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.*
@@ -18,22 +21,20 @@ interface ApiServices {
         fun getInstance(): ApiServices {
             if(apiServices == null){
 
-                val address : Array<String> = arrayOf("http://192.168.1.93:8082/api/", "Pablo")
-
                 apiServices = Retrofit.Builder()
-                    .baseUrl(address[0])
+                    .baseUrl(URL_HEAD_API)
                     .addConverterFactory(GsonConverterFactory.create())
                     .build()
                     .create(ApiServices::class.java)
 
-                Logger.w("Connected a la API, ${address[0]}; IP de ${address[1]}")
+                Logger.w("Connected a la API, $URL_HEAD_API")
             }
             return apiServices!!
         }
     }
 
 
-    /*********************RUTAS**********************/
+    /*********************ROUTES**********************/
 
     @Headers("Accept: Application/json")
 
@@ -45,6 +46,14 @@ interface ApiServices {
 
     @GET("user")
     suspend fun getAllUsers() : List<UserModel>
+
+
+    /********************IMAGES**********************/
+
+    @GET("images/{name}")
+    suspend fun getImage(@Path(value = "image") image : String) : Image
+
+
 
 
 

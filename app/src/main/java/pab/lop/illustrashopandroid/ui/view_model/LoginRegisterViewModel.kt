@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import coil.compose.rememberAsyncImagePainter
 import com.orhanobut.logger.Logger
 import pab.lop.illustrashopandroid.data.api.ApiServices
 import kotlinx.coroutines.*
@@ -20,6 +21,7 @@ class LoginRegisterViewModel : ViewModel() {
 
     var allUsersClientResponse : List<UserModel> by mutableStateOf(listOf())
 
+
     private var errorMessage : String by mutableStateOf("")
 
 
@@ -29,12 +31,26 @@ class LoginRegisterViewModel : ViewModel() {
 
             try{
                 allUsersClientResponse = apiServices.getAllUsers()
-                Logger.i("Tooodo bien")
+                Logger.i("get all users OK")
                 onSuccessCallback()
 
             }catch (e: Exception){
                 errorMessage = e.message.toString()
                 Logger.e("FAILURE getAllUsers \n $e")
+            }
+        }
+    }
+
+    fun getImage(onSuccessCallback1: String, onSuccessCallback: () -> Unit){
+        viewModelScope.launch {
+            val apiServices = ApiServices.getInstance()
+            Logger.i("get image OK")
+
+            try{
+                apiServices.getImage("MonaLisa")
+            }catch(e:java.lang.Exception){
+                errorMessage = e.message.toString()
+                Logger.e("FAILURE getImage \n $e")
             }
         }
     }
