@@ -3,6 +3,7 @@ package pablo_lonav.android.utils
 /** Clase para almacenar las rutas, con y sin parametros */
 sealed class ScreenNav(val route: String) {
     object LoginScreen : ScreenNav("login_screen")
+    object ValidateScreen : ScreenNav("validate_screen")
  /*   object MapScreen : ScreenNav("map_screen")
     object RegisterScreen : ScreenNav("register_screen")
     object ValidateRegisterScreen : ScreenNav("validate_register_screen")

@@ -41,7 +41,7 @@ class LoginRegisterViewModel : ViewModel() {
         }
     }
 
-    fun getImage(onSuccessCallback1: String, onSuccessCallback: () -> Unit){
+/*    fun getImage(onSuccessCallback1: String, onSuccessCallback: () -> Unit){
         viewModelScope.launch {
             val apiServices = ApiServices.getInstance()
             Logger.i("get image OK")
@@ -53,7 +53,7 @@ class LoginRegisterViewModel : ViewModel() {
                 Logger.e("FAILURE getImage \n $e")
             }
         }
-    }
+    }*/
 
 
 

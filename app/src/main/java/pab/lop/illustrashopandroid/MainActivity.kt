@@ -13,6 +13,7 @@ import com.orhanobut.logger.AndroidLogAdapter
 import com.orhanobut.logger.Logger
 import pab.lop.illustrashopandroid.ui.theme.IllustraShopAndroidTheme
 import pab.lop.illustrashopandroid.ui.view.login_register.Login
+import pab.lop.illustrashopandroid.ui.view.login_register.Validate
 import pab.lop.illustrashopandroid.ui.view_model.LoginRegisterViewModel
 import pablo_lonav.android.utils.ScreenNav
 
@@ -35,7 +36,30 @@ class MainActivity : ComponentActivity() {
                     composable(
                         route = ScreenNav.LoginScreen.route
                     ) {
-                        Login(navController = navController, loginRegisterViewModel = loginRegisterViewModel)
+                        Login(
+                            navController = navController,
+                            loginRegisterViewModel = loginRegisterViewModel,
+                            context = applicationContext
+                        )
+                        BackHandler(true) {
+                            Toast.makeText(
+                                applicationContext,
+                                "BackButton Deshabilitado en el LOGIN",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
+
+
+                    /*** VALIDATE SCREEN ***/
+                    composable(
+                        route = ScreenNav.ValidateScreen.route
+                    ) {
+                        Validate(
+                            navController = navController,
+                            loginRegisterViewModel = loginRegisterViewModel,
+                            context = applicationContext
+                        )
                         BackHandler(true) {
                             Toast.makeText(
                                 applicationContext,
