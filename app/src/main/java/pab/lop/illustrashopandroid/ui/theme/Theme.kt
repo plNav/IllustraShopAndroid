@@ -26,9 +26,9 @@ private val LightColorPalette = lightColors(
     onSurface = Color.Black,
     */
 )
-
+//TODO IMPLEMENTAR NO ACTION BAR
 @Composable
-fun IllustraShopAndroidTheme(
+fun IllustraShopAndroidTheme (
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
