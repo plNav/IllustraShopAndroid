@@ -30,8 +30,12 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.orhanobut.logger.Logger
 import pab.lop.illustrashopandroid.R
 import pab.lop.illustrashopandroid.ui.theme.IllustraShopAndroidTheme
+import pab.lop.illustrashopandroid.ui.theme.spacing_compact
+import pab.lop.illustrashopandroid.ui.theme.spacing_extended
+import pab.lop.illustrashopandroid.ui.theme.spacing_medium
 import pablo_lonav.android.utils.ScreenNav
 
 
@@ -59,7 +63,8 @@ fun Login(
 
         ) {
 
-            Spacer(modifier = Modifier.height(5.dp))
+            Spacer(modifier = Modifier.height(MaterialTheme.spacing_compact.small))
+            Logger.wtf("${MaterialTheme.spacing_compact.mediumMedium} ${MaterialTheme.spacing_medium.mediumMedium} ${MaterialTheme.spacing_extended.mediumMedium}")
 
             Text(
                 text = stringResource(R.string.login),
@@ -186,6 +191,7 @@ fun Login(
             Button(
                 onClick = {
                     // navController.navigate(ScreenNav.RegisterScreen.route)
+                          navController.navigate(ScreenNav.MainScreen.route)
                 },
                 modifier = Modifier
                     .fillMaxWidth()

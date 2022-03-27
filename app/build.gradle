@@ -59,7 +59,11 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:2.5.0-alpha03")
 
     //COIL
-    implementation("io.coil-kt:coil-compose:2.0.0-rc02")
+    // implementation("io.coil-kt:coil-compose:2.0.0-rc02")
+
+    //PICASSO
+    implementation 'com.squareup.picasso:picasso:2.71828'
+
 
     //COROUTINES
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0")
