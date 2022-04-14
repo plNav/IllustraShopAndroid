@@ -5,6 +5,7 @@ sealed class ScreenNav(val route: String) {
     object LoginScreen : ScreenNav("login_screen")
     object ValidateScreen : ScreenNav("validate_screen")
     object MainScreen : ScreenNav("main_screen")
+    object Image_Upload : ScreenNav("image_upload")
  /*   object MapScreen : ScreenNav("map_screen")
     object RegisterScreen : ScreenNav("register_screen")
     object ValidateRegisterScreen : ScreenNav("validate_register_screen")

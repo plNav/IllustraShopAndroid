@@ -143,19 +143,19 @@ fun MainStart(
                         .fillMaxWidth()
                         .fillMaxHeight()
                         .padding(5.dp)
+                        .clickable(onClick = {
+                            mainViewModel.getAllUsers {
+                                Logger.i("Loading complete on item click")
+                            }
+                        })
                 ) {
                     //TODO FIRST PART CONTENT
                     //sera una label y un bloque de imagenes que corran hacia la derecha.
-
+                        //NetworkImage(url = listaImages[index])
                     Text(item)
 
                 }
-
             }
-
-
-
-
         }
     }
 }

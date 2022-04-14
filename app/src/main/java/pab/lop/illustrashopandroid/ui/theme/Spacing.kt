@@ -40,6 +40,7 @@ data class SpacingCompact (
     val mediumMedium : Dp = 22.dp,
     val mediumLarge : Dp = 28.dp,
     val large : Dp = 34.dp,
+    val superLarge : Dp = 50.dp,
     val extraLarge : Dp = 60.dp
 )
 
@@ -51,6 +52,7 @@ data class SpacingMedium (
     val mediumMedium : Dp = 35.dp,
     val mediumLarge : Dp = 45.dp,
     val large : Dp = 55.dp,
+    val superLarge : Dp = 70.dp,
     val extraLarge : Dp = 80.dp
 )
 
@@ -61,7 +63,8 @@ data class SpacingExtended (
     val mediumSmall : Dp = 30.dp,
     val mediumMedium : Dp = 50.dp,
     val mediumLarge : Dp = 70.dp,
-    val large : Dp = 90.dp,
+    val large : Dp = 85.dp,
+    val superLarge : Dp = 100.dp,
     val extraLarge : Dp = 120.dp
 )
 

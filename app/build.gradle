@@ -55,6 +55,12 @@ dependencies {
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
 
+    //INTERCEPTOR
+    implementation 'com.squareup.okhttp3:logging-interceptor:4.9.1'
+
+    //UPLOAD PROGRESS -> Not working
+   // implementation 'com.github.Musfick:retrofit-kotlin-upload-progress:0.1.0'
+
     //NAVIGATION
     implementation("androidx.navigation:navigation-compose:2.5.0-alpha03")
 

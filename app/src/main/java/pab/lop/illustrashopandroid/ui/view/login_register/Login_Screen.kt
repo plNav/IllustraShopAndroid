@@ -59,12 +59,11 @@ fun Login(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 50.dp)
+                .padding(horizontal = MaterialTheme.spacing_compact.extraLarge)
 
         ) {
 
             Spacer(modifier = Modifier.height(MaterialTheme.spacing_compact.small))
-            Logger.wtf("${MaterialTheme.spacing_compact.mediumMedium} ${MaterialTheme.spacing_medium.mediumMedium} ${MaterialTheme.spacing_extended.mediumMedium}")
 
             Text(
                 text = stringResource(R.string.login),
@@ -73,7 +72,7 @@ fun Login(
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             )
 
-            Spacer(modifier = Modifier.height(30.dp))
+            Spacer(modifier = Modifier.height(MaterialTheme.spacing_compact.mediumLarge))
 
             OutlinedTextField(
                 value = email.value,
@@ -112,7 +111,7 @@ fun Login(
                 modifier = Modifier.fillMaxWidth(),
             )
 
-            Spacer(modifier = Modifier.height(18.dp))
+            Spacer(modifier = Modifier.height(MaterialTheme.spacing_compact.mediumMedium))
 
             OutlinedTextField(
                 value = password.value,
@@ -161,7 +160,7 @@ fun Login(
                 modifier = Modifier.fillMaxWidth(),
             )
 
-            Spacer(modifier = Modifier.height(40.dp))
+            Spacer(modifier = Modifier.height(MaterialTheme.spacing_compact.large))
 
             Button(
                 onClick = {
@@ -176,7 +175,7 @@ fun Login(
                 },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(50.dp),
+                    .height(MaterialTheme.spacing_compact.superLarge),
                 colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.primary),
             ) {
                 Text(
@@ -186,7 +185,7 @@ fun Login(
                 )
             }
 
-            Spacer(modifier = Modifier.height(30.dp))
+            Spacer(modifier = Modifier.height(MaterialTheme.spacing_compact.mediumLarge))
 
             Button(
                 onClick = {
@@ -195,7 +194,7 @@ fun Login(
                 },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(50.dp),
+                    .height(MaterialTheme.spacing_compact.superLarge),
                 colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.primary),
             ) {
                 Text(

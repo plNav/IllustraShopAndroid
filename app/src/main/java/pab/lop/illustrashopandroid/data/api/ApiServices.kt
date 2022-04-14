@@ -2,12 +2,15 @@ package pab.lop.illustrashopandroid.data.api
 
 import android.media.Image
 import com.orhanobut.logger.Logger
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import pab.lop.illustrashopandroid.data.model.UserModel
 import pab.lop.illustrashopandroid.utils.URL_HEAD_API
-import retrofit2.Response
+import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.*
+
 
 /**
  * Interfaz que contiene las rutas para llamar a la API y la instancia de Retrofit para hacerlo
@@ -50,9 +53,17 @@ interface ApiServices {
 
     /********************IMAGES**********************/
 
-    @GET("images/{name}")
+    //todo creo que no hace falta
+    @GET("image/{name}")
     suspend fun getImage(@Path(value = "image") image : String) : Image
 
+
+    @Multipart
+    @POST("upload")
+     fun postImage(
+        @Part image: MultipartBody.Part?,
+        @Part("upload") name: RequestBody?
+    ) : Call<Any>
 
 
 

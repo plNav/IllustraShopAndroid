@@ -12,9 +12,11 @@ import androidx.navigation.compose.rememberNavController
 import com.orhanobut.logger.AndroidLogAdapter
 import com.orhanobut.logger.Logger
 import pab.lop.illustrashopandroid.ui.theme.IllustraShopAndroidTheme
+import pab.lop.illustrashopandroid.ui.view.admin.Image_Upload
 import pab.lop.illustrashopandroid.ui.view.login_register.Login
 import pab.lop.illustrashopandroid.ui.view.login_register.Validate
 import pab.lop.illustrashopandroid.ui.view.main.Main
+import pab.lop.illustrashopandroid.ui.view_model.AdminViewModel
 import pab.lop.illustrashopandroid.ui.view_model.LoginRegisterViewModel
 import pab.lop.illustrashopandroid.ui.view_model.MainViewModel
 import pab.lop.illustrashopandroid.utils.WindowInfo
@@ -30,18 +32,22 @@ class MainActivity : ComponentActivity() {
         val activityKiller: () -> Unit = { this.finish() }
         val loginRegisterViewModel by viewModels<LoginRegisterViewModel>()
         val mainViewModel by viewModels<MainViewModel>()
+        val adminViewModel by viewModels<AdminViewModel>()
 
         setContent {
             IllustraShopAndroidTheme {
 
                 val windowInfo = rememberWindowInfo()
-                if(windowInfo.screenWidthInfo is WindowInfo.WindowType.Compat){
+                if (windowInfo.screenWidthInfo is WindowInfo.WindowType.Compat) {
                     //TODO adapt on sizes
                 }
 
                 val navController = rememberNavController()
 
-                NavHost(navController = navController, startDestination = ScreenNav.LoginScreen.route) {
+                NavHost(
+                    navController = navController,
+                    startDestination = ScreenNav.Image_Upload.route
+                ) {
 
                     /*** LOGIN SCREEN ***/
                     composable(
@@ -87,6 +93,24 @@ class MainActivity : ComponentActivity() {
                         Main(
                             navController = navController,
                             mainViewModel = mainViewModel,
+                            context = applicationContext
+                        )
+                        BackHandler(true) {
+                            Toast.makeText(
+                                applicationContext,
+                                "BackButton Deshabilitado en el LOGIN",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
+
+                    /*** UPLOAD SCREEN ***/
+                    composable(
+                        route = ScreenNav.Image_Upload.route
+                    ) {
+                        Image_Upload(
+                            navController = navController,
+                            adminViewModel = adminViewModel,
                             context = applicationContext
                         )
                         BackHandler(true) {
