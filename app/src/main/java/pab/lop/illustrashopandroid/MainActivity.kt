@@ -6,19 +6,22 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.material.MaterialTheme
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.orhanobut.logger.AndroidLogAdapter
 import com.orhanobut.logger.Logger
 import pab.lop.illustrashopandroid.ui.theme.IllustraShopAndroidTheme
-import pab.lop.illustrashopandroid.ui.view.admin.Image_Upload
+import pab.lop.illustrashopandroid.ui.theme.Spacing
+import pab.lop.illustrashopandroid.ui.view.admin.composables.Image_Upload
 import pab.lop.illustrashopandroid.ui.view.login_register.Login
 import pab.lop.illustrashopandroid.ui.view.login_register.Validate
-import pab.lop.illustrashopandroid.ui.view.main.Main
-import pab.lop.illustrashopandroid.ui.view_model.AdminViewModel
-import pab.lop.illustrashopandroid.ui.view_model.LoginRegisterViewModel
-import pab.lop.illustrashopandroid.ui.view_model.MainViewModel
+import pab.lop.illustrashopandroid.ui.view.main.composables.Main
+import pab.lop.illustrashopandroid.ui.view.admin.AdminViewModel
+import pab.lop.illustrashopandroid.ui.view.login_register.LoginRegisterViewModel
+import pab.lop.illustrashopandroid.ui.view.main.MainViewModel
 import pab.lop.illustrashopandroid.utils.WindowInfo
 import pab.lop.illustrashopandroid.utils.rememberWindowInfo
 import pablo_lonav.android.utils.ScreenNav
@@ -30,16 +33,28 @@ class MainActivity : ComponentActivity() {
         Logger.addLogAdapter(AndroidLogAdapter())
 
         val activityKiller: () -> Unit = { this.finish() }
+        var customSpacing : Spacing
+
         val loginRegisterViewModel by viewModels<LoginRegisterViewModel>()
         val mainViewModel by viewModels<MainViewModel>()
         val adminViewModel by viewModels<AdminViewModel>()
 
+
         setContent {
             IllustraShopAndroidTheme {
 
+                // Color of status bar
+                val systemUiController = rememberSystemUiController()
+                    systemUiController.setSystemBarsColor(
+                        color = MaterialTheme.colors.secondary
+                    )
+
+                // Spacing depending on window size
                 val windowInfo = rememberWindowInfo()
-                if (windowInfo.screenWidthInfo is WindowInfo.WindowType.Compat) {
-                    //TODO adapt on sizes
+                customSpacing = when (windowInfo.screenWidthInfo) {
+                    is WindowInfo.WindowType.Compat -> { Spacing.SpacingCompact }
+                    is WindowInfo.WindowType.Medium -> { Spacing.SpacingMedium }
+                    is WindowInfo.WindowType.Expanded -> { Spacing.SpacingExtended }
                 }
 
                 val navController = rememberNavController()
@@ -56,7 +71,8 @@ class MainActivity : ComponentActivity() {
                         Login(
                             navController = navController,
                             loginRegisterViewModel = loginRegisterViewModel,
-                            context = applicationContext
+                            context = applicationContext,
+                            customSpacing = customSpacing
                         )
                         BackHandler(true) {
                             Toast.makeText(
@@ -75,7 +91,8 @@ class MainActivity : ComponentActivity() {
                         Validate(
                             navController = navController,
                             loginRegisterViewModel = loginRegisterViewModel,
-                            context = applicationContext
+                            context = applicationContext,
+                            customSpacing = customSpacing
                         )
                         BackHandler(true) {
                             Toast.makeText(
@@ -93,7 +110,8 @@ class MainActivity : ComponentActivity() {
                         Main(
                             navController = navController,
                             mainViewModel = mainViewModel,
-                            context = applicationContext
+                            context = applicationContext,
+                            customSpacing = customSpacing
                         )
                         BackHandler(true) {
                             Toast.makeText(
@@ -111,7 +129,8 @@ class MainActivity : ComponentActivity() {
                         Image_Upload(
                             navController = navController,
                             adminViewModel = adminViewModel,
-                            context = applicationContext
+                            context = applicationContext,
+                            customSpacing = customSpacing
                         )
                         BackHandler(true) {
                             Toast.makeText(

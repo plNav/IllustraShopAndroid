@@ -1,4 +1,4 @@
-package pab.lop.illustrashopandroid.ui.view_model
+package pab.lop.illustrashopandroid.ui.view.admin
 
 import android.content.Context
 import android.graphics.Bitmap

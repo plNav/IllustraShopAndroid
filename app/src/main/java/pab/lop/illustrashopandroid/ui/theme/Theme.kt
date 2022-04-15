@@ -6,21 +6,23 @@ import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.unit.dp
 import pab.lop.illustrashopandroid.utils.WindowInfo
 import pab.lop.illustrashopandroid.utils.rememberWindowInfo
 
 private val DarkColorPalette = darkColors(
     primary = GreenPrimary,
-    primaryVariant = Purple700,
-    secondary = RedTransparent,
+    primaryVariant = GreenPrimaryVariant,
+    secondary = SecondaryGreen,
+    onError = GrayDisabled,
+
 )
 
 private val LightColorPalette = lightColors(
-    primary = Purple500,
-    primaryVariant = Purple700,
-    secondary = RedTransparent
+    primary = GreenPrimary,
+    primaryVariant = GreenPrimaryVariant,
+    secondary = SecondaryGreen,
+    onError =  GrayDisabled
 
     /* Other default colors to override
     background = Color.White,
@@ -43,7 +45,7 @@ fun IllustraShopAndroidTheme (
         LightColorPalette
     }
 
-    val windowInfo = rememberWindowInfo()
+ /*   val windowInfo = rememberWindowInfo()
 
     when (windowInfo.screenWidthInfo) {
         is WindowInfo.WindowType.Compat -> {
@@ -82,17 +84,17 @@ fun IllustraShopAndroidTheme (
         }
         else -> {
             val localSpacing = localSpacingExtended
-            val localData = SpacingExtended()
-            CompositionLocalProvider(localSpacing provides localData) {
+            val localData = SpacingExtended()*/
+          //  CompositionLocalProvider(localSpacing provides localData) {
                 MaterialTheme(
                     colors = colors,
                     typography = Typography,
                     shapes = Shapes,
                     content = content
                 )
-            }
+           // }
         }
-    }
+ /*   }
 }
-
+*/
 

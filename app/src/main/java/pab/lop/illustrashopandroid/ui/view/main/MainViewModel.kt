@@ -1,4 +1,4 @@
-package pab.lop.illustrashopandroid.ui.view_model
+package pab.lop.illustrashopandroid.ui.view.main
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf

@@ -11,61 +11,53 @@ import pab.lop.illustrashopandroid.utils.WindowInfo
 import pab.lop.illustrashopandroid.utils.rememberWindowInfo
 
 
-var localSpacingCompact  = compositionLocalOf { SpacingCompact() }
-var localSpacingMedium  = compositionLocalOf { SpacingMedium() }
-var localSpacingExtended  = compositionLocalOf { SpacingExtended() }
+sealed class Spacing(
+    val default: Dp,
+    val extraSmall: Dp,
+    val small: Dp,
+    val mediumSmall: Dp,
+    val mediumMedium: Dp,
+    val mediumLarge: Dp,
+    val large: Dp,
+    val superLarge: Dp,
+    val extraLarge: Dp
+) {
+    object SpacingCompact : Spacing(
+        default = 0.dp,
+        extraSmall = 4.dp,
+        small = 8.dp,
+        mediumSmall = 16.dp,
+        mediumMedium = 22.dp,
+        mediumLarge = 28.dp,
+        large = 34.dp,
+        superLarge = 50.dp,
+        extraLarge = 60.dp
+    )
 
+    object SpacingMedium : Spacing(
+        default = 0.dp,
+        extraSmall = 10.dp,
+        small = 15.dp,
+        mediumSmall = 25.dp,
+        mediumMedium = 35.dp,
+        mediumLarge = 45.dp,
+        large = 55.dp,
+        superLarge = 70.dp,
+        extraLarge = 80.dp
+    )
 
-val MaterialTheme.spacing_compact: SpacingCompact
-    @Composable
-    @ReadOnlyComposable
-    get() = localSpacingCompact.current
+    object SpacingExtended : Spacing(
+        default = 0.dp,
+        extraSmall = 10.dp,
+        small = 20.dp,
+        mediumSmall = 30.dp,
+        mediumMedium = 50.dp,
+        mediumLarge = 70.dp,
+        large = 85.dp,
+        superLarge = 100.dp,
+        extraLarge = 120.dp
+    )
 
-val MaterialTheme.spacing_medium: SpacingMedium
-    @Composable
-    @ReadOnlyComposable
-    get() = localSpacingMedium.current
-
-val MaterialTheme.spacing_extended: SpacingExtended
-    @Composable
-    @ReadOnlyComposable
-    get() = localSpacingExtended.current
-
-
-data class SpacingCompact (
-    val default : Dp = 0.dp,
-    val extraSmall : Dp = 4.dp,
-    val small : Dp = 8.dp,
-    val mediumSmall : Dp = 16.dp,
-    val mediumMedium : Dp = 22.dp,
-    val mediumLarge : Dp = 28.dp,
-    val large : Dp = 34.dp,
-    val superLarge : Dp = 50.dp,
-    val extraLarge : Dp = 60.dp
-)
-
-data class SpacingMedium (
-    val default : Dp = 0.dp,
-    val extraSmall : Dp = 10.dp,
-    val small : Dp = 15.dp,
-    val mediumSmall : Dp = 25.dp,
-    val mediumMedium : Dp = 35.dp,
-    val mediumLarge : Dp = 45.dp,
-    val large : Dp = 55.dp,
-    val superLarge : Dp = 70.dp,
-    val extraLarge : Dp = 80.dp
-)
-
-data class SpacingExtended (
-    val default : Dp = 0.dp,
-    val extraSmall : Dp = 10.dp,
-    val small : Dp = 20.dp,
-    val mediumSmall : Dp = 30.dp,
-    val mediumMedium : Dp = 50.dp,
-    val mediumLarge : Dp = 70.dp,
-    val large : Dp = 85.dp,
-    val superLarge : Dp = 100.dp,
-    val extraLarge : Dp = 120.dp
-)
+}
 
 

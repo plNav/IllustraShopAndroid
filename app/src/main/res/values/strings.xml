@@ -7,4 +7,11 @@
     <string name="validate">VALIDATE</string>
     <string name="register">REGISTER</string>
     <string name="name">Name</string>
+    <string name="pick_image">Pick image</string>
+    <string name="price">Price</string>
+    <string name="amount">Amount</string>
+    <string name="Refresh">Refresh</string>
+    <string name="choose_families">Choose Families</string>
+    <string name="new_family">New Family</string>
+    <string name="new_product">NEW PRODUCT</string>
 </resources>

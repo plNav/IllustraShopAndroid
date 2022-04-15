@@ -67,5 +67,4 @@ class ProgressRequestBody(private val mFile: File, /*private val mListener: Uplo
 
     init {
         mListener.uploadStart()
-    }*/
-}
+    }*/}

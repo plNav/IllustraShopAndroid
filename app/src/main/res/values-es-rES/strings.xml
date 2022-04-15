@@ -8,4 +8,11 @@
     <string name="validate">VALIDAR</string>
     <string name="register">REGISTRARSE</string>
     <string name="name">Nombre</string>
+    <string name="pick_image">Elige imagen</string>
+    <string name="price">Precio</string>
+    <string name="amount">Cantidad</string>
+    <string name="Refresh">Recargar</string>
+    <string name="choose_families">Elige Familias</string>
+    <string name="new_family">Nueva Familia</string>
+    <string name="new_product">NUEVO PRODUCTO</string>
 </resources>

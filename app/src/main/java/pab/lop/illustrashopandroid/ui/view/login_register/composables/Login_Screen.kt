@@ -9,7 +9,6 @@ import androidx.compose.material.Button
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import pab.lop.illustrashopandroid.ui.view_model.LoginRegisterViewModel
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
@@ -27,15 +26,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.orhanobut.logger.Logger
 import pab.lop.illustrashopandroid.R
-import pab.lop.illustrashopandroid.ui.theme.IllustraShopAndroidTheme
-import pab.lop.illustrashopandroid.ui.theme.spacing_compact
-import pab.lop.illustrashopandroid.ui.theme.spacing_extended
-import pab.lop.illustrashopandroid.ui.theme.spacing_medium
+import pab.lop.illustrashopandroid.ui.theme.*
 import pablo_lonav.android.utils.ScreenNav
 
 
@@ -43,7 +37,8 @@ import pablo_lonav.android.utils.ScreenNav
 fun Login(
     navController: NavController,
     loginRegisterViewModel: LoginRegisterViewModel,
-    context: Context
+    context: Context,
+    customSpacing: Spacing
 ) {
 
     IllustraShopAndroidTheme {
@@ -59,11 +54,11 @@ fun Login(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = MaterialTheme.spacing_compact.extraLarge)
+                .padding(horizontal = customSpacing.extraLarge)
 
         ) {
 
-            Spacer(modifier = Modifier.height(MaterialTheme.spacing_compact.small))
+            Spacer(modifier = Modifier.height(customSpacing.small))
 
             Text(
                 text = stringResource(R.string.login),
@@ -72,7 +67,7 @@ fun Login(
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             )
 
-            Spacer(modifier = Modifier.height(MaterialTheme.spacing_compact.mediumLarge))
+            Spacer(modifier = Modifier.height(customSpacing.mediumLarge))
 
             OutlinedTextField(
                 value = email.value,
@@ -111,7 +106,7 @@ fun Login(
                 modifier = Modifier.fillMaxWidth(),
             )
 
-            Spacer(modifier = Modifier.height(MaterialTheme.spacing_compact.mediumMedium))
+            Spacer(modifier = Modifier.height(customSpacing.mediumMedium))
 
             OutlinedTextField(
                 value = password.value,
@@ -160,7 +155,7 @@ fun Login(
                 modifier = Modifier.fillMaxWidth(),
             )
 
-            Spacer(modifier = Modifier.height(MaterialTheme.spacing_compact.large))
+            Spacer(modifier = Modifier.height(customSpacing.large))
 
             Button(
                 onClick = {
@@ -175,7 +170,7 @@ fun Login(
                 },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(MaterialTheme.spacing_compact.superLarge),
+                    .height(customSpacing.superLarge),
                 colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.primary),
             ) {
                 Text(
@@ -185,7 +180,7 @@ fun Login(
                 )
             }
 
-            Spacer(modifier = Modifier.height(MaterialTheme.spacing_compact.mediumLarge))
+            Spacer(modifier = Modifier.height(customSpacing.mediumLarge))
 
             Button(
                 onClick = {
@@ -194,7 +189,7 @@ fun Login(
                 },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(MaterialTheme.spacing_compact.superLarge),
+                    .height(customSpacing.superLarge),
                 colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.primary),
             ) {
                 Text(
@@ -206,84 +201,3 @@ fun Login(
         }
     }
 }
-
-
-/*
-
-
-@Composable
-fun Login2(navController: NavHostController, loginRegisterViewModel: LoginRegisterViewModel) {
-
-    val painter =
-        rememberAsyncImagePainter(URL_HEAD_LOCAL)
-
-  Column (
-      modifier = Modifier.fillMaxSize(),
-      horizontalAlignment = Alignment.CenterHorizontally,
-      verticalArrangement = Arrangement.Center
-  ){
-      val painter = rememberAsyncImagePainter("http://192.168.1.93:8082/api/images/American_Gothic")
-
-      Button(
-          onClick =  {
-              loginRegisterViewModel.getAllUsers(){
-                  Logger.i(loginRegisterViewModel.allUsersClientResponse.toString())
-              }
-           */
-/*   loginRegisterViewModel.getImage("MonaLisa") {
-                  painter1.imageLoader.newBuilder(loginRegisterViewModel.)
-              }*//*
-
-          }
-      ){
-
-      }
-
-
-
-      Image(
-          painter = painter,
-          contentDescription = "Forest Image",
-          modifier = Modifier.fillMaxSize(),
-          contentScale = ContentScale.Crop
-      )
-
-
-      AsyncImage(
-          modifier = Modifier.fillMaxSize(),
-          model = painter,
-          painter = painter,
-          contentDescription = null,
-          contentScale = ContentScale.Crop
-      )
-     // MyContent()
-
-
-
-  }
-}
-*/
-
-/*
-@Composable
-fun MyContent(){
-
-    // Declare a string that contains a url
-    val mUrl = "http://192.168.1.93:8082/api/images/American_Gothic"
-
-    // Adding a WebView inside AndroidView
-    // with layout as full screen
-    AndroidView(factory = {
-        WebView(it).apply {
-            layoutParams = ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT
-            )
-            webViewClient = WebViewClient()
-            loadUrl(mUrl)
-        }
-    }, update = {
-        it.loadUrl(mUrl)
-    })
-}
-*/

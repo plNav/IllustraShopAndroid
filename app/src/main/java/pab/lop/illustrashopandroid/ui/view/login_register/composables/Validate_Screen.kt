@@ -10,13 +10,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import pab.lop.illustrashopandroid.ui.theme.IllustraShopAndroidTheme
-import pab.lop.illustrashopandroid.ui.view_model.LoginRegisterViewModel
+import pab.lop.illustrashopandroid.ui.theme.Spacing
 
 @Composable
 fun Validate(
     navController: NavController,
     loginRegisterViewModel: LoginRegisterViewModel,
-    context: Context
+    context: Context,
+    customSpacing: Spacing
 ) {
 
     IllustraShopAndroidTheme {
