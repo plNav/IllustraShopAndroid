@@ -59,7 +59,7 @@ interface ApiServices {
 
 
     @Multipart
-    @POST("upload")
+    @POST("images/upload")
      fun postImage(
         @Part image: MultipartBody.Part?,
         @Part("upload") name: RequestBody?

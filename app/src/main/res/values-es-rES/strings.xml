@@ -7,4 +7,5 @@
     <string name="emptyError">Escribe algo en todos los campos</string>
     <string name="validate">VALIDAR</string>
     <string name="register">REGISTRARSE</string>
+    <string name="name">Nombre</string>
 </resources>

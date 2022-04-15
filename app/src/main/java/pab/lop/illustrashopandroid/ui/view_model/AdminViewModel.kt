@@ -29,61 +29,57 @@ class AdminViewModel : ViewModel() {
     private var errorMessage: String by mutableStateOf("")
     private var byteArray: ByteArray? by mutableStateOf(null)
 
-    ///LAST INTENT
     fun multipartImageUpload(
         byteArray: MutableState<ByteArray?>,
         context: Context,
-        scope: CoroutineScope,
         bitmap: MutableState<Bitmap?>,
+        customName: MutableState<String>,
         onSuccess: () -> Unit
     ) {
         val apiService = ApiServices.getInstance()
-        Logger.wtf("STEP 0")
-
         try {
             viewModelScope.launch {
                 if (bitmap.value != null) {
+
                     val bos = ByteArrayOutputStream()
                     bitmap.value?.compress(Bitmap.CompressFormat.JPEG, 100, bos)
                     byteArray.value = bos.toByteArray()
-                    Logger.wtf("STEP 1")
 
                     val filesDir: File = context.filesDir
-                    val file = File(filesDir, "image" + ".jpg")
+                    val file = File(filesDir, customName.value + ".jpg")
                     val fos = FileOutputStream(file)
+
                     fos.write(byteArray.value)
                     fos.flush()
                     fos.close()
 
                     val fileBody = ProgressRequestBody(file)
-
                     val body: MultipartBody.Part = createFormData("upload", file.name, fileBody)
-
                     val name = RequestBody.create("text/plain".toMediaTypeOrNull(), "upload")
 
                     val mainHandler = Handler(getMainLooper())
+
                     val runnable = Runnable {
-                        val asyn = viewModelScope.async {
+                        viewModelScope.async {
                             apiService.postImage(image = body, name = name).await()
                         }
                     }
-
                     mainHandler.postDelayed(runnable, 200)  //delay)
-
+                    onSuccess()
                 }
             }
 
         } catch (e: FileNotFoundException) {
             e.printStackTrace()
-            Logger.wtf("ERROR UPLOAD ${e.message}")
+            Logger.wtf("ERROR UPLOAD FILE NOT FOUND EXCEPTION \n ${e.message}")
 
         } catch (e: IOException) {
             e.printStackTrace()
-            Logger.wtf("ERROR UPLOAD ${e.message}")
+            Logger.wtf("ERROR UPLOAD IO EXCEPTION \n ${e.message}")
 
         } catch (e: Exception) {
             e.printStackTrace()
-            Logger.wtf("ERROR UPLOAD ${e.message}")
+            Logger.wtf("ERROR UPLOAD UNKNOWN EXCEPTION \n ${e.message}")
 
         }
     }
