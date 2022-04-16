@@ -1,6 +1,9 @@
 package pab.lop.illustrashopandroid.ui.view.main.composables
 
+import android.annotation.SuppressLint
 import android.content.Context
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -10,9 +13,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.HighlightOff
 import androidx.compose.material.icons.filled.Menu
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Rect
@@ -36,10 +37,14 @@ import com.orhanobut.logger.Logger
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import pab.lop.illustrashopandroid.R
+import pab.lop.illustrashopandroid.data.model.product_stock.product_stock_response
 import pab.lop.illustrashopandroid.ui.theme.Spacing
 import pab.lop.illustrashopandroid.ui.view.main.MainViewModel
 import pab.lop.illustrashopandroid.utils.URL_HEAD_IMAGES
+import pab.lop.illustrashopandroid.utils.familyProducts
 
+@SuppressLint("UnrememberedMutableState", "MutableCollectionMutableState")
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun Main(
     navController: NavController,
@@ -47,13 +52,26 @@ fun Main(
     context: Context,
     customSpacing: Spacing
 ) {
+    val loadProductsFamily = remember { mutableStateOf(false)}
+    val startLoading = remember { mutableStateOf(false)}
 
-    val imagesByFamily: HashMap<String, MutableList<String>> = HashMap()
+/*    val imagesByFamily: HashMap<String, MutableList<String>> = HashMap()
     imagesByFamily["Primera Familia"] = mutableListOf("MonaLisa.jpg", "American_Gothic.jpg")
     imagesByFamily["Segunda Familia"] =
         mutableListOf("Meisje_met_de_parel.jpg", "American_Gothic.jpg", "StarryNight.jpg")
-    imagesByFamily["Tercera Familia"] = mutableListOf("The_Kiss.jpg", "Guernica.jpg")
+    imagesByFamily["Tercera Familia"] = mutableListOf("The_Kiss.jpg", "Guernica.jpg")*/
 
+    if(!startLoading.value){
+        startLoading.value = true
+        mainViewModel.getProductsFamily {
+            familyProducts = mainViewModel.familyProductsResponse
+            Logger.d("Families => ${familyProducts.keys}")
+            loadProductsFamily.value = true
+
+        }
+    }
+
+    if(loadProductsFamily.value)
     MainStart(
         navController = navController,
         snackbarHostState = remember { SnackbarHostState() },
@@ -61,7 +79,7 @@ fun Main(
         scaffoldState = rememberScaffoldState(),
         applicationContext = context,
         mainViewModel = mainViewModel,
-        imagesByFamily = imagesByFamily
+        familyProducts = familyProducts
     )
 }
 
@@ -75,7 +93,7 @@ fun MainStart(
     scaffoldState: ScaffoldState,
     applicationContext: Context,
     mainViewModel: MainViewModel,
-    imagesByFamily: HashMap<String, MutableList<String>>,
+    familyProducts: HashMap<String, List<product_stock_response>>,
 ) {
 
     val verticalGradient = Brush.verticalGradient(
@@ -170,13 +188,12 @@ fun MainStart(
         LazyColumn(
             modifier = Modifier.fillMaxSize()
         ) {
-            itemsIndexed(imagesByFamily.keys.toMutableList()) { index, item ->
-
+            itemsIndexed(familyProducts.keys.toMutableList()) { index, family ->
                 Column(
                 ) {
-                    Text(item)
+                    Text(family)
                     HorizontalPager(
-                        count = imagesByFamily.get(item)?.size ?: 2,
+                        count = familyProducts.get(family)?.size ?: 2,
                         state = rememberPagerState(),
                     ) { page ->
                         Card(
@@ -186,14 +203,15 @@ fun MainStart(
                                 .padding(5.dp)
                                 .clickable(onClick = {
                                     mainViewModel.getAllUsers {
-                                        Logger.i("Loading complete on item click")
+                                        Logger.i("Loading complete on family click")
                                     }
                                     //TODO POPUP DE OPCIONES
 
                                 })
                         ) {
+                            Logger.wtf("${URL_HEAD_IMAGES}${familyProducts.get(family)?.get(page)?.image}")
                             AsyncImage(
-                                model = "${URL_HEAD_IMAGES}${imagesByFamily.get(item)?.get(page)}",
+                                model = "${URL_HEAD_IMAGES}${familyProducts.get(family)?.get(page)?.image}",
                                 contentDescription = null,
                                 placeholder = painterResource(id = R.drawable.loading_image),
                                 contentScale = ContentScale.Fit,
@@ -202,7 +220,7 @@ fun MainStart(
 
                             /*      CoilImage(
                             imageModel = "${URL_HEAD_IMAGES}${
-                                imagesByFamily.get(item)?.get(page)
+                                imagesByFamily.get(family)?.get(page)
                             }",
                             contentScale = ContentScale.Inside,
                             previewPlaceholder = R.drawable.red,
@@ -213,16 +231,15 @@ fun MainStart(
                             )*/
 
                             /* Image(
-                                 painter = rememberAsyncImagePainter("${URL_HEAD_IMAGES}${imagesByFamily.get(item)?.get(page)}"),
+                                 painter = rememberAsyncImagePainter("${URL_HEAD_IMAGES}${imagesByFamily.get(family)?.get(page)}"),
                                  contentDescription = null,
                                  modifier = Modifier.size(1128.dp)
                             )*/
 
                             Logger.d(
                                 """
-                            item  =>> $item
+                            family  =>> $family
                             index =>> $index
-                            array =>> ${imagesByFamily[item]}
                             page  =>> $page
                             """
                                     .trimIndent()

@@ -32,7 +32,7 @@ class MainActivity : ComponentActivity() {
 
         Logger.addLogAdapter(AndroidLogAdapter())
 
-        val activityKiller: () -> Unit = { this.finish() }
+        //val activityKiller: () -> Unit = { this.finish() }
         var customSpacing : Spacing
 
         val loginRegisterViewModel by viewModels<LoginRegisterViewModel>()
@@ -52,16 +52,16 @@ class MainActivity : ComponentActivity() {
                 // Spacing depending on window size
                 val windowInfo = rememberWindowInfo()
                 customSpacing = when (windowInfo.screenWidthInfo) {
-                    is WindowInfo.WindowType.Compat -> { Spacing.SpacingCompact }
-                    is WindowInfo.WindowType.Medium -> { Spacing.SpacingMedium }
-                    is WindowInfo.WindowType.Expanded -> { Spacing.SpacingExtended }
+                    is WindowInfo.WindowType.Compat ->  Spacing.SpacingCompact
+                    is WindowInfo.WindowType.Medium ->  Spacing.SpacingMedium
+                    is WindowInfo.WindowType.Expanded ->  Spacing.SpacingExtended
                 }
 
                 val navController = rememberNavController()
 
                 NavHost(
                     navController = navController,
-                    startDestination = ScreenNav.Image_Upload.route
+                    startDestination = ScreenNav.MainScreen.route
                 ) {
 
                     /*** LOGIN SCREEN ***/

@@ -5,9 +5,9 @@ data class product_stock_response (
     var name : String,
     var image : String,
     var price : Float,
-    var stock : Int,
-    var sales : Int,
-    var whislists : Int,
-    var likes : List<String>,
-    var families : List<String>
+    var stock : Float,
+    var sales : Float,
+    var wishlists : Float,
+    var likes : MutableList<String>,
+    var families : MutableList<String>
 )

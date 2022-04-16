@@ -60,10 +60,16 @@ interface ApiServices {
 
     @Multipart
     @POST("images/upload")
-     fun postImage(
+    fun postImage(
         @Part image: MultipartBody.Part?,
         @Part("upload") name: RequestBody?
     ) : Call<Any>
+
+    /********************FAMILY+PRODUCTS**********************/
+
+    @GET("product/family")
+    suspend fun getProductsFamily() : List<Any>
+
 
 
 
