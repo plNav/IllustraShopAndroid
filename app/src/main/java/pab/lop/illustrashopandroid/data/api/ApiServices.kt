@@ -83,6 +83,16 @@ interface ApiServices {
     @GET("family/names/all")
     suspend fun getFamilyNames() : Response<List<String>>
 
+    @GET("family")
+    suspend fun getFamilies(): Response<List<family_response>>
+
+    @PUT("family/{id}")
+    suspend fun updateFamily(@Path(value = "id" ) id : String, @Body newFamily: family_response): Response<Any>
+
+    @DELETE("family/{id}")
+    suspend fun deleteFamily(@Path(value = "id") id : String) : Response<Any>
+
+
     /********************PRODUCT_STOCK**********************/
 
     @GET("product/stock")
@@ -91,5 +101,14 @@ interface ApiServices {
     @POST("product/stock")
     suspend fun createProductStock(@Body newProduct: product_stock_request): Response<product_stock_response>
 
+    @PUT("product/stock/{id}")
+    suspend fun updateProductStock(@Path(value = "id" ) oldProductId: String, @Body newProduct: product_stock_response): Response<Any>
+
+    @DELETE("product/stock/{id}")
+    suspend fun deleteProductStock(@Path(value = "id" )oldProductId: String): Response<Any>
+
+    /*@DELETE("product/delete/stock/{id}")
+    suspend fun deleteFamily(@Path(value = "_id") _id : String ): Response<Any>
+*/
 
 }

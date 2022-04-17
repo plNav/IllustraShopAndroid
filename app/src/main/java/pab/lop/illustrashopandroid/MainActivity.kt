@@ -23,6 +23,7 @@ import pab.lop.illustrashopandroid.ui.view.login_register.Validate
 import pab.lop.illustrashopandroid.ui.view.main.composables.Main
 import pab.lop.illustrashopandroid.ui.view.admin.AdminViewModel
 import pab.lop.illustrashopandroid.ui.view.admin.composables.Admin_Screen
+import pab.lop.illustrashopandroid.ui.view.admin.composables.Edit_Product
 import pab.lop.illustrashopandroid.ui.view.login_register.LoginRegisterViewModel
 import pab.lop.illustrashopandroid.ui.view.main.MainViewModel
 import pab.lop.illustrashopandroid.utils.WindowInfo
@@ -131,6 +132,25 @@ class MainActivity : ComponentActivity() {
                         route = ScreenNav.Image_Upload.route
                     ) {
                         Image_Upload(
+                            navController = navController,
+                            adminViewModel = adminViewModel,
+                            context = applicationContext,
+                            customSpacing = customSpacing
+                        )
+                        BackHandler(true) {
+                            Toast.makeText(
+                                applicationContext,
+                                "BackButton Deshabilitado en el LOGIN",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
+
+                    /*** EDIT PRODUCT SCREEN ***/
+                    composable(
+                        route = ScreenNav.Product_Edit.route
+                    ) {
+                        Edit_Product(
                             navController = navController,
                             adminViewModel = adminViewModel,
                             context = applicationContext,

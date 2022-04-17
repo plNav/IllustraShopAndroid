@@ -20,4 +20,12 @@
     <string name="upload_complete">Upload Complete</string>
     <string name="what_now">What Now?</string>
     <string name="menu_admin">Menu Admin</string>
+    <string name="edit_product">Edit / Delete Product</string>
+    <string name="edit_family">Edit / Delete Family</string>
+    <string name="Delete">Delete</string>
+    <string name="update">Update</string>
+    <string name="upload">Upload</string>
+    <string name="update_complete">Update Complete</string>
+    <string name="delete_completed">Delete Completed</string>
+    <string name="delete">Delete</string>
 </resources>

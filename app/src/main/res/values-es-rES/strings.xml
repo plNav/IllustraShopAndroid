@@ -21,4 +21,12 @@
     <string name="upload_complete">Subida Completada</string>
     <string name="what_now">Qué quieres hacer ahora?</string>
     <string name="menu_admin">Menu Admin</string>
+    <string name="edit_product">Editar / Eliminar Producto</string>
+    <string name="edit_family">Editar / Eliminar Familia</string>
+    <string name="Delete">Eliminar</string>
+    <string name="update">Actualiza</string>
+    <string name="upload">Subir</string>
+    <string name="update_complete">Actualización Completada</string>
+    <string name="delete_completed">Borrado Completado</string>
+    <string name="delete">Borrar</string>
 </resources>

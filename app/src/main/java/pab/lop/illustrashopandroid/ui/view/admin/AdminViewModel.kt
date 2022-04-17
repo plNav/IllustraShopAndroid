@@ -37,6 +37,9 @@ class AdminViewModel : ViewModel() {
     private var currentFamilyResponse : family_response by mutableStateOf(family_response("",""))
     var familyNameListResponse : List<String> by mutableStateOf(listOf())
     var productListResponse : List<product_stock_response> by mutableStateOf(listOf())
+    var familyListResponse : List<family_response> by mutableStateOf(listOf())
+    var updateOkResponse : Boolean by mutableStateOf(false)
+
 
     fun createFamily(family: family_request, onSuccessCallback: () -> Unit){
         val apiServices = ApiServices.getInstance()
@@ -74,6 +77,23 @@ class AdminViewModel : ViewModel() {
         }
     }
 
+    fun getFamilies(onSuccessCallback: () -> Unit) {
+        val apiServices = ApiServices.getInstance()
+        try{
+            viewModelScope.launch {
+                val response : Response<List<family_response>> = apiServices.getFamilies()
+                if(response.isSuccessful){
+                    Logger.i("Get All Products OK \n${response.body().toString()}")
+                    familyListResponse = response.body() as List<family_response>
+                    onSuccessCallback()
+                }
+            }
+        }catch (e: Exception){
+            errorMessage = e.message.toString()
+            Logger.e("FAILURE getting all family names")
+        }
+    }
+
     fun getProducts(onSuccessCallback: () -> Unit){
         val apiServices = ApiServices.getInstance()
         try{
@@ -90,6 +110,7 @@ class AdminViewModel : ViewModel() {
             Logger.e("FAILURE getting all family names")
         }
     }
+
 
 
     fun createProductStock(newProduct: product_stock_request, onSuccessCallback: () -> Unit) {
@@ -260,6 +281,93 @@ class AdminViewModel : ViewModel() {
         }
     }
 
+    fun updateFamily(
+        newName: String,
+        oldName: family_response?,
+        onSuccessCallback: () -> Unit
+    ) {
+        viewModelScope.launch {
+            val apiServices = ApiServices.getInstance()
+            updateOkResponse = false
+            try{
+                if(oldName != null){
+                    val response = apiServices.updateFamily(oldName._id, family_response(oldName._id, newName))
+                    if (response.isSuccessful){
+                        updateOkResponse = true
+                        Logger.i("SUCCESS updateTicketLine $response ${response.body()}")
+                        onSuccessCallback()
+                    }else Logger.e("FAILURE response updateTicketLine ${oldName.name} to $newName")
+                }else Logger.e("FAILURE oldName null")
+
+            }catch (e: Exception){
+                errorMessage = e.message.toString()
+                if (oldName != null) Logger.e("FAILURE update Family ${oldName.name} to $newName\n${e.message.toString()}")
+                else Logger.e("FAILURE update Family aldName null\n${e.message.toString()}")
+            }
+        }
+
+    }
+
+    fun deleteFamily(familySelected: family_response?, onSuccessCallback: () -> Unit) {
+        viewModelScope.launch {
+            val apiServices = ApiServices.getInstance()
+            updateOkResponse = false
+            try{
+               if(familySelected != null){
+                   val response = apiServices.deleteFamily(familySelected._id)
+                   if (response.isSuccessful){
+                       updateOkResponse = true
+                       Logger.i("SUCCESS deleteFamily $response ${response.body()}")
+                       onSuccessCallback()
+                   }else Logger.e("FAILURE response delete Family for ${familySelected.name}")
+               }
+            }catch (e: Exception){
+                errorMessage = e.message.toString()
+                Logger.e("FAILURE delete Family\n${e.message.toString()}")
+            }
+        }
+    }
+
+    fun updateProductStock(
+        newProduct: product_stock_response,
+        oldProductId: String,
+        onSuccessCallback: () -> Unit
+    ) {
+        viewModelScope.launch {
+            val apiServices = ApiServices.getInstance()
+            updateOkResponse = false
+            try{
+                    val response = apiServices.updateProductStock(oldProductId = oldProductId, newProduct = newProduct)
+                    if (response.isSuccessful){
+                        updateOkResponse = true
+                        Logger.i("SUCCESS updateProductStock $response ${response.body()}")
+                        onSuccessCallback()
+                    }else Logger.e("FAILURE response updateProductStock ${newProduct.name} ")
+
+            }catch (e: Exception){
+                errorMessage = e.message.toString()
+                Logger.e("FAILURE update ProductStock\n${e.message.toString()}")
+            }
+        }
+    }
+
+    fun deleteProductStock(oldProductId: String, onSuccessCallback: () -> Unit) {
+        viewModelScope.launch {
+            val apiServices = ApiServices.getInstance()
+            updateOkResponse = false
+            try{
+                    val response = apiServices.deleteProductStock(oldProductId)
+                    if (response.isSuccessful){
+                        updateOkResponse = true
+                        Logger.i("SUCCESS deleteProductStock $response ${response.body()}")
+                        onSuccessCallback()
+                    }else Logger.e("FAILURE response delete ProductStock for $oldProductId")
+
+            }catch (e: Exception){
+                errorMessage = e.message.toString()
+                Logger.e("FAILURE delete ProductStock\n${e.message.toString()}")
+            }
+        }    }
 
 
 }

@@ -33,13 +33,16 @@ fun PopUp_Verification(
     verificationOpen: MutableState<Boolean>,
     verticalGradient: Brush,
     verticalGradientIncomplete: Brush,
-    customSpacing: Spacing
+    customSpacing: Spacing,
+    isEditionMode: Boolean,
+    isDelete : Boolean
+
 ) {
 
     Dialog(
         onDismissRequest = {
             verificationOpen.value = false
-            navController.navigate(ScreenNav.Image_Upload.route)
+            navController.navigate(ScreenNav.Admin_Screen.route)
         }) {
         Surface(
             modifier = Modifier.padding(customSpacing.small),
@@ -59,7 +62,10 @@ fun PopUp_Verification(
 
                     /************ TITLE ************/
                     Text(
-                        text = stringResource(R.string.upload_complete).uppercase(),
+                        text = if(isEditionMode){
+                            if(isDelete) stringResource(R.string.delete_completed).uppercase()
+                            else stringResource(R.string.update_complete)
+                        } else stringResource(R.string.upload_complete).uppercase(),
                         textAlign = TextAlign.Center,
                         style = MaterialTheme.typography.body1.copy(color = Color.White),
                         modifier = Modifier
@@ -99,16 +105,16 @@ fun PopUp_Verification(
                         .padding(customSpacing.mediumMedium)
                 ) {
 
-                    Text(text = stringResource(R.string.what_now))
+                   /* Text(text = stringResource(R.string.what_now))
 
                     Spacer(
                         modifier = Modifier.height(
                             customSpacing.mediumMedium
                         )
-                    )
+                    )*/
 
-
-                    /************ NEW UPLOAD ************/
+/*
+                    *//************ NEW UPLOAD ************//*
                     Text(
                         text = stringResource(R.string.new_product),
                         textAlign = TextAlign.Center,
@@ -118,14 +124,14 @@ fun PopUp_Verification(
                             .clip(RoundedCornerShape(4.dp))
                             .background(brush = verticalGradient)
                             .padding(12.dp)
-                            .clickable(onClick = {navController.navigate(ScreenNav.Image_Upload.route) })
+                            .clickable(onClick = { navController.navigate(ScreenNav.Image_Upload.route) })
                     )
 
                     Spacer(
                         modifier = Modifier.height(
                             customSpacing.mediumSmall
                         )
-                    )
+                    )*/
 
                     /************ RETURN ************/
                     Text(
@@ -137,7 +143,7 @@ fun PopUp_Verification(
                             .clip(RoundedCornerShape(4.dp))
                             .background(brush = verticalGradientIncomplete)
                             .padding(12.dp)
-                            .clickable(onClick = {navController.navigate(ScreenNav.LoginScreen.route) })
+                            .clickable(onClick = { navController.navigate(ScreenNav.Admin_Screen.route) })
                     )
                     Text("")
                 }

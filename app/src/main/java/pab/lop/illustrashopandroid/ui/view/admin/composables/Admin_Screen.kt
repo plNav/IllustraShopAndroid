@@ -11,8 +11,10 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -22,9 +24,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.orhanobut.logger.Logger
 import pab.lop.illustrashopandroid.R
 import pab.lop.illustrashopandroid.ui.theme.Spacing
 import pab.lop.illustrashopandroid.ui.view.admin.AdminViewModel
+import pab.lop.illustrashopandroid.utils.familyNameList
 import pablo_lonav.android.utils.ScreenNav
 
 @Composable
@@ -34,6 +38,11 @@ fun Admin_Screen(
     context: Context,
     customSpacing: Spacing,
 ){
+    val createFamilyOpen = remember { mutableStateOf(false) }
+    val selectionProductOpen = remember { mutableStateOf(false) }
+    val selectionFamilyOpen = remember { mutableStateOf(false) }
+    val scope = rememberCoroutineScope()
+
 
     val verticalGradient = Brush.verticalGradient(
         colors = listOf(MaterialTheme.colors.primary, MaterialTheme.colors.primaryVariant),
@@ -51,6 +60,51 @@ fun Admin_Screen(
         startY = 0f,
         endY = 100f
     )
+
+    if (createFamilyOpen.value) {
+        PopUp_Create_Family(
+            adminViewModel = adminViewModel,
+            applicationContext = context,
+            navController = navController,
+            scope = scope,
+            createFamilyOpen = createFamilyOpen,
+            customSpacing = customSpacing,
+            verticalGradient = verticalGradient,
+            verticalGradiendDisabled = verticalGradientDisabled
+
+        )
+    }
+
+    if(selectionProductOpen.value){
+        PopUp_Selection(
+            applicationContext = context,
+            navController = navController,
+            scope = scope,
+            adminViewModel = adminViewModel,
+            selectionOpen = selectionProductOpen,
+            customSpacing = customSpacing,
+            verticalGradient = verticalGradient,
+            verticalGradientDisabled = verticalGradientDisabled,
+            isProduct = true,
+            verticalGradientIncomplete = verticalGradientIncomplete
+
+        )
+    }
+
+    if(selectionFamilyOpen.value){
+        PopUp_Selection(
+            applicationContext = context,
+            navController = navController,
+            scope = scope,
+            adminViewModel = adminViewModel,
+            selectionOpen = selectionProductOpen,
+            customSpacing = customSpacing,
+            verticalGradient = verticalGradient,
+            verticalGradientDisabled = verticalGradientDisabled,
+            isProduct = false,
+            verticalGradientIncomplete = verticalGradientIncomplete
+        )
+    }
 
 
     Column() {
@@ -87,7 +141,7 @@ fun Admin_Screen(
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(4.dp))
                     .background(Color.Transparent)
-                    .padding(0.dp,customSpacing.mediumSmall, customSpacing.superLarge,customSpacing.mediumSmall)
+                    .padding(0.dp, customSpacing.mediumSmall, customSpacing.superLarge, customSpacing.mediumSmall)
                     .clickable(onClick = { })
             )
 
@@ -119,7 +173,7 @@ fun Admin_Screen(
                     .clip(RoundedCornerShape(4.dp))
                     .background(brush = verticalGradientDisabled)
                     .padding(12.dp)
-                    .clickable(onClick = {navController.navigate(ScreenNav.Image_Upload.route) })
+                    .clickable(onClick = { navController.navigate(ScreenNav.Image_Upload.route) })
             )
 
             Spacer(
@@ -130,7 +184,7 @@ fun Admin_Screen(
 
             /************ EDIT/DELETE PRODUCT STOCK ************/
             Text(
-                text = stringResource(R.string.new_product),
+                text = (stringResource(R.string.edit_product)).uppercase(),
                 textAlign = TextAlign.Center,
                 style = MaterialTheme.typography.body1.copy(color = Color.White),
                 modifier = Modifier
@@ -138,7 +192,7 @@ fun Admin_Screen(
                     .clip(RoundedCornerShape(4.dp))
                     .background(brush = verticalGradientDisabled)
                     .padding(12.dp)
-                    .clickable(onClick = {navController.navigate(ScreenNav.Image_Upload.route) })
+                    .clickable(onClick = { selectionProductOpen.value = true })
             )
 
             Spacer(
@@ -149,7 +203,7 @@ fun Admin_Screen(
 
             /************ CREATE FAMILY ************/
             Text(
-                text = stringResource(R.string.new_product),
+                text = (stringResource(R.string.new_family)).uppercase(),
                 textAlign = TextAlign.Center,
                 style = MaterialTheme.typography.body1.copy(color = Color.White),
                 modifier = Modifier
@@ -157,7 +211,16 @@ fun Admin_Screen(
                     .clip(RoundedCornerShape(4.dp))
                     .background(brush = verticalGradientDisabled)
                     .padding(12.dp)
-                    .clickable(onClick = {navController.navigate(ScreenNav.Image_Upload.route) })
+                    .clickable(onClick = {
+                        adminViewModel.getFamilyNames {
+                            familyNameList = adminViewModel.familyNameListResponse as MutableList<String>
+                            Logger.wtf("Families => ${adminViewModel.familyNameListResponse}")
+
+                            // loadProductsFamily.value = true
+                            createFamilyOpen.value = true
+
+                        }
+                    })
             )
 
             Spacer(
@@ -168,7 +231,7 @@ fun Admin_Screen(
 
             /************ EDIT/DELETE FAMILY ************/
             Text(
-                text = stringResource(R.string.new_product),
+                text = (stringResource(R.string.edit_family)).uppercase(),
                 textAlign = TextAlign.Center,
                 style = MaterialTheme.typography.body1.copy(color = Color.White),
                 modifier = Modifier
@@ -176,7 +239,7 @@ fun Admin_Screen(
                     .clip(RoundedCornerShape(4.dp))
                     .background(brush = verticalGradientDisabled)
                     .padding(12.dp)
-                    .clickable(onClick = {navController.navigate(ScreenNav.Image_Upload.route) })
+                    .clickable(onClick = { selectionFamilyOpen.value = true })
             )
 
             Spacer(

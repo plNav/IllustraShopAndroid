@@ -12,7 +12,6 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.EditNote
-import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -22,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.key.Key.Companion.Delete
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
@@ -38,11 +38,13 @@ import pab.lop.illustrashopandroid.data.model.family.family_request
 import pab.lop.illustrashopandroid.ui.theme.Spacing
 import pab.lop.illustrashopandroid.ui.view.admin.AdminViewModel
 import pab.lop.illustrashopandroid.utils.familyNameList
+import pab.lop.illustrashopandroid.utils.familySelected
 import pab.lop.illustrashopandroid.utils.regexSpecialChars
+import pablo_lonav.android.utils.ScreenNav
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun PopUp_Create_Family(
+fun PopUp_Edit_Family(
     applicationContext: Context,
     navController: NavController,
     scope: CoroutineScope,
@@ -51,17 +53,18 @@ fun PopUp_Create_Family(
     customSpacing: Spacing,
     verticalGradient: Brush,
     verticalGradiendDisabled: Brush,
+    verticalGradientIncomplete: Brush
 ) {
-    val customName = remember { mutableStateOf("") }
+    val customName = remember { mutableStateOf(familySelected?.name ?: "") }
     val nameVerified = remember { mutableStateOf(false) }
 
     Logger.wtf("in popup ===>> $familyNameList")
 
 
-
-
-
-    Dialog(onDismissRequest = { createFamilyOpen.value = false }) {
+    Dialog(onDismissRequest = {
+        createFamilyOpen.value = false
+        navController.navigate(ScreenNav.Admin_Screen.route)
+    }) {
         Surface(
             modifier = Modifier
                 .padding(customSpacing.small),
@@ -79,7 +82,7 @@ fun PopUp_Create_Family(
 
                     /************ TITLE ************/
                     Text(
-                        text = stringResource(R.string.new_family).uppercase(),
+                        text = stringResource(R.string.edit_family).uppercase(),
                         textAlign = TextAlign.Center,
                         style = MaterialTheme.typography.body1.copy(color = Color.White),
                         modifier = Modifier
@@ -199,12 +202,33 @@ fun PopUp_Create_Family(
                             .padding(12.dp)
                             .clickable(onClick = {
                                 if (nameVerified.value) {
-                                    //TODO crear familia
-                                    adminViewModel.createFamily(family_request(name = customName.value)) {
+                                    adminViewModel.updateFamily(newName = customName.value, oldName = familySelected) {
                                         createFamilyOpen.value = false
-                                       // loadProductsFamily.value = false
-                                       // startLoading.value = false
                                     }
+                                }
+                            })
+                    )
+
+                    Spacer(
+                        modifier = Modifier.height(
+                            customSpacing.mediumMedium
+                        )
+                    )
+
+                    /************ DELETE ************/
+                    Text(
+                        text = (stringResource(R.string.Delete)).uppercase(),
+                        textAlign = TextAlign.Center,
+                        style = MaterialTheme.typography.body1.copy(color = Color.White),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clip(RoundedCornerShape(4.dp))
+                            .background(brush = verticalGradientIncomplete)
+                            .padding(12.dp)
+                            .clickable(onClick = {
+                                Logger.w(familySelected?._id ?: "hola")
+                                adminViewModel.deleteFamily(familySelected) {
+                                    createFamilyOpen.value = false
                                 }
                             })
                     )
