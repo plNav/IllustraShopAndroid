@@ -6,6 +6,7 @@ import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -39,12 +40,16 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.orhanobut.logger.Logger
 import pab.lop.illustrashopandroid.R
+import pab.lop.illustrashopandroid.data.model.product_stock.product_stock_request
+import pab.lop.illustrashopandroid.data.model.product_stock.product_stock_response
 import pab.lop.illustrashopandroid.ui.theme.Spacing
 import pab.lop.illustrashopandroid.ui.view.admin.AdminViewModel
+import pab.lop.illustrashopandroid.utils.familyNameList
+import pab.lop.illustrashopandroid.utils.regexSpecialChars
 import pablo_lonav.android.utils.ScreenNav
 
 
-@OptIn(ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalComposeUiApi::class, androidx.compose.foundation.ExperimentalFoundationApi::class)
 @Composable
 fun Image_Upload(
     navController: NavController,
@@ -59,14 +64,26 @@ fun Image_Upload(
     val uriLoad = remember { mutableStateOf(false) }
     val bitmapLoad = remember { mutableStateOf(false) }
     val buttonOK = remember { mutableStateOf(false) }
+    val createFamilyOpen = remember { mutableStateOf(false) }
+    val chooseFamiliesOpen = remember { mutableStateOf(false) }
+    val loadProductsFamily = remember { mutableStateOf(false) }
+    val startLoading = remember { mutableStateOf(false) }
     val customName = remember { mutableStateOf("") }
-    val popUpNewFamily = remember {mutableStateOf(false)}
+    val popUpNewFamily = remember { mutableStateOf(false) }
+    var products: List<product_stock_response> = remember { mutableListOf() }
+    val nameVerified = remember { mutableStateOf(false) }
+    val customPrice = remember { mutableStateOf(0.0f) }
+    val customAmount = remember { mutableStateOf(0.0f) }
+    val customPriceVerified = remember { mutableStateOf(false) }
+    val customAmountVerified = remember { mutableStateOf(false) }
+    val familyNames = remember { mutableStateOf<List<String>>(listOf()) }
+    val familiesToAssign = remember { mutableStateOf<List<String>>(listOf()) }
+    val verificationOpen = remember {mutableStateOf(false)}
+
     val scaffoldState = rememberScaffoldState()
     val keyboardController = LocalSoftwareKeyboardController.current
     val scope = rememberCoroutineScope()
 
-
-    // Create variable verticalGradient and inside color property define top and bottom color
     val verticalGradient = Brush.verticalGradient(
         colors = listOf(MaterialTheme.colors.primary, MaterialTheme.colors.primaryVariant),
         startY = 0f,
@@ -77,6 +94,65 @@ fun Image_Upload(
         startY = 0f,
         endY = 100f
     )
+
+    val verticalGradientIncomplete = Brush.verticalGradient(
+        colors = listOf(MaterialTheme.colors.onSecondary, Color.DarkGray),
+        startY = 0f,
+        endY = 100f
+    )
+
+    if (!startLoading.value) {
+        startLoading.value = true
+        adminViewModel.getProducts {
+            products = adminViewModel.productListResponse
+            Logger.d("Products => $products")
+            loadProductsFamily.value = true
+        }
+    }
+
+    if(verificationOpen.value){
+        PopUp_Verification(
+            navController = navController,
+            verificationOpen = verificationOpen,
+            verticalGradient = verticalGradient,
+            verticalGradientIncomplete = verticalGradientIncomplete,
+            customSpacing = customSpacing
+        )
+    }
+
+
+
+
+    if (createFamilyOpen.value) {
+        PopUp_Create_Family(
+            adminViewModel = adminViewModel,
+            applicationContext = context,
+            navController = navController,
+            scope = scope,
+            createFamilyOpen = createFamilyOpen,
+            startLoading = startLoading,
+            loadProductsFamily = loadProductsFamily,
+            customSpacing = customSpacing,
+            verticalGradient = verticalGradient,
+            verticalGradiendDisabled = verticalGradientDisabled
+
+        )
+    }
+    if (chooseFamiliesOpen.value) {
+        PopUp_Choose_Family(
+            adminViewModel = adminViewModel,
+            applicationContext = context,
+            navController = navController,
+            scope = scope,
+            chooseFamiliesOpen = chooseFamiliesOpen,
+            customSpacing = customSpacing,
+            verticalGradient = verticalGradient,
+            verticalGradientDisabled = verticalGradientDisabled,
+            familyNames = familyNames,
+            familiesToAssign = familiesToAssign
+        )
+    }
+
 
     // Declare launcher for pick image
     val launcher = rememberLauncherForActivityResult(
@@ -130,12 +206,21 @@ fun Image_Upload(
                         capitalization = KeyboardCapitalization.Words,
                         autoCorrect = false,
                         keyboardType = KeyboardType.Text,
-                        imeAction = ImeAction.Next
+                        imeAction = if (nameVerified.value) ImeAction.Next else ImeAction.None
                     ),
                     onValueChange = {
                         it.also {
                             customName.value = it
-                            //TODO validar nombre no repetido ni caracteres raros
+                            when {
+                                it.contains(regexSpecialChars) -> {
+                                    nameVerified.value = false
+                                    Toast.makeText(context, "Special characters not allowed", Toast.LENGTH_SHORT)
+                                        .show()
+                                }
+                                else -> {
+                                    nameVerified.value = true
+                                }
+                            }
                         }
                     },
                     singleLine = true,
@@ -163,11 +248,11 @@ fun Image_Upload(
                         )
                     },
                     colors = TextFieldDefaults.outlinedTextFieldColors(
-                        focusedBorderColor = MaterialTheme.colors.primary,
-                        unfocusedBorderColor = MaterialTheme.colors.secondary,
-                        focusedLabelColor = MaterialTheme.colors.primary,
-                        unfocusedLabelColor = MaterialTheme.colors.secondary,
-                        cursorColor = MaterialTheme.colors.primary
+                        focusedBorderColor = if (nameVerified.value) MaterialTheme.colors.primary else MaterialTheme.colors.onSecondary,
+                        unfocusedBorderColor = if (nameVerified.value) MaterialTheme.colors.secondary else MaterialTheme.colors.onSecondary,
+                        focusedLabelColor = if (nameVerified.value) MaterialTheme.colors.primary else MaterialTheme.colors.onSecondary,
+                        unfocusedLabelColor = if (nameVerified.value) MaterialTheme.colors.secondary else MaterialTheme.colors.onSecondary,
+                        cursorColor = if (nameVerified.value) MaterialTheme.colors.primary else MaterialTheme.colors.onSecondary
                     ),
                     modifier = Modifier.fillMaxWidth(),
                 )
@@ -180,11 +265,16 @@ fun Image_Upload(
 
                 /************ PRICE ************/
                 OutlinedTextField(
-                    value = customName.value,
+                    value = customPrice.value.toString(),
                     onValueChange = {
                         it.also {
-                            customName.value = it
-                            //TODO validar nombre no repetido ni caracteres raros
+                            try {
+                                customPrice.value = it.toString().toFloat()
+                                customPriceVerified.value = true
+                            } catch (e: Exception) {
+                                customPriceVerified.value = false
+                                Toast.makeText(context, "Not a number", Toast.LENGTH_SHORT).show()
+                            }
                         }
                     },
                     keyboardOptions = KeyboardOptions.Default.copy(
@@ -218,11 +308,11 @@ fun Image_Upload(
                         )
                     },
                     colors = TextFieldDefaults.outlinedTextFieldColors(
-                        focusedBorderColor = MaterialTheme.colors.primary,
-                        unfocusedBorderColor = MaterialTheme.colors.secondary,
-                        focusedLabelColor = MaterialTheme.colors.primary,
-                        unfocusedLabelColor = MaterialTheme.colors.secondary,
-                        cursorColor = MaterialTheme.colors.primary
+                        focusedBorderColor = if (customPriceVerified.value) MaterialTheme.colors.primary else MaterialTheme.colors.onSecondary,
+                        unfocusedBorderColor = if (customPriceVerified.value) MaterialTheme.colors.secondary else MaterialTheme.colors.onSecondary,
+                        focusedLabelColor = if (customPriceVerified.value) MaterialTheme.colors.primary else MaterialTheme.colors.onSecondary,
+                        unfocusedLabelColor = if (customPriceVerified.value) MaterialTheme.colors.secondary else MaterialTheme.colors.onSecondary,
+                        cursorColor = if (customPriceVerified.value) MaterialTheme.colors.primary else MaterialTheme.colors.onSecondary
                     ),
                     modifier = Modifier.fillMaxWidth(),
                 )
@@ -235,11 +325,16 @@ fun Image_Upload(
 
                 /************ STOCK ************/
                 OutlinedTextField(
-                    value = customName.value,
+                    value = customAmount.value?.toInt().toString(),
                     onValueChange = {
                         it.also {
-                            customName.value = it
-                            //TODO validar nombre no repetido ni caracteres raros
+                            try {
+                                customAmount.value = it.toInt().toFloat()
+                                customAmountVerified.value = true
+                            } catch (e: Exception) {
+                                customAmountVerified.value = false
+                                Toast.makeText(context, "Not a number", Toast.LENGTH_SHORT).show()
+                            }
                         }
                     },
                     keyboardOptions = KeyboardOptions.Default.copy(
@@ -278,11 +373,11 @@ fun Image_Upload(
                         )
                     },
                     colors = TextFieldDefaults.outlinedTextFieldColors(
-                        focusedBorderColor = MaterialTheme.colors.primary,
-                        unfocusedBorderColor = MaterialTheme.colors.secondary,
-                        focusedLabelColor = MaterialTheme.colors.primary,
-                        unfocusedLabelColor = MaterialTheme.colors.secondary,
-                        cursorColor = MaterialTheme.colors.primary
+                        focusedBorderColor = if (customAmountVerified.value) MaterialTheme.colors.primary else MaterialTheme.colors.onSecondary,
+                        unfocusedBorderColor = if (customAmountVerified.value) MaterialTheme.colors.secondary else MaterialTheme.colors.onSecondary,
+                        focusedLabelColor = if (customAmountVerified.value) MaterialTheme.colors.primary else MaterialTheme.colors.onSecondary,
+                        unfocusedLabelColor = if (customAmountVerified.value) MaterialTheme.colors.secondary else MaterialTheme.colors.onSecondary,
+                        cursorColor = if (customAmountVerified.value) MaterialTheme.colors.primary else MaterialTheme.colors.onSecondary
                     ),
                     modifier = Modifier.fillMaxWidth(),
                 )
@@ -305,19 +400,13 @@ fun Image_Upload(
                         modifier = Modifier
                             .fillMaxWidth(0.55f)
                             .clip(RoundedCornerShape(4.dp))
-                            .background(brush = verticalGradient)
+                            .background(brush = if(familiesToAssign.value.isNullOrEmpty()) verticalGradientIncomplete else verticalGradient)
                             .padding(12.dp)
                             .clickable(onClick = {
-                                adminViewModel.multipartImageUpload(
-                                    byteArray = byteArray,
-                                    context = context,
-                                    bitmap = bitmap,
-                                    customName = customName
-                                    //todo crear objeto para la bbdd con info de la imagen
-                                ) {
-                                    Logger.i("*** *** *** *** SUCCESSS!!!!!!!")
-                                    //todo indicar que la imagen se ha cargado
-                                    buttonOK.value = true;
+                                adminViewModel.getFamilyNames {
+                                    familyNames.value = adminViewModel.familyNameListResponse as MutableList<String>
+                                    Logger.wtf("Families => ${adminViewModel.familyNameListResponse}")
+                                    chooseFamiliesOpen.value = true
                                 }
                             })
                     )
@@ -335,6 +424,14 @@ fun Image_Upload(
                             .background(brush = verticalGradient)
                             .padding(12.dp)
                             .clickable(onClick = {
+                                adminViewModel.getFamilyNames {
+                                    familyNameList = adminViewModel.familyNameListResponse as MutableList<String>
+                                    Logger.wtf("Families => ${adminViewModel.familyNameListResponse}")
+
+                                    // loadProductsFamily.value = true
+                                    createFamilyOpen.value = true
+
+                                }
                             })
                     )
                 }
@@ -342,7 +439,7 @@ fun Image_Upload(
                 Spacer(
                     modifier = Modifier.height(
                         if (bitmapLoad.value) customSpacing.small
-                        else customSpacing.large
+                        else customSpacing.mediumSmall
                     )
                 )
 
@@ -459,28 +556,60 @@ fun Image_Upload(
                         .padding(12.dp)
                         .fillMaxWidth()
                         .clip(RoundedCornerShape(4.dp))
-                        .background(if (bitmapLoad.value) verticalGradient else verticalGradientDisabled)
+                        .background(
+                            if (bitmapLoad.value
+                                && nameVerified.value
+                                && customAmountVerified.value
+                                && customPriceVerified.value
+                                && !familiesToAssign.value.isNullOrEmpty())
+                                    verticalGradient
+                            else verticalGradientDisabled
+                        )
                         .padding(12.dp)
                         .clickable(onClick = {
-                            if (bitmapLoad.value) {
+                            if (bitmapLoad.value
+                                && nameVerified.value
+                                && customAmountVerified.value
+                                && customPriceVerified.value
+                                && !familiesToAssign.value.isNullOrEmpty()
+                            ) {
+
                                 adminViewModel.multipartImageUpload(
                                     byteArray = byteArray,
                                     context = context,
                                     bitmap = bitmap,
                                     customName = customName
-                                    //todo crear objeto para la bbdd con info de la imagen
                                 ) {
-                                    Logger.i("*** *** *** *** SUCCESSS!!!!!!!")
-                                    //todo indicar que la imagen se ha cargado
-                                    buttonOK.value = true;
+                                    Logger.i("*** *** *** *** MULTIPART SUCCESSS!!!!!!!")
+
+                                    val newProduct = product_stock_request(
+                                        name = customName.value,
+                                        image = customName.value + ".jpg",
+                                        price = customPrice.value,
+                                        stock = customAmount.value.toInt(),
+                                        families = familiesToAssign.value
+                                    )
+
+                                    adminViewModel.createProductStock(newProduct){
+                                        Logger.i("Success create Product")
+                                        verificationOpen.value = true
+                                        buttonOK.value = true;
+                                    }
                                 }
-                            }
+
+
+                            } else Toast.makeText(context, "Incorrect Fields", Toast.LENGTH_SHORT).show()
+
                         })
                 )
             }
         }
     }
 }
+
+
+
+
 
 
 

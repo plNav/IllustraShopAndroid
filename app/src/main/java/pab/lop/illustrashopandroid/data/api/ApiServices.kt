@@ -5,8 +5,13 @@ import com.orhanobut.logger.Logger
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import pab.lop.illustrashopandroid.data.model.UserModel
+import pab.lop.illustrashopandroid.data.model.family.family_request
+import pab.lop.illustrashopandroid.data.model.family.family_response
+import pab.lop.illustrashopandroid.data.model.product_stock.product_stock_request
+import pab.lop.illustrashopandroid.data.model.product_stock.product_stock_response
 import pab.lop.illustrashopandroid.utils.URL_HEAD_API
 import retrofit2.Call
+import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.*
@@ -70,11 +75,21 @@ interface ApiServices {
     @GET("product/family")
     suspend fun getProductsFamily() : List<Any>
 
+    /********************FAMILY**********************/
 
+    @POST("family")
+    suspend fun createFamily(@Body family : family_request) : Response<family_response>
 
+    @GET("family/names/all")
+    suspend fun getFamilyNames() : Response<List<String>>
 
+    /********************PRODUCT_STOCK**********************/
 
+    @GET("product/stock")
+    suspend fun getProducts(): Response<List<product_stock_response>>
 
+    @POST("product/stock")
+    suspend fun createProductStock(@Body newProduct: product_stock_request): Response<product_stock_response>
 
 
 }

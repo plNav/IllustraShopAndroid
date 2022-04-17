@@ -13,6 +13,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.HighlightOff
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -41,6 +42,7 @@ import pab.lop.illustrashopandroid.data.model.product_stock.product_stock_respon
 import pab.lop.illustrashopandroid.ui.theme.Spacing
 import pab.lop.illustrashopandroid.ui.view.main.MainViewModel
 import pab.lop.illustrashopandroid.utils.URL_HEAD_IMAGES
+import pab.lop.illustrashopandroid.utils.excludedFamilies
 import pab.lop.illustrashopandroid.utils.familyProducts
 
 @SuppressLint("UnrememberedMutableState", "MutableCollectionMutableState")
@@ -148,7 +150,7 @@ fun MainStart(
         },
         drawerBackgroundColor = MaterialTheme.colors.primaryVariant,
         drawerShape = customShape(),
-        drawerContent = { /* TODO DRAWER CONTENT */ },
+        drawerContent = { /* TODO DRAWER CONTENT --> Opciones: CerrarSesion, Configuracion, Filter * Family */ },
         topBar = {
             TopAppBar(
                 elevation = 0.dp,
@@ -173,11 +175,11 @@ fun MainStart(
                 },
                 actions = {
                     IconButton(
-                        onClick = { /* TODO ICON BUTTON ACTION */ }
+                        onClick = { /* TODO ICON BUTTON ACTION --> IR AL CARRITO */ }
                     ) {
                         Icon(
-                            Icons.Filled.HighlightOff,
-                            contentDescription = "Cerrar",
+                            Icons.Filled.ShoppingCart,
+                            contentDescription = "ShoppingCart",
                             tint = Color.White
                         )
                     }
@@ -191,34 +193,34 @@ fun MainStart(
             itemsIndexed(familyProducts.keys.toMutableList()) { index, family ->
                 Column(
                 ) {
-                    Text(family)
-                    HorizontalPager(
-                        count = familyProducts.get(family)?.size ?: 2,
-                        state = rememberPagerState(),
-                    ) { page ->
-                        Card(
-                            backgroundColor = MaterialTheme.colors.secondary,
-                            modifier = Modifier
-                              //  .fillMaxWidth(0.8f)
-                                .padding(5.dp)
-                                .clickable(onClick = {
-                                    mainViewModel.getAllUsers {
-                                        Logger.i("Loading complete on family click")
-                                    }
-                                    //TODO POPUP DE OPCIONES
+                    if (!excludedFamilies.contains(family)) {
+                        Text(family)
+                        HorizontalPager(
+                            count = familyProducts.get(family)?.size ?: 2,
+                            state = rememberPagerState(),
+                        ) { page ->
+                            Card(
+                                backgroundColor = MaterialTheme.colors.secondary,
+                                modifier = Modifier
+                                    //  .fillMaxWidth(0.8f)
+                                    .padding(5.dp)
+                                    .clickable(onClick = {
+                                        mainViewModel.getAllUsers {
+                                            Logger.i("Loading complete on family click")
+                                        }
+                                        //TODO POPUP DE OPCIONES
 
-                                })
-                        ) {
-                            Logger.wtf("${URL_HEAD_IMAGES}${familyProducts.get(family)?.get(page)?.image}")
-                            AsyncImage(
-                                model = "${URL_HEAD_IMAGES}${familyProducts.get(family)?.get(page)?.image}",
-                                contentDescription = null,
-                                placeholder = painterResource(id = R.drawable.loading_image),
-                                contentScale = ContentScale.Fit,
-                             //   modifier = Modifier.fillMaxSize(0.8f)
-                            )
+                                    })
+                            ) {
+                                AsyncImage(
+                                    model = "${URL_HEAD_IMAGES}${familyProducts.get(family)?.get(page)?.image}",
+                                    contentDescription = null,
+                                    placeholder = painterResource(id = R.drawable.loading_image),
+                                    contentScale = ContentScale.Fit,
+                                    //   modifier = Modifier.fillMaxSize(0.8f)
+                                )
 
-                            /*      CoilImage(
+                                /*      CoilImage(
                             imageModel = "${URL_HEAD_IMAGES}${
                                 imagesByFamily.get(family)?.get(page)
                             }",
@@ -230,20 +232,22 @@ fun MainStart(
 
                             )*/
 
-                            /* Image(
+                                /* Image(
                                  painter = rememberAsyncImagePainter("${URL_HEAD_IMAGES}${imagesByFamily.get(family)?.get(page)}"),
                                  contentDescription = null,
                                  modifier = Modifier.size(1128.dp)
                             )*/
 
-                            Logger.d(
-                                """
-                            family  =>> $family
-                            index =>> $index
-                            page  =>> $page
+                                Logger.d(
+                                    """
+                            family =>> $family
+                            index ==>> $index
+                            page ===>> $page
+                            url ====>> ${URL_HEAD_IMAGES}${familyProducts.get(family)?.get(page)?.image}
                             """
-                                    .trimIndent()
-                            )
+                                        .trimIndent()
+                                )
+                            }
                         }
                     }
                 }

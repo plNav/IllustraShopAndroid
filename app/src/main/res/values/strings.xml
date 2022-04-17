@@ -14,4 +14,10 @@
     <string name="choose_families">Choose Families</string>
     <string name="new_family">New Family</string>
     <string name="new_product">NEW PRODUCT</string>
+    <string name="Ok">OK</string>
+    <string name="Close">Close</string>
+    <string name="Back">Back</string>
+    <string name="upload_complete">Upload Complete</string>
+    <string name="what_now">What Now?</string>
+    <string name="menu_admin">Menu Admin</string>
 </resources>

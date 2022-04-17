@@ -1,11 +1,13 @@
 package pab.lop.illustrashopandroid
 
+import android.os.Build
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import androidx.compose.material.MaterialTheme
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -20,6 +22,7 @@ import pab.lop.illustrashopandroid.ui.view.login_register.Login
 import pab.lop.illustrashopandroid.ui.view.login_register.Validate
 import pab.lop.illustrashopandroid.ui.view.main.composables.Main
 import pab.lop.illustrashopandroid.ui.view.admin.AdminViewModel
+import pab.lop.illustrashopandroid.ui.view.admin.composables.Admin_Screen
 import pab.lop.illustrashopandroid.ui.view.login_register.LoginRegisterViewModel
 import pab.lop.illustrashopandroid.ui.view.main.MainViewModel
 import pab.lop.illustrashopandroid.utils.WindowInfo
@@ -27,6 +30,7 @@ import pab.lop.illustrashopandroid.utils.rememberWindowInfo
 import pablo_lonav.android.utils.ScreenNav
 
 class MainActivity : ComponentActivity() {
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -61,7 +65,7 @@ class MainActivity : ComponentActivity() {
 
                 NavHost(
                     navController = navController,
-                    startDestination = ScreenNav.MainScreen.route
+                    startDestination = ScreenNav.Admin_Screen.route
                 ) {
 
                     /*** LOGIN SCREEN ***/
@@ -127,6 +131,25 @@ class MainActivity : ComponentActivity() {
                         route = ScreenNav.Image_Upload.route
                     ) {
                         Image_Upload(
+                            navController = navController,
+                            adminViewModel = adminViewModel,
+                            context = applicationContext,
+                            customSpacing = customSpacing
+                        )
+                        BackHandler(true) {
+                            Toast.makeText(
+                                applicationContext,
+                                "BackButton Deshabilitado en el LOGIN",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
+
+                    /*** ADMIN SCREEN ***/
+                    composable(
+                        route = ScreenNav.Admin_Screen.route
+                    ) {
+                        Admin_Screen(
                             navController = navController,
                             adminViewModel = adminViewModel,
                             context = applicationContext,

@@ -7,3 +7,4 @@ val GreenPrimaryVariant = Color(0xFF218c74)
 val GrayDisabled = Color(0xff535c68)
 
 val SecondaryGreen = Color(0xFF0B4034)
+val OnSecondaryRed = Color(0xFFd63031)
