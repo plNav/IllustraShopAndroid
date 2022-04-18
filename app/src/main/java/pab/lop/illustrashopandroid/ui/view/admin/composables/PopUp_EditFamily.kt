@@ -21,7 +21,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.key.Key.Companion.Delete
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
@@ -34,7 +33,6 @@ import androidx.navigation.NavController
 import com.orhanobut.logger.Logger
 import kotlinx.coroutines.CoroutineScope
 import pab.lop.illustrashopandroid.R
-import pab.lop.illustrashopandroid.data.model.family.family_request
 import pab.lop.illustrashopandroid.ui.theme.Spacing
 import pab.lop.illustrashopandroid.ui.view.admin.AdminViewModel
 import pab.lop.illustrashopandroid.utils.familyNameList
@@ -63,7 +61,7 @@ fun PopUp_Edit_Family(
 
     Dialog(onDismissRequest = {
         createFamilyOpen.value = false
-        navController.navigate(ScreenNav.Admin_Screen.route)
+        navController.navigate(ScreenNav.AdminScreen.route)
     }) {
         Surface(
             modifier = Modifier

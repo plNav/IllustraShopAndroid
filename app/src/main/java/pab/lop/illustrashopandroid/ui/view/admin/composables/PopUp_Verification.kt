@@ -3,8 +3,6 @@ package pab.lop.illustrashopandroid.ui.view.admin.composables
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -16,13 +14,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.key.Key.Companion.Back
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavController
-import org.intellij.lang.annotations.JdkConstants
 import pab.lop.illustrashopandroid.R
 import pab.lop.illustrashopandroid.ui.theme.Spacing
 import pablo_lonav.android.utils.ScreenNav
@@ -42,7 +38,7 @@ fun PopUp_Verification(
     Dialog(
         onDismissRequest = {
             verificationOpen.value = false
-            navController.navigate(ScreenNav.Admin_Screen.route)
+            navController.navigate(ScreenNav.AdminScreen.route)
         }) {
         Surface(
             modifier = Modifier.padding(customSpacing.small),
@@ -143,7 +139,7 @@ fun PopUp_Verification(
                             .clip(RoundedCornerShape(4.dp))
                             .background(brush = verticalGradientIncomplete)
                             .padding(12.dp)
-                            .clickable(onClick = { navController.navigate(ScreenNav.Admin_Screen.route) })
+                            .clickable(onClick = { navController.navigate(ScreenNav.AdminScreen.route) })
                     )
                     Text("")
                 }

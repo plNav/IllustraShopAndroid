@@ -47,4 +47,5 @@
     <string name="fieldOK">Field correct</string>
     <string name="login_correct">Login Successful </string>
     <string name="register_correct">Register Successful </string>
+    <string name="login_incorrect">Email or Password incorrect</string>
 </resources>

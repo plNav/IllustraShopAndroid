@@ -48,4 +48,5 @@
     <string name="fieldOK">Campo correcto</string>
     <string name="login_correct">Inicio de sesión correcto </string>
     <string name="register_correct">Registro correcto </string>
+    <string name="login_incorrect">Email o Contraseña incorrectos</string>
 </resources>

@@ -86,7 +86,7 @@ fun PopUp_Selection(
 
     Dialog(onDismissRequest = {
         selectionOpen.value = false
-        navController.navigate(ScreenNav.Admin_Screen.route)
+        navController.navigate(ScreenNav.AdminScreen.route)
     }) {
         Surface(
             modifier = Modifier
@@ -124,7 +124,7 @@ fun PopUp_Selection(
                             .background(Color.Transparent),
                         onClick = {
                             selectionOpen.value = false
-                            navController.navigate(ScreenNav.Admin_Screen.route)
+                            navController.navigate(ScreenNav.AdminScreen.route)
                         },
                     ) {
                         Icon(
@@ -169,7 +169,7 @@ fun PopUp_Selection(
 
                                             }*/
                                             productSelected = product
-                                            navController.navigate(ScreenNav.Product_Edit.route)
+                                            navController.navigate(ScreenNav.ProductEditScreen.route)
 
                                         })
                                 )

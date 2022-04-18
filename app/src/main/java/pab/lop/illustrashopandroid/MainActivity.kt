@@ -128,7 +128,7 @@ class MainActivity : ComponentActivity() {
 
                     /*** UPLOAD SCREEN ***/
                     composable(
-                        route = ScreenNav.Image_Upload.route
+                        route = ScreenNav.ImageUploadScreen.route
                     ) {
                         Image_Upload(
                             navController = navController,
@@ -147,7 +147,7 @@ class MainActivity : ComponentActivity() {
 
                     /*** EDIT PRODUCT SCREEN ***/
                     composable(
-                        route = ScreenNav.Product_Edit.route
+                        route = ScreenNav.ProductEditScreen.route
                     ) {
                         Edit_Product(
                             navController = navController,
@@ -166,7 +166,7 @@ class MainActivity : ComponentActivity() {
 
                     /*** ADMIN SCREEN ***/
                     composable(
-                        route = ScreenNav.Admin_Screen.route
+                        route = ScreenNav.AdminScreen.route
                     ) {
                         Admin_Screen(
                             navController = navController,

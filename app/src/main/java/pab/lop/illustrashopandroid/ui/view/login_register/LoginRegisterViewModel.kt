@@ -53,7 +53,7 @@ class LoginRegisterViewModel : ViewModel() {
     }
 
 
-    fun validateUser(email: String, passw: String, onSuccessCallback: () -> Unit) {
+    fun validateUser(email: String, passw: String, onSuccessCallback: () -> Unit, onFailureCallback: () -> Unit) {
         viewModelScope.launch {
             val apiServices = ApiServices.getInstance()
             try {
@@ -65,10 +65,14 @@ class LoginRegisterViewModel : ViewModel() {
                         currentUserResponse.value = list.body()!![0]
                         Logger.i("Validation correct ${list.body()!![0]}")
                         onSuccessCallback()
-                    } else Logger.wtf("ValidateClient brings more than one for $email - $passwEncrypt")
+                    } else{
+                        Logger.wtf("ValidateClient brings more than one for $email - $passwEncrypt")
+                        onFailureCallback()
+                    }
                 }
             } catch (e: Exception) {
                 errorMessage = e.message.toString()
+                onFailureCallback
                 Logger.e("FAILURE validate client")
             }
         }

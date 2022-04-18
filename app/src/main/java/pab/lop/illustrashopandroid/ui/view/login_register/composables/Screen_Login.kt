@@ -59,24 +59,11 @@ fun Login(
         startY = 0f,
         endY = 100f
     )
-    val verticalGradientDisabled = Brush.verticalGradient(
-        colors = listOf(MaterialTheme.colors.onError, Color.DarkGray),
-        startY = 0f,
-        endY = 100f
-    )
-
-    val verticalGradientIncomplete = Brush.verticalGradient(
-        colors = listOf(MaterialTheme.colors.onSecondary, Color.DarkGray),
-        startY = 0f,
-        endY = 100f
-    )
 
     val keyboardController = LocalSoftwareKeyboardController.current
 
-
     val email = remember { mutableStateOf("") }
     val password = remember { mutableStateOf("") }
-    val emptyError = stringResource(R.string.emptyError)
 
     var passwordVisibility by remember { mutableStateOf(false) }
 
@@ -239,7 +226,6 @@ fun Login(
                     .background(verticalGradient)
                     .fillMaxWidth()
                     .padding((customSpacing.small + customSpacing.extraSmall))
-
             )
         }
 
@@ -272,7 +258,6 @@ fun Login(
                     .background(verticalGradient)
                     .fillMaxWidth()
                     .padding((customSpacing.small + customSpacing.extraSmall))
-
             )
         }
 
@@ -286,12 +271,10 @@ fun Login(
             fontWeight = FontWeight.Bold,
             modifier = Modifier.clickable {
                 userSelected = userDefaultNoAuth
-                // TODO nav controller -> mainScreen + Add Obligatory
+                navController.navigate(ScreenNav.MainScreen.route)
             }
         )
-
     }
-
 }
 
 fun validateLoginClick(
@@ -301,9 +284,19 @@ fun validateLoginClick(
     email: MutableState<String>,
     password: MutableState<String>
 ) {
-    loginRegisterViewModel.validateUser(email.value, password.value){
-        userSelected = loginRegisterViewModel.currentUserResponse.value
-        Toast.makeText(context, context.getString(R.string.login_correct) + "\n" + userSelected!!.username, Toast.LENGTH_SHORT).show()
-        navController.navigate(ScreenNav.MainScreen.route)
+    if(email.value.isEmpty() || password.value.isEmpty())
+        Toast.makeText(context, context.getString(R.string.login_incorrect), Toast.LENGTH_SHORT).show()
+    else {
+        loginRegisterViewModel.validateUser(email.value, password.value, onSuccessCallback = {
+            userSelected = loginRegisterViewModel.currentUserResponse.value
+            Toast.makeText(
+                context,
+                context.getString(R.string.login_correct) + "\n" + userSelected!!.username,
+                Toast.LENGTH_SHORT
+            ).show()
+            navController.navigate(ScreenNav.MainScreen.route)
+        }, onFailureCallback = {
+            Toast.makeText(context, context.getString(R.string.login_incorrect), Toast.LENGTH_SHORT).show()
+        })
     }
 }

@@ -174,7 +174,7 @@ fun Admin_Screen(
                     .clip(RoundedCornerShape(4.dp))
                     .background(brush = verticalGradientDisabled)
                     .padding(12.dp)
-                    .clickable(onClick = { navController.navigate(ScreenNav.Image_Upload.route) })
+                    .clickable(onClick = { navController.navigate(ScreenNav.ImageUploadScreen.route) })
             )
 
             Spacer(

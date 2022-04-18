@@ -8,9 +8,9 @@ sealed class ScreenNav(val route: String) {
 
     object MainScreen : ScreenNav("main_screen")
 
-    object Image_Upload : ScreenNav("image_upload")
-    object Admin_Screen : ScreenNav("admin_screen")
-    object Product_Edit : ScreenNav("product_edit")
+    object ImageUploadScreen : ScreenNav("image_upload_screen")
+    object AdminScreen : ScreenNav("admin_screen")
+    object ProductEditScreen : ScreenNav("product_edit_screen")
 
 
     fun withArgs(vararg args: String) : String{

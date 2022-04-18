@@ -2,8 +2,14 @@ package pab.lop.illustrashopandroid.ui.view.admin.composables
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.ImageDecoder
 import android.net.Uri
+import android.os.Build
+import android.provider.MediaStore
 import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -22,9 +28,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
@@ -33,48 +38,45 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import coil.compose.AsyncImage
 import com.orhanobut.logger.Logger
 import pab.lop.illustrashopandroid.R
+import pab.lop.illustrashopandroid.data.model.product_stock.product_stock_request
 import pab.lop.illustrashopandroid.data.model.product_stock.product_stock_response
 import pab.lop.illustrashopandroid.ui.theme.Spacing
 import pab.lop.illustrashopandroid.ui.view.admin.AdminViewModel
-import pab.lop.illustrashopandroid.utils.URL_HEAD_IMAGES
-import pab.lop.illustrashopandroid.utils.productSelected
 import pab.lop.illustrashopandroid.utils.regexSpecialChars
 import pablo_lonav.android.utils.ScreenNav
-import java.nio.file.Files.delete
 
 
 @OptIn(ExperimentalComposeUiApi::class, androidx.compose.foundation.ExperimentalFoundationApi::class)
 @Composable
-fun Edit_Product(
+fun Image_Upload(
     navController: NavController,
     adminViewModel: AdminViewModel,
     context: Context,
     customSpacing: Spacing
 ) {
 
+    var imageUri by remember { mutableStateOf<Uri?>(null) }
+    val bitmap = remember { mutableStateOf<Bitmap?>(null) }
+    val byteArray = remember { mutableStateOf<ByteArray?>(null) }
+    val uriLoad = remember { mutableStateOf(false) }
+    val bitmapLoad = remember { mutableStateOf(false) }
     val buttonOK = remember { mutableStateOf(false) }
     val chooseFamiliesOpen = remember { mutableStateOf(false) }
     val loadProductsFamily = remember { mutableStateOf(false) }
     val startLoading = remember { mutableStateOf(false) }
+    val customName = remember { mutableStateOf("") }
     val popUpNewFamily = remember { mutableStateOf(false) }
-    val isDeleted = remember { mutableStateOf(false) }
-    var products: List<product_stock_response>
-
+    var products: List<product_stock_response> = remember { mutableListOf() }
     val nameVerified = remember { mutableStateOf(false) }
-    val customName = remember { mutableStateOf(productSelected!!.name) }
-
-    val customPrice = remember { mutableStateOf(productSelected!!.price) }
+    val customPrice = remember { mutableStateOf(0.0f) }
+    val customAmount = remember { mutableStateOf(0.0f) }
     val customPriceVerified = remember { mutableStateOf(false) }
-
-    val customAmount = remember { mutableStateOf(productSelected!!.stock) }
     val customAmountVerified = remember { mutableStateOf(false) }
-
-    val familiesToAssign = remember { mutableStateOf<List<String>>(productSelected!!.families) }
     val familyNames = remember { mutableStateOf<List<String>>(listOf()) }
-    val verificationOpen = remember { mutableStateOf(false) }
+    val familiesToAssign = remember { mutableStateOf<List<String>>(listOf()) }
+    val verificationOpen = remember {mutableStateOf(false)}
 
     val scaffoldState = rememberScaffoldState()
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -106,15 +108,15 @@ fun Edit_Product(
         }
     }
 
-    if (verificationOpen.value) {
+    if(verificationOpen.value){
         PopUp_Verification(
             navController = navController,
             verificationOpen = verificationOpen,
             verticalGradient = verticalGradient,
             verticalGradientIncomplete = verticalGradientIncomplete,
             customSpacing = customSpacing,
-            isEditionMode = true,
-            isDelete = isDeleted.value
+            isEditionMode = false,
+            isDelete = false
         )
     }
 
@@ -136,6 +138,11 @@ fun Edit_Product(
     }
 
 
+    // Declare launcher for pick image
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri: Uri? -> imageUri = uri }
+
     Scaffold(
         scaffoldState = scaffoldState,
         topBar = {
@@ -145,7 +152,7 @@ fun Edit_Product(
                 backgroundColor = Color.Transparent,
                 title = {
                     Text(
-                        text = stringResource(R.string.edit_product).uppercase(),
+                        text = stringResource(R.string.new_product),
                         modifier = Modifier
                             .padding(30.dp, 0.dp, 0.dp, 0.dp),
                         color = Color.White
@@ -154,7 +161,7 @@ fun Edit_Product(
                 navigationIcon = {
                     IconButton(
                         onClick = {
-                            navController.navigate(ScreenNav.Admin_Screen.route)
+                            navController.navigate(ScreenNav.AdminScreen.route)
                         }) {
                         Icon(Icons.Filled.ArrowBack, contentDescription = null, tint = Color.White)
                     }
@@ -233,8 +240,12 @@ fun Edit_Product(
                     ),
                     modifier = Modifier.fillMaxWidth(),
                 )
-
-                Spacer(modifier = Modifier.height(customSpacing.mediumMedium))
+                Spacer(
+                    modifier = Modifier.height(
+                        if (bitmapLoad.value) customSpacing.small
+                        else customSpacing.mediumMedium
+                    )
+                )
 
                 /************ PRICE ************/
                 OutlinedTextField(
@@ -289,7 +300,12 @@ fun Edit_Product(
                     ),
                     modifier = Modifier.fillMaxWidth(),
                 )
-                Spacer( modifier = Modifier.height(customSpacing.mediumMedium))
+                Spacer(
+                    modifier = Modifier.height(
+                        if (bitmapLoad.value) customSpacing.small
+                        else customSpacing.mediumMedium
+                    )
+                )
 
                 /************ STOCK ************/
                 OutlinedTextField(
@@ -350,7 +366,12 @@ fun Edit_Product(
                     modifier = Modifier.fillMaxWidth(),
                 )
 
-                Spacer(modifier = Modifier.height(customSpacing.mediumMedium))
+                Spacer(
+                    modifier = Modifier.height(
+                        if (bitmapLoad.value) customSpacing.small
+                        else customSpacing.mediumMedium
+                    )
+                )
 
                 /************ FAMILIES ************/
                 Row(Modifier.fillMaxWidth()) {
@@ -363,7 +384,7 @@ fun Edit_Product(
                         modifier = Modifier
                             .fillMaxWidth()
                             .clip(RoundedCornerShape(4.dp))
-                            .background(brush = if (familiesToAssign.value.isNullOrEmpty()) verticalGradientIncomplete else verticalGradient)
+                            .background(brush = if(familiesToAssign.value.isNullOrEmpty()) verticalGradientIncomplete else verticalGradient)
                             .padding(12.dp)
                             .clickable(onClick = {
                                 adminViewModel.getFamilyNames {
@@ -375,36 +396,120 @@ fun Edit_Product(
                     )
                 }
 
-                Spacer(modifier = Modifier.height(customSpacing.mediumSmall))
+                Spacer(
+                    modifier = Modifier.height(
+                        if (bitmapLoad.value) customSpacing.small
+                        else customSpacing.mediumSmall
+                    )
+                )
+
+                /************ PICK ************/
+                Row(
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Button(
+                        enabled = !bitmapLoad.value,
+                        elevation = ButtonDefaults.elevation(0.dp),
+                        onClick = { launcher.launch("image/*") },
+                        colors = ButtonDefaults.buttonColors(
+                            backgroundColor = Color.Transparent,
+                            contentColor = Color(0xFFFFF5EE),
+                            disabledBackgroundColor = Color.Transparent,
+                            disabledContentColor = Color.Transparent
+                        ),
+                        modifier = Modifier
+                            //.clip(RoundedCornerShape(4.dp))
+                            .background(Color.Transparent)
+                            //.fillMaxWidth(0.8f)
+                            .fillMaxHeight()
+                            .padding(customSpacing.default)
+
+                    ) {
+                        Text(
+                            text = stringResource(R.string.pick_image),
+                            textAlign = TextAlign.Center,
+                            style = typography.body1.copy(color = Color.White),
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(4.dp))
+                                .background(if (bitmapLoad.value) verticalGradientDisabled else verticalGradient)
+                                .fillMaxHeight()
+                                .fillMaxWidth(0.6f)
+                                .padding(12.dp)
+
+                        )
+                    }
+                    Spacer(modifier = Modifier.width(customSpacing.mediumSmall))
+
+                    IconButton(
+                        enabled = bitmapLoad.value,
+                        modifier = Modifier
+                            //  .fillMaxWidth()
+                            .clip(RoundedCornerShape(4.dp))
+                            .background(if (bitmapLoad.value) verticalGradient else verticalGradientDisabled),
+                        onClick = {
+                            imageUri = null
+                            bitmap.value = null
+                            byteArray.value = null
+                            uriLoad.value = false
+                            bitmapLoad.value = false
+                            buttonOK.value = false
+
+                        },
+                    ) {
+                        Icon(
+                            Icons.Filled.Refresh,
+                            tint = Color.White,
+                            contentDescription = stringResource(R.string.Refresh)
+                        )
+                    }
+
+                }
 
 
 
                 Spacer(modifier = Modifier.height(customSpacing.small))
 
                 /************ IMAGE ************/
-                Card(
-                    backgroundColor = MaterialTheme.colors.secondary,
-                    modifier = Modifier
-                        .padding(5.dp)
-                        .clickable(onClick = {
-                            Toast
-                                .makeText(context, "Image can't be modified", Toast.LENGTH_SHORT)
-                                .show()
-                        })
-                ) {
-                    AsyncImage(
-                        model = "$URL_HEAD_IMAGES${productSelected!!.image}",
-                        contentDescription = null,
-                        placeholder = painterResource(id = R.drawable.loading_image),
-                        contentScale = ContentScale.Fit,
-                        //   modifier = Modifier.fillMaxSize(0.8f)
-                    )
+                imageUri?.let {
+                    if (!uriLoad.value) {
+                        if (Build.VERSION.SDK_INT < 28) {
+                            bitmap.value = MediaStore.Images
+                                .Media.getBitmap(context.contentResolver, it)
+                        } else {
+                            val source = ImageDecoder
+                                .createSource(context.contentResolver, it)
+                            bitmap.value = ImageDecoder.decodeBitmap(source)
+                        }
+                        uriLoad.value = true
+                    }
+
+                    bitmap.value?.let { btm ->
+
+                        Logger.i(btm.asImageBitmap().toString())
+                        Logger.i(imageUri.toString())
+                        bitmapLoad.value = true
+                        Image(
+                            bitmap = btm.asImageBitmap(),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .fillMaxSize(0.6f)
+                                .padding(5.dp)
+                        )
+                    }
                 }
+                Spacer(
+                    modifier = Modifier.height(
+                        if (bitmapLoad.value) customSpacing.small
+                        else (customSpacing.extraLarge * 2)
+                    )
+                )
 
 
-                /************ UPDATE ************/
+                /************ UPLOAD ************/
                 Text(
-                    text = (stringResource(R.string.update)).uppercase(),
+                    text = (stringResource(R.string.upload)).uppercase(),
                     textAlign = TextAlign.Center,
                     style = typography.body1.copy(color = Color.White),
                     modifier = Modifier
@@ -412,71 +517,49 @@ fun Edit_Product(
                         .fillMaxWidth()
                         .clip(RoundedCornerShape(4.dp))
                         .background(
-                            if (nameVerified.value
+                            if (bitmapLoad.value
+                                && nameVerified.value
                                 && customAmountVerified.value
                                 && customPriceVerified.value
-                                && !familiesToAssign.value.isNullOrEmpty()
-                            )
-                                verticalGradient
+                                && !familiesToAssign.value.isNullOrEmpty())
+                                    verticalGradient
                             else verticalGradientDisabled
                         )
                         .padding(12.dp)
                         .clickable(onClick = {
-                            if (nameVerified.value
+                            if (bitmapLoad.value
+                                && nameVerified.value
                                 && customAmountVerified.value
                                 && customPriceVerified.value
                                 && !familiesToAssign.value.isNullOrEmpty()
                             ) {
-                                val newProduct = product_stock_response(
-                                    _id = productSelected!!._id,
-                                    name = customName.value,
-                                    image = productSelected!!.image,
-                                    price = customPrice.value,
-                                    stock = customAmount.value,
-                                    families = familiesToAssign.value as MutableList<String>,
-                                    likes = productSelected!!.likes,
-                                    wishlists = productSelected!!.wishlists,
-                                    sales = productSelected!!.sales
-                                )
 
-                                adminViewModel.updateProductStock(newProduct = newProduct, oldProductId = productSelected!!._id) {
-                                    Logger.i("Success update Product")
-                                    verificationOpen.value = true
-                                    buttonOK.value = true;
+                                adminViewModel.multipartImageUpload(
+                                    byteArray = byteArray,
+                                    context = context,
+                                    bitmap = bitmap,
+                                    customName = customName
+                                ) {
+                                    Logger.i("*** *** *** *** MULTIPART SUCCESSS!!!!!!!")
+
+                                    val newProduct = product_stock_request(
+                                        name = customName.value,
+                                        image = customName.value + ".jpg",
+                                        price = customPrice.value,
+                                        stock = customAmount.value.toInt(),
+                                        families = familiesToAssign.value
+                                    )
+
+                                    adminViewModel.createProductStock(newProduct){
+                                        Logger.i("Success create Product")
+                                        verificationOpen.value = true
+                                        buttonOK.value = true;
+                                    }
                                 }
 
 
-                            } else Toast
-                                .makeText(context, "Incorrect Fields", Toast.LENGTH_SHORT)
-                                .show()
+                            } else Toast.makeText(context, "Incorrect Fields", Toast.LENGTH_SHORT).show()
 
-                        })
-
-
-                )
-
-
-                Spacer(modifier = Modifier.height(customSpacing.small))
-
-
-                /************ DELETE ************/
-                Text(
-                    text = (stringResource(R.string.delete)).uppercase(),
-                    textAlign = TextAlign.Center,
-                    style = typography.body1.copy(color = Color.White),
-                    modifier = Modifier
-                        .padding(12.dp)
-                        .fillMaxWidth()
-                        .clip(RoundedCornerShape(4.dp))
-                        .background(verticalGradientIncomplete)
-                        .padding(12.dp)
-                        .clickable(onClick = {
-                            adminViewModel.deleteProductStock(oldProductId = productSelected!!._id) {
-                                Logger.i("Success update Product")
-                                isDeleted.value = true
-                                verificationOpen.value = true
-                                buttonOK.value = true;
-                            }
                         })
                 )
             }
