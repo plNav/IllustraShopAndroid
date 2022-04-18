@@ -29,4 +29,23 @@
     <string name="update_complete">Actualización Completada</string>
     <string name="delete_completed">Borrado Completado</string>
     <string name="delete">Borrar</string>
+    <string name="requests">Pedidos</string>
+    <string name="no_auth">Entrar sin autenticarse</string>
+    <string name="show_pay_info_now">Introducir información de pago ahora</string>
+    <string name="show_pay_info_later">Introducir información de pago mas tarde</string>
+    <string name="errorBasicInfo">Comprueba los campos básicos</string>
+    <string name="errorPay1">Comprueba los campos de información de pago</string>
+    <string name="errorPay2">Puedes rellenarlos mas tarde ocultando el desplegable</string>
+    <string name="errorBoth1">Comprueba la información básica y de pago</string>
+    <string name="errorBoth2">Puedes rellenar la información de pago más tarde ocultando el desplegable</string>
+    <string name="repeat_password">Repite Contraseña</string>
+    <string name="username">Usuario</string>
+    <string name="already_use_error">Ya en uso</string>
+    <string name="noEmailError">No es un email</string>
+    <string name="specialCharError">No puede contener caracteres especiales</string>
+    <string name="passwordMatchError">Las contraseñas deben ser iguales</string>
+    <string name="emptyFieldError">El campo no puede estar vacio</string>
+    <string name="fieldOK">Campo correcto</string>
+    <string name="login_correct">Inicio de sesión correcto </string>
+    <string name="register_correct">Registro correcto </string>
 </resources>

@@ -4,11 +4,12 @@ import android.media.Image
 import com.orhanobut.logger.Logger
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
-import pab.lop.illustrashopandroid.data.model.UserModel
+import pab.lop.illustrashopandroid.data.model.user.user_response
 import pab.lop.illustrashopandroid.data.model.family.family_request
 import pab.lop.illustrashopandroid.data.model.family.family_response
 import pab.lop.illustrashopandroid.data.model.product_stock.product_stock_request
 import pab.lop.illustrashopandroid.data.model.product_stock.product_stock_response
+import pab.lop.illustrashopandroid.data.model.user.user_request
 import pab.lop.illustrashopandroid.utils.URL_HEAD_API
 import retrofit2.Call
 import retrofit2.Response
@@ -50,10 +51,27 @@ interface ApiServices {
 
 
 
-    /********************TABLES**********************/
+    /********************USER**********************/
 
     @GET("user")
-    suspend fun getAllUsers() : List<UserModel>
+    suspend fun getAllUsers() : List<user_response>
+
+    @GET("user/validate/{email}/{passwEncrypt}")
+    suspend fun validateClient (
+        @Path("email") email : String,
+        @Path("passwEncrypt") passwEncrypt: String
+    ) : Response<List<user_response>>
+
+
+    @GET("user/get/username")
+    suspend fun getAllUsernames() : Response<List<String>>
+
+    @GET("user/get/email")
+    suspend fun getAllEmail() : Response<List<String>>
+
+    @POST("user")
+    suspend fun createUser(@Body newUser: user_request): Response<user_response>
+
 
 
     /********************IMAGES**********************/

@@ -11,7 +11,6 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.orhanobut.logger.Logger
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -23,7 +22,7 @@ import pab.lop.illustrashopandroid.data.model.family.family_request
 import pab.lop.illustrashopandroid.data.model.family.family_response
 import pab.lop.illustrashopandroid.data.model.product_stock.product_stock_request
 import pab.lop.illustrashopandroid.data.model.product_stock.product_stock_response
-import pab.lop.illustrashopandroid.ui.view.admin.ProgressRequestBody
+import pab.lop.illustrashopandroid.utils.ProgressRequestBody
 import retrofit2.Response
 import retrofit2.await
 import java.io.*

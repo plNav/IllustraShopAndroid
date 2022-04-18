@@ -28,4 +28,23 @@
     <string name="update_complete">Update Complete</string>
     <string name="delete_completed">Delete Completed</string>
     <string name="delete">Delete</string>
+    <string name="requests">Requests</string>
+    <string name="no_auth">Enter without authentication</string>
+    <string name="show_pay_info_now">Include pay info now</string>
+    <string name="show_pay_info_later">Include pay info later</string>
+    <string name="errorBasicInfo">Check basic information fields</string>
+    <string name="errorPay1">Check pay info fields </string>
+    <string name="errorPay2">You can do it later pressing green button</string>
+    <string name="errorBoth1">Check Basic Info and Pay Info fields </string>
+    <string name="errorBoth2">You can complete Pay Info later pressing green button</string>
+    <string name="repeat_password">Repeat Password</string>
+    <string name="username">User Name</string>
+    <string name="already_use_error">Already in use</string>
+    <string name="noEmailError">Not an email</string>
+    <string name="specialCharError">Field can\'t contain special characters</string>
+    <string name="passwordMatchError">Passwords must be equal</string>
+    <string name="emptyFieldError">Field cannot be empty</string>
+    <string name="fieldOK">Field correct</string>
+    <string name="login_correct">Login Successful </string>
+    <string name="register_correct">Register Successful </string>
 </resources>

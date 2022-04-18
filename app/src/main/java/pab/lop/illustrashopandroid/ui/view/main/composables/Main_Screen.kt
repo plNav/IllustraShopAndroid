@@ -41,9 +41,7 @@ import pab.lop.illustrashopandroid.R
 import pab.lop.illustrashopandroid.data.model.product_stock.product_stock_response
 import pab.lop.illustrashopandroid.ui.theme.Spacing
 import pab.lop.illustrashopandroid.ui.view.main.MainViewModel
-import pab.lop.illustrashopandroid.utils.URL_HEAD_IMAGES
-import pab.lop.illustrashopandroid.utils.excludedFamilies
-import pab.lop.illustrashopandroid.utils.familyProducts
+import pab.lop.illustrashopandroid.utils.*
 
 @SuppressLint("UnrememberedMutableState", "MutableCollectionMutableState")
 @RequiresApi(Build.VERSION_CODES.O)
@@ -57,11 +55,8 @@ fun Main(
     val loadProductsFamily = remember { mutableStateOf(false)}
     val startLoading = remember { mutableStateOf(false)}
 
-/*    val imagesByFamily: HashMap<String, MutableList<String>> = HashMap()
-    imagesByFamily["Primera Familia"] = mutableListOf("MonaLisa.jpg", "American_Gothic.jpg")
-    imagesByFamily["Segunda Familia"] =
-        mutableListOf("Meisje_met_de_parel.jpg", "American_Gothic.jpg", "StarryNight.jpg")
-    imagesByFamily["Tercera Familia"] = mutableListOf("The_Kiss.jpg", "Guernica.jpg")*/
+    if(userSelected == null) userSelected = userDefaultNoAuth
+
 
     if(!startLoading.value){
         startLoading.value = true

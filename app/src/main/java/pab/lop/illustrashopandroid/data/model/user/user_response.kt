@@ -1,8 +1,8 @@
-package pab.lop.illustrashopandroid.data.model
+package pab.lop.illustrashopandroid.data.model.user
 
 import java.util.*
 
-data class UserModel(
+data class user_response(
     var _id : String,
     var name : String,
     var last_name : String,
@@ -18,7 +18,7 @@ data class UserModel(
     var pay_number : String,
     var shopping_card_id : String,
     var total_spent : Float,
-    var register_count : Int,
+    var register_count : Float,
     var verified_buys : List<String>,
     var wishlist : List<String>,
     var first_register : Date,

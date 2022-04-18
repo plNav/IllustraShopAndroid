@@ -1,6 +1,7 @@
 package pab.lop.illustrashopandroid.ui.view.admin.composables
 
 import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -244,9 +245,33 @@ fun Admin_Screen(
 
             Spacer(
                 modifier = Modifier.height(
+                    customSpacing.extraLarge
+                )
+            )
+
+            /************ REQUESTS ************/
+            Text(
+                text = (stringResource(R.string.requests)).uppercase(),
+                textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.body1.copy(color = Color.White),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(4.dp))
+                    .background(brush = verticalGradientDisabled)
+                    .padding(12.dp)
+                    .clickable(onClick = {
+                        //TODO Pedidos
+                        Toast.makeText(context,"Not implemented yet", Toast.LENGTH_SHORT).show()
+                    })
+            )
+
+            Spacer(
+                modifier = Modifier.height(
                     customSpacing.large
                 )
             )
+
+
 
         }
     }

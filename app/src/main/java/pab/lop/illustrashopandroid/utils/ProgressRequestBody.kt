@@ -1,4 +1,4 @@
-package pab.lop.illustrashopandroid.ui.view.admin
+package pab.lop.illustrashopandroid.utils
 
 import android.os.Handler
 import android.os.Looper
@@ -8,7 +8,6 @@ import okhttp3.RequestBody
 import okio.BufferedSink
 import java.io.File
 import java.io.FileInputStream
-import java.io.IOException
 
 class ProgressRequestBody(private val mFile: File, /*private val mListener: UploadCallbacks*/) :
     RequestBody() {

@@ -18,13 +18,13 @@ import com.orhanobut.logger.Logger
 import pab.lop.illustrashopandroid.ui.theme.IllustraShopAndroidTheme
 import pab.lop.illustrashopandroid.ui.theme.Spacing
 import pab.lop.illustrashopandroid.ui.view.admin.composables.Image_Upload
-import pab.lop.illustrashopandroid.ui.view.login_register.Login
-import pab.lop.illustrashopandroid.ui.view.login_register.Validate
+import pab.lop.illustrashopandroid.ui.view.login_register.composables.Login
 import pab.lop.illustrashopandroid.ui.view.main.composables.Main
 import pab.lop.illustrashopandroid.ui.view.admin.AdminViewModel
 import pab.lop.illustrashopandroid.ui.view.admin.composables.Admin_Screen
 import pab.lop.illustrashopandroid.ui.view.admin.composables.Edit_Product
 import pab.lop.illustrashopandroid.ui.view.login_register.LoginRegisterViewModel
+import pab.lop.illustrashopandroid.ui.view.login_register.composables.Register
 import pab.lop.illustrashopandroid.ui.view.main.MainViewModel
 import pab.lop.illustrashopandroid.utils.WindowInfo
 import pab.lop.illustrashopandroid.utils.rememberWindowInfo
@@ -66,7 +66,7 @@ class MainActivity : ComponentActivity() {
 
                 NavHost(
                     navController = navController,
-                    startDestination = ScreenNav.Admin_Screen.route
+                    startDestination = ScreenNav.RegisterScreen.route
                 ) {
 
                     /*** LOGIN SCREEN ***/
@@ -88,12 +88,11 @@ class MainActivity : ComponentActivity() {
                         }
                     }
 
-
-                    /*** VALIDATE SCREEN ***/
+                    /*** REGISTER SCREEN ***/
                     composable(
-                        route = ScreenNav.ValidateScreen.route
+                        route = ScreenNav.RegisterScreen.route
                     ) {
-                        Validate(
+                        Register(
                             navController = navController,
                             loginRegisterViewModel = loginRegisterViewModel,
                             context = applicationContext,

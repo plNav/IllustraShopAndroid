@@ -1,22 +1,15 @@
 package pab.lop.illustrashopandroid.ui.view.main
 
 import android.annotation.SuppressLint
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.gson.Gson
-import com.google.gson.internal.LinkedTreeMap
 import com.orhanobut.logger.Logger
-import com.orhanobut.logger.Logger.json
 import kotlinx.coroutines.launch
-import org.w3c.dom.NodeList
 import pab.lop.illustrashopandroid.data.api.ApiServices
-import pab.lop.illustrashopandroid.data.model.UserModel
-import pab.lop.illustrashopandroid.data.model.family.family_response
+import pab.lop.illustrashopandroid.data.model.user.user_response
 import pab.lop.illustrashopandroid.data.model.product_stock.product_stock_response
 
 
@@ -24,7 +17,7 @@ import pab.lop.illustrashopandroid.data.model.product_stock.product_stock_respon
 @Suppress("UNCHECKED_CAST")
 class MainViewModel : ViewModel() {
 
-    var allUsersClientResponse: List<UserModel> by mutableStateOf(listOf())
+    var allUsersClientResponse: List<user_response> by mutableStateOf(listOf())
     var familyProductsResponse: HashMap<String, List<product_stock_response>> by mutableStateOf(hashMapOf())
 
 

@@ -1,5 +1,6 @@
 package pab.lop.illustrashopandroid.ui.view.login_register
 
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -8,7 +9,11 @@ import androidx.lifecycle.viewModelScope
 import com.orhanobut.logger.Logger
 import pab.lop.illustrashopandroid.data.api.ApiServices
 import kotlinx.coroutines.*
-import pab.lop.illustrashopandroid.data.model.UserModel
+import pab.lop.illustrashopandroid.data.model.family.family_response
+import pab.lop.illustrashopandroid.data.model.user.user_request
+import pab.lop.illustrashopandroid.data.model.user.user_response
+import pab.lop.illustrashopandroid.utils.getSHA256
+import retrofit2.Response
 
 /**
  * Logica asincrona de llamadas a la Api,
@@ -18,66 +23,157 @@ import pab.lop.illustrashopandroid.data.model.UserModel
  */
 class LoginRegisterViewModel : ViewModel() {
 
-    var allUsersClientResponse : List<UserModel> by mutableStateOf(listOf())
+    var allUsersClientResponse: List<user_response> by mutableStateOf(listOf())
+
+    var currentUserResponse: MutableState<user_response?> = mutableStateOf(null)
+
+    var usernameListResponse : List<String> by mutableStateOf(listOf())
+    var emailListResponse : List<String> by mutableStateOf(listOf())
 
 
-    private var errorMessage : String by mutableStateOf("")
 
 
-    fun getAllUsers(onSuccessCallback: () -> Unit){
+    private var errorMessage: String by mutableStateOf("")
+
+
+    fun getAllUsers(onSuccessCallback: () -> Unit) {
         viewModelScope.launch {
             val apiServices = ApiServices.getInstance()
 
-            try{
+            try {
                 allUsersClientResponse = apiServices.getAllUsers()
                 Logger.i("get all users OK")
                 onSuccessCallback()
 
-            }catch (e: Exception){
+            } catch (e: Exception) {
                 errorMessage = e.message.toString()
                 Logger.e("FAILURE getAllUsers \n $e")
             }
         }
     }
 
-/*    fun getImage(onSuccessCallback1: String, onSuccessCallback: () -> Unit){
+
+    fun validateUser(email: String, passw: String, onSuccessCallback: () -> Unit) {
         viewModelScope.launch {
             val apiServices = ApiServices.getInstance()
-            Logger.i("get image OK")
+            try {
+                val passwEncrypt = getSHA256(passw)
+                val list: Response<List<user_response>> = apiServices.validateClient(email, passwEncrypt)
 
-            try{
-                apiServices.getImage("MonaLisa")
-            }catch(e:java.lang.Exception){
+                if (list.isSuccessful && list.body()!!.isNotEmpty()) {
+                    if (list.body()!!.size == 1) {
+                        currentUserResponse.value = list.body()!![0]
+                        Logger.i("Validation correct ${list.body()!![0]}")
+                        onSuccessCallback()
+                    } else Logger.wtf("ValidateClient brings more than one for $email - $passwEncrypt")
+                }
+            } catch (e: Exception) {
                 errorMessage = e.message.toString()
-                Logger.e("FAILURE getImage \n $e")
+                Logger.e("FAILURE validate client")
             }
         }
-    }*/
+    }
 
 
+    fun getAllEmails(onSuccessCallback: () -> Unit){
+        val apiServices = ApiServices.getInstance()
+        try{
+            viewModelScope.launch {
+                val response : Response<List<String>> = apiServices.getAllEmail()
+                if(response.isSuccessful){
+                    Logger.i("Get emails OK \n${response.body().toString()}")
+                    emailListResponse = response.body() as List<String>
 
+                    Logger.wtf("${emailListResponse}")
+                    onSuccessCallback()
+                }
+            }
+        }catch (e: Exception){
+            errorMessage = e.message.toString()
+            Logger.e("FAILURE getting all family names")
+        }
+    }
 
+    fun getAllUsernames(onSuccessCallback: () -> Unit){
+        val apiServices = ApiServices.getInstance()
+        try{
+            viewModelScope.launch {
+                val response : Response<List<String>> = apiServices.getAllUsernames()
+                if(response.isSuccessful){
+                    Logger.i("Get Family Names OK \n${response.body().toString()}")
+                    usernameListResponse = response.body() as List<String>
 
+                    Logger.wtf("${usernameListResponse as List<String>}")
+                    onSuccessCallback()
+                }
+            }
+        }catch (e: Exception){
+            errorMessage = e.message.toString()
+            Logger.e("FAILURE getting all family names")
+        }
+    }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    fun createUser(newUser: user_request, onSuccessCallback: () -> Unit) {
+        val apiServices = ApiServices.getInstance()
+        viewModelScope.launch {
+            try{
+                val response : Response<user_response> = apiServices.createUser(newUser)
+                if(response.isSuccessful){
+                    currentUserResponse.value = response.body()
+                    Logger.i("Create User SUCCESSFUL \n $response \n ${response.body()}")
+                    onSuccessCallback()
+                }else Logger.e("Error Response Create User $response")
+            }catch (e: Exception){
+                errorMessage = e.message.toString()
+                Logger.e("FAILURE create User")
+            }
+        }
+    }
 
     //var adminsClientResponse : List<UserModel> by mutableStateOf(listOf())
 
 
 /*
+
+
+/*    fun checkEmail(email: String, onSuccessCallback: () -> Unit){
+        val apiServices = ApiServices.getInstance()
+        viewModelScope.launch {
+            try{
+
+                val res = apiServices.checkEmail(email)
+                if(res.isSuccessful){
+                    emailExistsResponse = res.body()!!
+                    Logger.i("CORRECT checkEmail $email, $emailExistsResponse")
+                    onSuccessCallback()
+                }else Logger.e("FAILURE checkEmail $email")
+
+
+            }catch (e: Exception){
+                errorMessage = e.message.toString()
+                Logger.e("FAILURE checkEmail $email, $emailExistsResponse")
+            }
+        }
+    }
+
+    fun checkUsername(username: String, onSuccessCallback: () -> Unit){
+        val apiServices = ApiServices.getInstance()
+        viewModelScope.launch {
+            try{
+                val res = apiServices.checkUserName(username)
+                if(res.isSuccessful){
+                    usernameExistsResponse = res.body()!!
+                    Logger.i("CORRECT checkEmail $username, $usernameExistsResponse")
+                    onSuccessCallback()
+                }else Logger.e("FAILURE checkEmail $username")
+
+
+            }catch (e: Exception){
+                errorMessage = e.message.toString()
+                Logger.e("FAILURE checkusername $username, $emailExistsResponse")
+            }
+        }
+    }*/
 
     var emailExistsResponse : Boolean by mutableStateOf(true)
     var currentClientResponse : ClientModel by mutableStateOf(
