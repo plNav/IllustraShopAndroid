@@ -55,11 +55,11 @@ class MainViewModel : ViewModel() {
 
                     val parts = item.toString().split(", separator=null,")
                     val replaced = parts[1].replace("products=[[{", "").replace("]]}", "")
-                    val splitted = replaced.split("__v=0.0}")
+                    val split = replaced.split("__v=0.0}")
 
                     familyName = parts[0].replace("{family=", "").replace(",", "")
 
-                    for (s in splitted) {
+                    for (s in split) {
 
                         var _id = ""
                         var name = ""

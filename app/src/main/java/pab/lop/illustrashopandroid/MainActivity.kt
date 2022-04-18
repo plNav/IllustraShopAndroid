@@ -2,7 +2,6 @@ package pab.lop.illustrashopandroid
 
 import android.os.Build
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
@@ -79,13 +78,7 @@ class MainActivity : ComponentActivity() {
                             context = applicationContext,
                             customSpacing = customSpacing
                         )
-                        BackHandler(true) {
-                            Toast.makeText(
-                                applicationContext,
-                                "BackButton Deshabilitado en el LOGIN",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
+                        BackHandler(true) { } // TRUE == ENABLED
                     }
 
                     /*** REGISTER SCREEN ***/
@@ -98,13 +91,7 @@ class MainActivity : ComponentActivity() {
                             context = applicationContext,
                             customSpacing = customSpacing
                         )
-                        BackHandler(true) {
-                            Toast.makeText(
-                                applicationContext,
-                                "BackButton Deshabilitado en el LOGIN",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
+                        BackHandler(false) { }
                     }
 
                     /*** MAIN SCREEN ***/
@@ -117,13 +104,7 @@ class MainActivity : ComponentActivity() {
                             context = applicationContext,
                             customSpacing = customSpacing
                         )
-                        BackHandler(true) {
-                            Toast.makeText(
-                                applicationContext,
-                                "BackButton Deshabilitado en el LOGIN",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
+                        BackHandler(true) { }
                     }
 
                     /*** UPLOAD SCREEN ***/
@@ -136,13 +117,7 @@ class MainActivity : ComponentActivity() {
                             context = applicationContext,
                             customSpacing = customSpacing
                         )
-                        BackHandler(true) {
-                            Toast.makeText(
-                                applicationContext,
-                                "BackButton Deshabilitado en el LOGIN",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
+                        BackHandler(true) { }
                     }
 
                     /*** EDIT PRODUCT SCREEN ***/
@@ -155,13 +130,7 @@ class MainActivity : ComponentActivity() {
                             context = applicationContext,
                             customSpacing = customSpacing
                         )
-                        BackHandler(true) {
-                            Toast.makeText(
-                                applicationContext,
-                                "BackButton Deshabilitado en el LOGIN",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
+                        BackHandler(false) { }
                     }
 
                     /*** ADMIN SCREEN ***/
@@ -174,13 +143,7 @@ class MainActivity : ComponentActivity() {
                             context = applicationContext,
                             customSpacing = customSpacing
                         )
-                        BackHandler(true) {
-                            Toast.makeText(
-                                applicationContext,
-                                "BackButton Deshabilitado en el LOGIN",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
+                        BackHandler(false) { }
                     }
                 }
             }

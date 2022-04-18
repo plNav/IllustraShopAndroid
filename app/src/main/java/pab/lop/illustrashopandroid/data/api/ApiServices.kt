@@ -76,11 +76,6 @@ interface ApiServices {
 
     /********************IMAGES**********************/
 
-    //todo creo que no hace falta
-    @GET("image/{name}")
-    suspend fun getImage(@Path(value = "image") image : String) : Image
-
-
     @Multipart
     @POST("images/upload")
     fun postImage(
@@ -125,8 +120,5 @@ interface ApiServices {
     @DELETE("product/stock/{id}")
     suspend fun deleteProductStock(@Path(value = "id" )oldProductId: String): Response<Any>
 
-    /*@DELETE("product/delete/stock/{id}")
-    suspend fun deleteFamily(@Path(value = "_id") _id : String ): Response<Any>
-*/
 
 }
