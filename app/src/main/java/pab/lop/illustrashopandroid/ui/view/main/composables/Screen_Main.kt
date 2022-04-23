@@ -5,7 +5,7 @@ import android.content.Context
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.*
-import androidx.compose.foundation.gestures.detectTransformGestures
+import androidx.compose.foundation.gestures.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -18,6 +18,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.*
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -30,6 +31,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
+import coil.compose.rememberAsyncImagePainter
+import coil.compose.rememberImagePainter
 import coil.request.ImageRequest
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.orhanobut.logger.Logger
@@ -168,6 +171,8 @@ fun PopUpDetails(
     snackbarHostState: SnackbarHostState
 ) {
     var scale by remember { mutableStateOf(1f) }
+    val painter = rememberAsyncImagePainter(productSelected!!.image)
+
 
     Dialog(
         onDismissRequest = {
@@ -183,7 +188,7 @@ fun PopUpDetails(
             color = Color.White
         ) {
             Column(modifier = Modifier
-                .fillMaxWidth()
+              //  .fillMaxWidth()
                 .wrapContentHeight()) {
                 Row(
                     horizontalArrangement = Arrangement.End,
@@ -228,13 +233,16 @@ fun PopUpDetails(
                     }
                 }
 
-                Spacer(
-                    modifier = androidx.compose.ui.Modifier.height(
-                        customSpacing.mediumSmall
-                    )
-                )
 
-                Box{
+                Text(text = "${productSelected!!.price} €")
+
+                ZoomableImage(isRotation = false)
+
+                Text(text = "${productSelected!!.price} €")
+
+
+
+               /* Box{
                     AsyncImage(
                         model = ImageRequest.Builder(LocalContext.current)
                             .data("$URL_HEAD_IMAGES${productSelected!!.image}")
@@ -263,10 +271,77 @@ fun PopUpDetails(
                             }
                         //   modifier = Modifier.fillMaxSize(0.8f)
                     )
-                }
-                Text("") // ÑAPAS
+                }*/
+               // Text("") // ÑAPAS
             }
         }
+    }
+}
+
+@Composable
+fun ZoomableImage(
+    maxScale: Float = .30f,
+    minScale: Float = 3f,
+    contentScale: ContentScale = ContentScale.Fit,
+    isRotation: Boolean = false,
+    isZoomable: Boolean = true
+) {
+    val scale = remember { mutableStateOf(1f) }
+    val rotationState = remember { mutableStateOf(1f) }
+    val offsetX = remember { mutableStateOf(1f) }
+    val offsetY = remember { mutableStateOf(1f) }
+
+    Box(
+        modifier = Modifier
+            .clip(RectangleShape)
+            .background(Color.Transparent)
+            .pointerInput(Unit) {
+                if (isZoomable) {
+                    forEachGesture {
+                        awaitPointerEventScope {
+                            awaitFirstDown()
+                            do {
+                                val event = awaitPointerEvent()
+                                scale.value *= event.calculateZoom()
+                                if (scale.value > 1) {
+                                    val offset = event.calculatePan()
+                                    offsetX.value += offset.x
+                                    offsetY.value += offset.y
+                                    rotationState.value += event.calculateRotation()
+                                } else {
+                                    scale.value = 1f
+                                    offsetX.value = 1f
+                                    offsetY.value = 1f
+                                }
+                            } while (event.changes.any { it.pressed })
+                        }
+                    }
+                }
+            }
+
+    ) {
+        AsyncImage(
+            model = ImageRequest.Builder(LocalContext.current)
+                .data("$URL_HEAD_IMAGES${productSelected!!.image}")
+                .crossfade(true)
+                .crossfade(1000)
+                .build(),
+            contentDescription = null,
+            contentScale = contentScale,
+            modifier = Modifier
+                .align(Alignment.Center)
+                .graphicsLayer {
+                    if (isZoomable) {
+                        scaleX = maxOf(maxScale, minOf(minScale, scale.value))
+                        scaleY = maxOf(maxScale, minOf(minScale, scale.value))
+                        if (isRotation) {
+                            rotationZ = rotationState.value
+                        }
+                        translationX = offsetX.value
+                        translationY = offsetY.value
+                    }
+                }
+        )
     }
 }
 

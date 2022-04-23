@@ -78,6 +78,10 @@ dependencies {
     //implementation 'com.github.bumptech.glide:glide:4.13.0'
     //annotationProcessor 'com.github.bumptech.glide:compiler:4.13.0'
 
+    //IMAGER ZOOM
+  //  implementation 'com.github.umutsoysl:ComposeZoomableImage:0.1.0'
+
+
     //PAGER
     implementation "com.google.accompanist:accompanist-pager:0.19.0"
 
