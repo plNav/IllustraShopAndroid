@@ -57,4 +57,6 @@
     <string name="buyNow">Buy Now!</string>
     <string name="total">TOTAL</string>
     <string name="save">SAVE</string>
+    <string name="login_needed">You need to be logged to access shopping cart</string>
+    <string name="login_needed_add">You can\'t add products without login</string>
 </resources>

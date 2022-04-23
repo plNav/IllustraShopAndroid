@@ -15,16 +15,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavController
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.orhanobut.logger.Logger
 import pab.lop.illustrashopandroid.R
 import pab.lop.illustrashopandroid.data.model.product_shopping.product_shopping_response
 import pab.lop.illustrashopandroid.ui.theme.Spacing
 import pab.lop.illustrashopandroid.ui.view.main.MainViewModel
+import pab.lop.illustrashopandroid.utils.URL_HEAD_IMAGES
 
 @Composable
 fun PopUpEdition(
@@ -98,7 +102,29 @@ fun PopUpEdition(
                     }
                 }
 
-                //ZoomableImage(isRotation = false)
+                Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()){
+                    Card(modifier = Modifier.height(150.dp).width(150.dp)){
+                        AsyncImage(
+                            model = ImageRequest.Builder(LocalContext.current)
+                                .data("$URL_HEAD_IMAGES${currentLine.value!!.image}")
+                                .crossfade(true)
+                                .crossfade(1000)
+                                .build(),
+                            contentDescription = null,
+                            //placeholder = painterResource(id = R.drawable.loading_image),
+                            //   modifier = Modifier.fillMaxSize(0.8f)
+                        )
+                   }
+                    Spacer(modifier = Modifier.height(customSpacing.small))
+
+                    Row(){
+                        Text("Amount")
+                        Text("Button +")
+                        Text("Button -")
+                    }
+                    Spacer(modifier = Modifier.height(customSpacing.mediumSmall))
+
+                }
 
 
 

@@ -58,5 +58,7 @@
     <string name="buyNow">Comprar Ahora!</string>
     <string name="total">TOTAL</string>
     <string name="save">GUARDAR</string>
+    <string name="login_needed">Debes iniciar sesión para acceder a la cesta</string>
+    <string name="login_needed_add">Debes iniciar sesión para añadir productoss</string>
 
 </resources>

@@ -99,7 +99,8 @@ fun Main(
             customSpacing = customSpacing,
             verticalGradient = verticalGradient,
             snackbarHostState = snackbarHostState,
-            addShoppingCart = addShoppingCart
+            addShoppingCart = addShoppingCart,
+            context = context
         )
     }
 }

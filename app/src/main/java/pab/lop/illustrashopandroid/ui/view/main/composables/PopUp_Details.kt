@@ -1,5 +1,7 @@
 package pab.lop.illustrashopandroid.ui.view.main.composables
 
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.*
@@ -34,10 +36,7 @@ import pab.lop.illustrashopandroid.data.model.product_shopping.product_shopping_
 import pab.lop.illustrashopandroid.data.model.shoppin.shopping_cart_request
 import pab.lop.illustrashopandroid.ui.theme.Spacing
 import pab.lop.illustrashopandroid.ui.view.main.MainViewModel
-import pab.lop.illustrashopandroid.utils.URL_HEAD_IMAGES
-import pab.lop.illustrashopandroid.utils.currentShoppingProducts
-import pab.lop.illustrashopandroid.utils.productSelected
-import pab.lop.illustrashopandroid.utils.shoppingCartSelected
+import pab.lop.illustrashopandroid.utils.*
 
 @Composable
 fun PopUpDetails(
@@ -48,6 +47,7 @@ fun PopUpDetails(
     verticalGradient: Brush,
     snackbarHostState: SnackbarHostState,
     addShoppingCart: MutableState<Boolean>,
+    context: Context,
 ) {
     var scale by remember { mutableStateOf(1f) }
     val painter = rememberAsyncImagePainter(productSelected!!.image)
@@ -125,32 +125,34 @@ fun PopUpDetails(
                         .fillMaxWidth()
                         .clickable(onClick = {
                             var isRepeated = false
-
-
-                            if(currentShoppingProducts.isEmpty()){
-                                createProductShopping(mainViewModel, addShoppingCart, popUpDetailsOpen, scope, snackbarHostState)
-                            }else{
-                                for(product in currentShoppingProducts){
-                                    if(product.name == productSelected!!.name){
-                                        product.amount++
-                                        product.total = product.amount * product.price
-                                        isRepeated = true
-                                        mainViewModel.updateProductShopping(product){
-                                            Logger.i("Update OK")
-                                        }
-                                    }
-                                }
-                                if(!isRepeated){
-                                    createProductShopping(mainViewModel, addShoppingCart, popUpDetailsOpen, scope, snackbarHostState)
-                                }else{
-                                    addShoppingCart.value = true
-                                    popUpDetailsOpen.value = false
-                                    scope.launch {
-                                        snackbarHostState.currentSnackbarData?.dismiss()
-                                        snackbarHostState.showSnackbar("")
-                                    }
-                                }
-                            }
+                           if(userSelected == userDefaultNoAuth){
+                               Toast.makeText(context, context.getString(R.string.login_needed_add), Toast.LENGTH_SHORT ).show()
+                           }else{
+                               if(currentShoppingProducts.isEmpty()){
+                                   createProductShopping(mainViewModel, addShoppingCart, popUpDetailsOpen, scope, snackbarHostState)
+                               }else{
+                                   for(product in currentShoppingProducts){
+                                       if(product.name == productSelected!!.name){
+                                           product.amount++
+                                           product.total = product.amount * product.price
+                                           isRepeated = true
+                                           mainViewModel.updateProductShopping(product){
+                                               Logger.i("Update OK")
+                                           }
+                                       }
+                                   }
+                                   if(!isRepeated){
+                                       createProductShopping(mainViewModel, addShoppingCart, popUpDetailsOpen, scope, snackbarHostState)
+                                   }else{
+                                       addShoppingCart.value = true
+                                       popUpDetailsOpen.value = false
+                                       scope.launch {
+                                           snackbarHostState.currentSnackbarData?.dismiss()
+                                           snackbarHostState.showSnackbar("")
+                                       }
+                                   }
+                               }
+                           }
 
                         })
                 ) {

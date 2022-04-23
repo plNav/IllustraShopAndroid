@@ -24,6 +24,8 @@ import pab.lop.illustrashopandroid.R
 import pab.lop.illustrashopandroid.ui.view.main.MainViewModel
 import pab.lop.illustrashopandroid.utils.currentShoppingProducts
 import pab.lop.illustrashopandroid.utils.shoppingCartSelected
+import pab.lop.illustrashopandroid.utils.userDefaultNoAuth
+import pab.lop.illustrashopandroid.utils.userSelected
 import pablo_lonav.android.utils.ScreenNav
 
 @Composable
@@ -60,9 +62,18 @@ fun TopAppBar(
         actions = {
             IconButton(
                 onClick = {
-                    mainViewModel.getAllProductShopping(shoppingCartSelected!!._id) {
+                    if (userSelected == userDefaultNoAuth) Toast.makeText(
+                        context,
+                        context.getString(R.string.login_needed),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    else mainViewModel.getAllProductShopping(shoppingCartSelected!!._id) {
                         currentShoppingProducts = mainViewModel.currentProductsShopping.toMutableList()
-                        if(currentShoppingProducts.isEmpty()) Toast.makeText(context, context.getString(R.string.empty_cart), Toast.LENGTH_SHORT).show()
+                        if (currentShoppingProducts.isEmpty()) Toast.makeText(
+                            context,
+                            context.getString(R.string.empty_cart),
+                            Toast.LENGTH_SHORT
+                        ).show()
                         else navController.navigate(ScreenNav.ShoppingCartScreen.route)
                     }
                 }
