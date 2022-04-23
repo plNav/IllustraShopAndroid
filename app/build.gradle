@@ -74,6 +74,10 @@ dependencies {
     //PICASSO
     //implementation 'com.squareup.picasso:picasso:2.71828'
 
+    //GLIDE
+    //implementation 'com.github.bumptech.glide:glide:4.13.0'
+    //annotationProcessor 'com.github.bumptech.glide:compiler:4.13.0'
+
     //PAGER
     implementation "com.google.accompanist:accompanist-pager:0.19.0"
 

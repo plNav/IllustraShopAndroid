@@ -68,7 +68,7 @@ class MainActivity : ComponentActivity() {
 
                 NavHost(
                     navController = navController,
-                    startDestination = ScreenNav.PayScreen.route
+                    startDestination = ScreenNav.MainScreen.route
                 ) {
 
                     /*** LOGIN SCREEN ***/

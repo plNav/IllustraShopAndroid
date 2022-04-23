@@ -4,36 +4,34 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
+import androidx.compose.foundation.gestures.detectTransformGestures
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.HighlightOff
-import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.filled.ShoppingCart
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Outline
-import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.*
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.pager.HorizontalPager
-import com.google.accompanist.pager.rememberPagerState
 import com.orhanobut.logger.Logger
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -52,13 +50,34 @@ fun Main(
     context: Context,
     customSpacing: Spacing
 ) {
-    val loadProductsFamily = remember { mutableStateOf(false)}
-    val startLoading = remember { mutableStateOf(false)}
+    val loadProductsFamily = remember { mutableStateOf(false) }
+    val startLoading = remember { mutableStateOf(false) }
+    val popUpDetailsOpen = remember { mutableStateOf(false) }
 
-    if(userSelected == null) userSelected = userDefaultNoAuth
+    val scope = rememberCoroutineScope()
+    val snackbarHostState = remember {SnackbarHostState()}
 
+    if (userSelected == null) userSelected = userDefaultNoAuth
+    Logger.i(userSelected.toString())
 
-    if(!startLoading.value){
+    val verticalGradient = Brush.verticalGradient(
+        colors = listOf(MaterialTheme.colors.primary, MaterialTheme.colors.primaryVariant),
+        startY = 0f,
+        endY = 100f
+    )
+    val verticalGradientDisabled = Brush.verticalGradient(
+        colors = listOf(MaterialTheme.colors.onError, Color.DarkGray),
+        startY = 0f,
+        endY = 100f
+    )
+
+    val verticalGradientIncomplete = Brush.verticalGradient(
+        colors = listOf(MaterialTheme.colors.onSecondary, Color.DarkGray),
+        startY = 0f,
+        endY = 100f
+    )
+
+    if (!startLoading.value) {
         startLoading.value = true
         mainViewModel.getProductsFamily {
             familyProducts = mainViewModel.familyProductsResponse
@@ -68,16 +87,29 @@ fun Main(
         }
     }
 
-    if(loadProductsFamily.value)
-    MainStart(
-        navController = navController,
-        snackbarHostState = remember { SnackbarHostState() },
-        scope = rememberCoroutineScope(),
-        scaffoldState = rememberScaffoldState(),
-        applicationContext = context,
-        mainViewModel = mainViewModel,
-        familyProducts = familyProducts
-    )
+    if (loadProductsFamily.value)
+        MainStart(
+            navController = navController,
+            snackbarHostState = snackbarHostState,
+            scope = scope,
+            scaffoldState = rememberScaffoldState(),
+            applicationContext = context,
+            mainViewModel = mainViewModel,
+            familyProducts = familyProducts,
+            popUpDetailsOpen = popUpDetailsOpen,
+            verticalGradient = verticalGradient
+        )
+
+    if (popUpDetailsOpen.value) {
+        PopUpDetails(
+            mainViewModel = mainViewModel,
+            scope = scope,
+            popUpDetailsOpen = popUpDetailsOpen,
+            customSpacing = customSpacing,
+            verticalGradient = verticalGradient,
+            snackbarHostState = snackbarHostState
+        )
+    }
 }
 
 
@@ -91,165 +123,22 @@ fun MainStart(
     applicationContext: Context,
     mainViewModel: MainViewModel,
     familyProducts: HashMap<String, List<product_stock_response>>,
+    popUpDetailsOpen: MutableState<Boolean>,
+    verticalGradient: Brush,
 ) {
-
-    val verticalGradient = Brush.verticalGradient(
-        colors = listOf(MaterialTheme.colors.primary, MaterialTheme.colors.primaryVariant),
-        startY = 0f,
-        endY = 100f
-    )
 
     Scaffold(
         scaffoldState = scaffoldState,
-        snackbarHost = {
-            SnackbarHost(
-                hostState = snackbarHostState,
-                snackbar = {
-                    Card(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable { snackbarHostState.currentSnackbarData?.dismiss() },
-                        backgroundColor = MaterialTheme.colors.primary
-                    ) {
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Center,
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            Row(
-                                modifier = Modifier.fillMaxWidth()
-                            ) {
-                                Text(
-                                    text = "Snack Bar Default",
-                                    color = Color.White,
-                                    fontWeight = FontWeight.Bold,
-                                    modifier = Modifier
-                                        .padding(30.dp)
-                                        .fillMaxWidth(0.8f)
-                                )
-                                IconButton(
-                                    //modifier = Modifier.size(20.dp).padding(20.dp),
-                                    onClick = { snackbarHostState.currentSnackbarData?.dismiss() }
-                                ) {
-                                    Icon(
-                                        Icons.Filled.HighlightOff,
-                                        contentDescription = "Ver comentario",
-                                        tint = Color.White
-                                    )
-                                }
-                            }
-                        }
-                    }
-                }
-            )
-        },
+        snackbarHost = { SnackBar(snackbarHostState) },
         drawerBackgroundColor = MaterialTheme.colors.primaryVariant,
         drawerShape = customShape(),
         drawerContent = { /* TODO DRAWER CONTENT --> Opciones: CerrarSesion, Configuracion, Filter * Family */ },
-        topBar = {
-            TopAppBar(
-                elevation = 0.dp,
-                backgroundColor = Color.Transparent,
-                modifier = Modifier.background(verticalGradient),
-                title = {
-                    Text(
-                        text = "DEV TITLE DEFAULT",
-                        modifier = Modifier
-                            .padding(30.dp, 0.dp, 0.dp, 0.dp),
-                        color = Color.White
-                    )
-                },
-                navigationIcon = {
-                    IconButton(
-                        onClick = {
-                            Logger.d("Click en options icon")
-                            scope.launch { scaffoldState.drawerState.open() }
-                        }) {
-                        Icon(Icons.Filled.Menu, contentDescription = null, tint = Color.White)
-                    }
-                },
-                actions = {
-                    IconButton(
-                        onClick = { /* TODO ICON BUTTON ACTION --> IR AL CARRITO */ }
-                    ) {
-                        Icon(
-                            Icons.Filled.ShoppingCart,
-                            contentDescription = "ShoppingCart",
-                            tint = Color.White
-                        )
-                    }
-                }
-            )
-        }
+        topBar = { TopAppBar(verticalGradient, scope, scaffoldState, snackbarHostState) }
     ) {
-        LazyColumn(
-            modifier = Modifier.fillMaxSize()
-        ) {
-            itemsIndexed(familyProducts.keys.toMutableList()) { index, family ->
-                Column(
-                ) {
-                    if (!excludedFamilies.contains(family)) {
-                        Text(family)
-                        HorizontalPager(
-                            count = familyProducts.get(family)?.size ?: 2,
-                            state = rememberPagerState(),
-                        ) { page ->
-                            Card(
-                                backgroundColor = MaterialTheme.colors.secondary,
-                                modifier = Modifier
-                                    //  .fillMaxWidth(0.8f)
-                                    .padding(5.dp)
-                                    .clickable(onClick = {
-                                        mainViewModel.getAllUsers {
-                                            Logger.i("Loading complete on family click")
-                                        }
-                                        //TODO POPUP DE OPCIONES
-
-                                    })
-                            ) {
-                                AsyncImage(
-                                    model = "${URL_HEAD_IMAGES}${familyProducts.get(family)?.get(page)?.image}",
-                                    contentDescription = null,
-                                    placeholder = painterResource(id = R.drawable.loading_image),
-                                    contentScale = ContentScale.Fit,
-                                    //   modifier = Modifier.fillMaxSize(0.8f)
-                                )
-
-                                /*      CoilImage(
-                            imageModel = "${URL_HEAD_IMAGES}${
-                                imagesByFamily.get(family)?.get(page)
-                            }",
-                            contentScale = ContentScale.Inside,
-                            previewPlaceholder = R.drawable.red,
-
-                            error = ImageBitmap.imageResource(R.drawable.broken_image),
-                            modifier = Modifier.fillMaxHeight(0.8f),
-
-                            )*/
-
-                                /* Image(
-                                 painter = rememberAsyncImagePainter("${URL_HEAD_IMAGES}${imagesByFamily.get(family)?.get(page)}"),
-                                 contentDescription = null,
-                                 modifier = Modifier.size(1128.dp)
-                            )*/
-
-                                Logger.d(
-                                    """
-                            family =>> $family
-                            index ==>> $index
-                            page ===>> $page
-                            url ====>> ${URL_HEAD_IMAGES}${familyProducts.get(family)?.get(page)?.image}
-                            """
-                                        .trimIndent()
-                                )
-                            }
-                        }
-                    }
-                }
-            }
-        }
+        Body(familyProducts, popUpDetailsOpen)
     }
 }
+
 
 @Composable
 fun customShape() = object : Shape {
@@ -269,5 +158,116 @@ fun customShape() = object : Shape {
     }
 }
 
+@Composable
+fun PopUpDetails(
+    mainViewModel: MainViewModel,
+    scope: CoroutineScope,
+    popUpDetailsOpen: MutableState<Boolean>,
+    customSpacing: Spacing,
+    verticalGradient: Brush,
+    snackbarHostState: SnackbarHostState
+) {
+    var scale by remember { mutableStateOf(1f) }
+
+    Dialog(
+        onDismissRequest = {
+        popUpDetailsOpen.value = false
+    }) {
+
+        Surface(
+            modifier = Modifier
+                .padding(customSpacing.small)
+                .wrapContentHeight(),
+
+            shape = RoundedCornerShape(5.dp),
+            color = Color.White
+        ) {
+            Column(modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight()) {
+                Row(
+                    horizontalArrangement = Arrangement.End,
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(brush = verticalGradient)
+                ) {
+
+
+                    /************ TITLE ************/
+                    Text(
+                        text = productSelected?.name ?: "Error",
+                        textAlign = TextAlign.Center,
+                        style = MaterialTheme.typography.body1.copy(color = Color.White),
+                        modifier = Modifier
+                            .fillMaxWidth(0.85f)
+                            .clip(RoundedCornerShape(4.dp))
+                            .background(Color.Transparent)
+                            .padding(12.dp)
+                            .clickable(onClick = { })
+                    )
+
+                    /************ CLOSE ************/
+                    IconButton(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(4.dp))
+                            .background(Color.Transparent),
+                        onClick = {
+                            popUpDetailsOpen.value = false
+                            scope.launch {
+                                snackbarHostState.currentSnackbarData?.dismiss()
+                                snackbarHostState.showSnackbar("")
+                            }
+                        },
+                    ) {
+                        Icon(
+                            Icons.Filled.Close,
+                            tint = MaterialTheme.colors.onSecondary,
+                            contentDescription = stringResource(R.string.Close)
+                        )
+                    }
+                }
+
+                Spacer(
+                    modifier = androidx.compose.ui.Modifier.height(
+                        customSpacing.mediumSmall
+                    )
+                )
+
+                Box{
+                    AsyncImage(
+                        model = ImageRequest.Builder(LocalContext.current)
+                            .data("$URL_HEAD_IMAGES${productSelected!!.image}")
+                            .crossfade(true)
+                            .crossfade(1000)
+                            .build(),
+                        contentDescription = null,
+                        placeholder = painterResource(id = R.drawable.loading_image),
+                        contentScale = ContentScale.Fit,
+                        modifier = Modifier
+                            .align(Alignment.Center)
+                            .fillMaxWidth()
+                            .fillMaxHeight(0.9f)
+                            .graphicsLayer(
+                                scaleX = scale,
+                                scaleY = scale
+                            )
+                            .pointerInput(Unit) {
+                                detectTransformGestures { _, _, zoom, _ ->
+                                    scale = when {
+                                        scale < 0.5f -> 0.5f
+                                        scale > 3f -> 3f
+                                        else -> scale * zoom
+                                    }
+                                }
+                            }
+                        //   modifier = Modifier.fillMaxSize(0.8f)
+                    )
+                }
+                Text("") // ÑAPAS
+            }
+        }
+    }
+}
 
 
