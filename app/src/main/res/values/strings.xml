@@ -48,4 +48,5 @@
     <string name="login_correct">Login Successful </string>
     <string name="register_correct">Register Successful </string>
     <string name="login_incorrect">Email or Password incorrect</string>
+    <string name="errorInfo">\" Press icon of wrong field to see errors \"</string>
 </resources>

@@ -203,9 +203,11 @@ private fun isValidated(
     context: Context
 ): Any {
 
-    val errorBasic = context.getString(R.string.errorBasicInfo)
-    val errorPay = context.getString(R.string.errorPay1) + "\n" + context.getString(R.string.errorPay2)
-    val errorBoth = context.getString(R.string.errorBoth1) + "\n" + context.getString(R.string.errorBoth2)
+    val errorInfo = "\n" + context.getString(R.string.errorInfo)
+    val errorBasic = context.getString(R.string.errorBasicInfo) + errorInfo
+    val errorPay = context.getString(R.string.errorPay1) + "\n" + context.getString(R.string.errorPay2) + errorInfo
+    val errorBoth = context.getString(R.string.errorBoth1) + "\n" + context.getString(R.string.errorBoth2) + errorInfo
+    
 
     if (openBuyInfo.value) {
         return if (basicInfoChecked.value && payInfoChecked.value) option1

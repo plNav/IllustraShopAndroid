@@ -65,7 +65,7 @@ class MainActivity : ComponentActivity() {
 
                 NavHost(
                     navController = navController,
-                    startDestination = ScreenNav.RegisterScreen.route
+                    startDestination = ScreenNav.AdminScreen.route
                 ) {
 
                     /*** LOGIN SCREEN ***/

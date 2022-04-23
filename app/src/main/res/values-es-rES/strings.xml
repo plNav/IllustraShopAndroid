@@ -49,4 +49,5 @@
     <string name="login_correct">Inicio de sesión correcto </string>
     <string name="register_correct">Registro correcto </string>
     <string name="login_incorrect">Email o Contraseña incorrectos</string>
+    <string name="errorInfo">\" Pulsa el icono de un campo erróneo para ver detalles \"</string>
 </resources>
