@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
+import com.google.accompanist.pager.PagerDefaults
 import com.google.accompanist.pager.rememberPagerState
 import pab.lop.illustrashopandroid.data.model.product_stock.product_stock_response
 import pab.lop.illustrashopandroid.utils.excludedFamilies
@@ -24,13 +25,13 @@ import pab.lop.illustrashopandroid.utils.excludedFamilies
 @Composable
 fun Body(familyProducts: HashMap<String, List<product_stock_response>>, popUpDetailsOpen: MutableState<Boolean>) {
     LazyColumn(
-        modifier = Modifier.fillMaxSize()
+       // modifier = Modifier.fillMaxSize()
     ) {
         itemsIndexed(familyProducts.keys.toMutableList()) { index, family ->
             Column(
                 modifier = Modifier
                     .wrapContentHeight()
-                    .fillMaxWidth()
+                    //.fillMaxWidth()
                     .border(0.5.dp, MaterialTheme.colors.primaryVariant)
             ) {
                 if (!excludedFamilies.contains(family)) {
@@ -47,11 +48,11 @@ fun Body(familyProducts: HashMap<String, List<product_stock_response>>, popUpDet
                     HorizontalPager(
                         count = familyProducts.get(family)?.size ?: 2,
                         contentPadding = PaddingValues(horizontal = 64.dp, vertical = 10.dp),
+                        //flingBehavior = PagerDefaults.flingBehavior(),
 
-                        state = rememberPagerState(),
+                    state = rememberPagerState(),
                         modifier = Modifier
-                            .height(400.dp)
-                            .fillMaxWidth()
+                            .height(400.dp) //TODO DEPEND ON SCREEN SIZE
                     ) { page ->
                         ImageContent(
                             page = page,

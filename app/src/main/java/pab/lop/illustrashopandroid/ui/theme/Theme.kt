@@ -15,7 +15,9 @@ private val DarkColorPalette = darkColors(
     primaryVariant = GreenPrimaryVariant,
     secondary = SecondaryGreen,
     onError = GrayDisabled,
-    onSecondary = OnSecondaryRed
+    onSecondary = OnSecondaryRed,
+    surface = SurfaceAlmostBlack,
+    background = SurfaceAlmostBlack
 
 )
 
@@ -24,17 +26,10 @@ private val LightColorPalette = lightColors(
     primaryVariant = GreenPrimaryVariant,
     secondary = SecondaryGreen,
     onError = GrayDisabled,
-    onSecondary = OnSecondaryRed
-
-
-    /* Other default colors to override
-    background = Color.White,
-    surface = Color.White,
-    onPrimary = Color.White,
-    onSecondary = Color.Black,
-    onBackground = Color.Black,
-    onSurface = Color.Black,
-    */
+    onSecondary = OnSecondaryRed,
+    surface = SurfaceAlmostWhite,
+    background = SurfaceAlmostWhite,
+   // onSurface = SurfaceAlmostBlack
 )
 
 //TODO IMPLEMENTAR NO ACTION BAR

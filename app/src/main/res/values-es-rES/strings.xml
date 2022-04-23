@@ -50,4 +50,7 @@
     <string name="register_correct">Registro correcto </string>
     <string name="login_incorrect">Email o Contraseña incorrectos</string>
     <string name="errorInfo">\" Pulsa el icono de un campo erróneo para ver detalles \"</string>
+    <string name="illustrashop">ILLUSTRASHOP</string>
+    <string name="addWish">Añadir a la lista de deseos</string>
+    <string name="addShopping">Añadir a la cesta</string>
 </resources>

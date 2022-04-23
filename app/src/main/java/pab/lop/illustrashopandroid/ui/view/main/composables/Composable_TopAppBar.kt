@@ -4,23 +4,28 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AddShoppingCart
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.orhanobut.logger.Logger
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import pab.lop.illustrashopandroid.R
 
 @Composable
 fun TopAppBar(
     verticalGradient: Brush,
     scope: CoroutineScope,
     scaffoldState: ScaffoldState,
-    snackbarHostState: SnackbarHostState
+    snackbarHostState: SnackbarHostState,
+    addShoppingCart: MutableState<Boolean>
 ) {
     TopAppBar(
         elevation = 0.dp,
@@ -28,7 +33,7 @@ fun TopAppBar(
         modifier = Modifier.background(verticalGradient),
         title = {
             Text(
-                text = "DEV TITLE DEFAULT",
+                text = stringResource(R.string.illustrashop),
                 modifier = Modifier
                     .padding(30.dp, 0.dp, 0.dp, 0.dp),
                 color = Color.White
@@ -54,9 +59,9 @@ fun TopAppBar(
                 }
             ) {
                 Icon(
-                    Icons.Filled.ShoppingCart,
+                    if(addShoppingCart.value) Icons.Filled.AddShoppingCart else Icons.Filled.ShoppingCart,
                     contentDescription = "ShoppingCart",
-                    tint = Color.White
+                    tint = /*if(addShoppingCart.value) Color.Yellow else*/ Color.White,
                 )
             }
         }

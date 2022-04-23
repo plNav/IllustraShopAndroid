@@ -49,4 +49,7 @@
     <string name="register_correct">Register Successful </string>
     <string name="login_incorrect">Email or Password incorrect</string>
     <string name="errorInfo">\" Press icon of wrong field to see errors \"</string>
+    <string name="illustrashop">ILLUSTRASHOP</string>
+    <string name="addWish">Add to WishList</string>
+    <string name="addShopping">Add to Shopping Cart</string>
 </resources>

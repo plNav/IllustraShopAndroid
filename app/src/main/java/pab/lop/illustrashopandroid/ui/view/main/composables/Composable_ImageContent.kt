@@ -2,6 +2,7 @@ package pab.lop.illustrashopandroid.ui.view.main.composables
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material.Card
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -76,7 +77,6 @@ fun PagerScope.ImageContent(
                 .build(),
             contentDescription = null,
             //placeholder = painterResource(id = R.drawable.loading_image),
-            contentScale = ContentScale.Fit
             //   modifier = Modifier.fillMaxSize(0.8f)
         )
 

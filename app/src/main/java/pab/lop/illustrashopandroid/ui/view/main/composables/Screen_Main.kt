@@ -18,11 +18,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.*
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Density
@@ -32,7 +30,6 @@ import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
-import coil.compose.rememberImagePainter
 import coil.request.ImageRequest
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.orhanobut.logger.Logger
@@ -56,9 +53,10 @@ fun Main(
     val loadProductsFamily = remember { mutableStateOf(false) }
     val startLoading = remember { mutableStateOf(false) }
     val popUpDetailsOpen = remember { mutableStateOf(false) }
+    val addShoppingCart = remember { mutableStateOf(false) }
 
     val scope = rememberCoroutineScope()
-    val snackbarHostState = remember {SnackbarHostState()}
+    val snackbarHostState = remember { SnackbarHostState() }
 
     if (userSelected == null) userSelected = userDefaultNoAuth
     Logger.i(userSelected.toString())
@@ -100,7 +98,8 @@ fun Main(
             mainViewModel = mainViewModel,
             familyProducts = familyProducts,
             popUpDetailsOpen = popUpDetailsOpen,
-            verticalGradient = verticalGradient
+            verticalGradient = verticalGradient,
+            addShoppingCart = addShoppingCart
         )
 
     if (popUpDetailsOpen.value) {
@@ -110,7 +109,8 @@ fun Main(
             popUpDetailsOpen = popUpDetailsOpen,
             customSpacing = customSpacing,
             verticalGradient = verticalGradient,
-            snackbarHostState = snackbarHostState
+            snackbarHostState = snackbarHostState,
+            addShoppingCart = addShoppingCart
         )
     }
 }
@@ -128,6 +128,7 @@ fun MainStart(
     familyProducts: HashMap<String, List<product_stock_response>>,
     popUpDetailsOpen: MutableState<Boolean>,
     verticalGradient: Brush,
+    addShoppingCart: MutableState<Boolean>,
 ) {
 
     Scaffold(
@@ -136,7 +137,14 @@ fun MainStart(
         drawerBackgroundColor = MaterialTheme.colors.primaryVariant,
         drawerShape = customShape(),
         drawerContent = { /* TODO DRAWER CONTENT --> Opciones: CerrarSesion, Configuracion, Filter * Family */ },
-        topBar = { TopAppBar(verticalGradient, scope, scaffoldState, snackbarHostState) }
+        topBar = {
+            TopAppBar(
+                verticalGradient = verticalGradient,
+                scope = scope,
+                scaffoldState = scaffoldState,
+                snackbarHostState = snackbarHostState, addShoppingCart = addShoppingCart
+            )
+        }
     ) {
         Body(familyProducts, popUpDetailsOpen)
     }
@@ -161,188 +169,6 @@ fun customShape() = object : Shape {
     }
 }
 
-@Composable
-fun PopUpDetails(
-    mainViewModel: MainViewModel,
-    scope: CoroutineScope,
-    popUpDetailsOpen: MutableState<Boolean>,
-    customSpacing: Spacing,
-    verticalGradient: Brush,
-    snackbarHostState: SnackbarHostState
-) {
-    var scale by remember { mutableStateOf(1f) }
-    val painter = rememberAsyncImagePainter(productSelected!!.image)
 
-
-    Dialog(
-        onDismissRequest = {
-        popUpDetailsOpen.value = false
-    }) {
-
-        Surface(
-            modifier = Modifier
-                .padding(customSpacing.small)
-                .wrapContentHeight(),
-
-            shape = RoundedCornerShape(5.dp),
-            color = Color.White
-        ) {
-            Column(modifier = Modifier
-              //  .fillMaxWidth()
-                .wrapContentHeight()) {
-                Row(
-                    horizontalArrangement = Arrangement.End,
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(brush = verticalGradient)
-                ) {
-
-
-                    /************ TITLE ************/
-                    Text(
-                        text = productSelected?.name ?: "Error",
-                        textAlign = TextAlign.Center,
-                        style = MaterialTheme.typography.body1.copy(color = Color.White),
-                        modifier = Modifier
-                            .fillMaxWidth(0.85f)
-                            .clip(RoundedCornerShape(4.dp))
-                            .background(Color.Transparent)
-                            .padding(12.dp)
-                            .clickable(onClick = { })
-                    )
-
-                    /************ CLOSE ************/
-                    IconButton(
-                        modifier = Modifier
-                            .clip(RoundedCornerShape(4.dp))
-                            .background(Color.Transparent),
-                        onClick = {
-                            popUpDetailsOpen.value = false
-                            scope.launch {
-                                snackbarHostState.currentSnackbarData?.dismiss()
-                                snackbarHostState.showSnackbar("")
-                            }
-                        },
-                    ) {
-                        Icon(
-                            Icons.Filled.Close,
-                            tint = MaterialTheme.colors.onSecondary,
-                            contentDescription = stringResource(R.string.Close)
-                        )
-                    }
-                }
-
-
-                Text(text = "${productSelected!!.price} €")
-
-                ZoomableImage(isRotation = false)
-
-                Text(text = "${productSelected!!.price} €")
-
-
-
-               /* Box{
-                    AsyncImage(
-                        model = ImageRequest.Builder(LocalContext.current)
-                            .data("$URL_HEAD_IMAGES${productSelected!!.image}")
-                            .crossfade(true)
-                            .crossfade(1000)
-                            .build(),
-                        contentDescription = null,
-                        placeholder = painterResource(id = R.drawable.loading_image),
-                        contentScale = ContentScale.Fit,
-                        modifier = Modifier
-                            .align(Alignment.Center)
-                            .fillMaxWidth()
-                            .fillMaxHeight(0.9f)
-                            .graphicsLayer(
-                                scaleX = scale,
-                                scaleY = scale
-                            )
-                            .pointerInput(Unit) {
-                                detectTransformGestures { _, _, zoom, _ ->
-                                    scale = when {
-                                        scale < 0.5f -> 0.5f
-                                        scale > 3f -> 3f
-                                        else -> scale * zoom
-                                    }
-                                }
-                            }
-                        //   modifier = Modifier.fillMaxSize(0.8f)
-                    )
-                }*/
-               // Text("") // ÑAPAS
-            }
-        }
-    }
-}
-
-@Composable
-fun ZoomableImage(
-    maxScale: Float = .30f,
-    minScale: Float = 3f,
-    contentScale: ContentScale = ContentScale.Fit,
-    isRotation: Boolean = false,
-    isZoomable: Boolean = true
-) {
-    val scale = remember { mutableStateOf(1f) }
-    val rotationState = remember { mutableStateOf(1f) }
-    val offsetX = remember { mutableStateOf(1f) }
-    val offsetY = remember { mutableStateOf(1f) }
-
-    Box(
-        modifier = Modifier
-            .clip(RectangleShape)
-            .background(Color.Transparent)
-            .pointerInput(Unit) {
-                if (isZoomable) {
-                    forEachGesture {
-                        awaitPointerEventScope {
-                            awaitFirstDown()
-                            do {
-                                val event = awaitPointerEvent()
-                                scale.value *= event.calculateZoom()
-                                if (scale.value > 1) {
-                                    val offset = event.calculatePan()
-                                    offsetX.value += offset.x
-                                    offsetY.value += offset.y
-                                    rotationState.value += event.calculateRotation()
-                                } else {
-                                    scale.value = 1f
-                                    offsetX.value = 1f
-                                    offsetY.value = 1f
-                                }
-                            } while (event.changes.any { it.pressed })
-                        }
-                    }
-                }
-            }
-
-    ) {
-        AsyncImage(
-            model = ImageRequest.Builder(LocalContext.current)
-                .data("$URL_HEAD_IMAGES${productSelected!!.image}")
-                .crossfade(true)
-                .crossfade(1000)
-                .build(),
-            contentDescription = null,
-            contentScale = contentScale,
-            modifier = Modifier
-                .align(Alignment.Center)
-                .graphicsLayer {
-                    if (isZoomable) {
-                        scaleX = maxOf(maxScale, minOf(minScale, scale.value))
-                        scaleY = maxOf(maxScale, minOf(minScale, scale.value))
-                        if (isRotation) {
-                            rotationZ = rotationState.value
-                        }
-                        translationX = offsetX.value
-                        translationY = offsetY.value
-                    }
-                }
-        )
-    }
-}
 
 
