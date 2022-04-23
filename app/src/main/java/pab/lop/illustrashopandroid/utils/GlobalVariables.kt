@@ -1,7 +1,9 @@
 package pab.lop.illustrashopandroid.utils
 
 import pab.lop.illustrashopandroid.data.model.family.family_response
+import pab.lop.illustrashopandroid.data.model.product_shopping.product_shopping_response
 import pab.lop.illustrashopandroid.data.model.product_stock.product_stock_response
+import pab.lop.illustrashopandroid.data.model.shopping_cart.shopping_cart_response
 import pab.lop.illustrashopandroid.data.model.user.user_response
 import java.util.*
 import kotlin.collections.HashMap
@@ -18,6 +20,8 @@ val regexSpecialChars = Regex("[^A-Za-z0-9 ]")
 var productSelected : product_stock_response? = null
 var familySelected : family_response? = null
 var userSelected : user_response? = null
+var shoppingCartSelected : shopping_cart_response? = null
+var currentShoppingProducts : MutableList<product_shopping_response> = mutableListOf()
 
 val userDefaultNoAuth = user_response(
     _id = "",
@@ -33,12 +37,19 @@ val userDefaultNoAuth = user_response(
     phone = "",
     pay_method = "",
     pay_number = "",
-    shopping_card_id = "",
     total_spent = 0.0f,
     register_count = 0.0f,
     verified_buys = listOf(),
     wishlist = listOf(),
     first_register = Date(),
     last_register = Date()
+)
+
+val shoppingCartDefaultNoAuth = shopping_cart_response(
+    _id = "",
+    id_user = "",
+    discount = "",
+    pay_method = "",
+    comment = ""
 )
 

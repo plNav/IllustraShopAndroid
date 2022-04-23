@@ -9,8 +9,12 @@ import androidx.lifecycle.viewModelScope
 import com.orhanobut.logger.Logger
 import kotlinx.coroutines.launch
 import pab.lop.illustrashopandroid.data.api.ApiServices
+import pab.lop.illustrashopandroid.data.model.product_shopping.product_shopping_request
+import pab.lop.illustrashopandroid.data.model.product_shopping.product_shopping_response
 import pab.lop.illustrashopandroid.data.model.user.user_response
 import pab.lop.illustrashopandroid.data.model.product_stock.product_stock_response
+import pab.lop.illustrashopandroid.data.model.shopping_cart.shopping_cart_response
+import retrofit2.Response
 
 
 @SuppressLint("MutableCollectionMutableState")
@@ -19,6 +23,11 @@ class MainViewModel : ViewModel() {
 
     var allUsersClientResponse: List<user_response> by mutableStateOf(listOf())
     var familyProductsResponse: HashMap<String, List<product_stock_response>> by mutableStateOf(hashMapOf())
+    var currentShoppingCartResponse: shopping_cart_response? by mutableStateOf(null)
+    var currentProductsShopping : MutableList<product_shopping_response> by mutableStateOf(mutableListOf())
+    var updateOkResponse : Boolean by mutableStateOf(false)
+    var currentProductShoppingResponse : product_shopping_response? by mutableStateOf(null)
+
 
 
     private var errorMessage: String by mutableStateOf("")
@@ -130,6 +139,101 @@ class MainViewModel : ViewModel() {
 
             } catch (e: Exception) {
                 Logger.e("FAILURE getProductsFamily \n $e")
+            }
+        }
+    }
+
+    fun getShoppingCart(id_user: String, onSuccessCallback: () -> Unit) {
+
+        val apiServices = ApiServices.getInstance()
+        try {
+            viewModelScope.launch {
+                val response: Response<shopping_cart_response> = apiServices.getShoppingCart(id_user)
+                if (response.isSuccessful) {
+                    Logger.i("Get ShoppingCart \n${response.body().toString()}")
+                    currentShoppingCartResponse = response.body()
+                    onSuccessCallback()
+                }
+            }
+        } catch (e: Exception) {
+            errorMessage = e.message.toString()
+            Logger.e("FAILURE getting shoppingCarts")
+        }
+
+    }
+
+    fun createProductShopping(newProduct: product_shopping_request, onSuccessCallback: () -> Unit) {
+
+        val apiServices = ApiServices.getInstance()
+        viewModelScope.launch {
+            try {
+                val response: Response<product_shopping_response> = apiServices.createProductShopping(newProduct)
+                if (response.isSuccessful) {
+                    Logger.i("Create product shopping OK \n $response \n ${response.body()}")
+                    currentProductShoppingResponse = response.body()!!
+                    onSuccessCallback()
+                } else Logger.e("Error product shopping creation $response")
+            } catch (e: Exception) {
+                errorMessage = e.message.toString()
+                Logger.e("FAILURE create shopping product")
+            }
+
+        }
+
+    }
+
+    fun getAllProductShopping(id_cart: String, onSuccessCallback: () -> Unit) {
+
+        val apiServices = ApiServices.getInstance()
+        try {
+            viewModelScope.launch {
+                val response: Response<List<product_shopping_response>> = apiServices.getAllProductsFromShoppingCart(id_cart)
+                if (response.isSuccessful) {
+                    Logger.i("all product shopping ok \n${response.body().toString()}")
+                    currentProductsShopping = mutableListOf()
+
+                    /*for(product : product_shopping_response in response.body()!!){
+                        if(currentProductsShopping.isNotEmpty()){
+                            var isRepeated = false
+                            for (repeated in currentProductsShopping){
+                                if(repeated.name == product.name){
+                                    repeated.amount++
+                                    repeated.total = repeated.price * repeated.amount
+                                    isRepeated = true
+                                }
+                            }
+                            if(!isRepeated){
+                                product.total = product.amount * product.price
+                                currentProductsShopping.add(product)
+                            }
+                        }else{
+                            product.total = product.amount * product.price
+                            currentProductsShopping.add(product)
+                        }
+                    }*/
+                    currentProductsShopping = (response.body() as MutableList<product_shopping_response>?)!!
+                    onSuccessCallback()
+                } else Logger.e("Error get all product shopping $response")
+            }
+        } catch (e: Exception) {
+            errorMessage = e.message.toString()
+            Logger.e("FAILURE getting all product shopping")
+        }
+    }
+
+    fun updateProductShopping(product: product_shopping_response, onSuccessCallback: () -> Unit) {
+        viewModelScope.launch {
+            val apiServices = ApiServices.getInstance()
+            updateOkResponse = false
+            try{
+                val response = apiServices.updateProductShopping(product._id, product)
+                if (response.isSuccessful){
+                    updateOkResponse = true
+                    Logger.i("SUCCESS updateProductShopping \n $response ${response.body()}")
+                }else Logger.e("FAILURE response update product Shopping ")
+            }catch (e: Exception){
+                errorMessage = e.message.toString()
+                Logger.e("FAILURE updatee product Shopping\n${e.message.toString()}")
             }
         }
     }

@@ -10,6 +10,8 @@ import com.orhanobut.logger.Logger
 import pab.lop.illustrashopandroid.data.api.ApiServices
 import kotlinx.coroutines.*
 import pab.lop.illustrashopandroid.data.model.family.family_response
+import pab.lop.illustrashopandroid.data.model.shoppin.shopping_cart_request
+import pab.lop.illustrashopandroid.data.model.shopping_cart.shopping_cart_response
 import pab.lop.illustrashopandroid.data.model.user.user_request
 import pab.lop.illustrashopandroid.data.model.user.user_response
 import pab.lop.illustrashopandroid.utils.getSHA256
@@ -18,6 +20,8 @@ import retrofit2.Response
 class LoginRegisterViewModel : ViewModel() {
 
     var currentUserResponse: MutableState<user_response?> = mutableStateOf(null)
+    var currentShoppingCartResponse : MutableState<shopping_cart_response?> = mutableStateOf(null)
+
 
     var usernameListResponse : List<String> by mutableStateOf(listOf())
     var emailListResponse : List<String> by mutableStateOf(listOf())
@@ -103,6 +107,40 @@ class LoginRegisterViewModel : ViewModel() {
                 errorMessage = e.message.toString()
                 Logger.e("FAILURE create User")
             }
+        }
+    }
+
+    fun createShoppingCart(newShoppingCart : shopping_cart_request, onSuccessCallback: () -> Unit){
+        val apiServices = ApiServices.getInstance()
+        viewModelScope.launch {
+            try{
+                val response : Response<shopping_cart_response> = apiServices.createShoppingCart(newShoppingCart)
+                if(response.isSuccessful){
+                    currentShoppingCartResponse.value = response.body()
+                    Logger.i("Create Shopping Cart OK \n $response \n ${response.body()}")
+                    onSuccessCallback()
+                }else Logger.e("Error Response  Shopping Cart $response")
+            }catch (e: Exception){
+                errorMessage = e.message.toString()
+                Logger.e("FAILURE create User")
+            }
+        }
+    }
+
+    fun getShoppingCartFromUser(id_user: String, onSuccessCallback: () -> Unit) {
+        val apiServices = ApiServices.getInstance()
+        try{
+            viewModelScope.launch {
+                val response : Response<shopping_cart_response> = apiServices.getShoppingCart(id_user)
+                if(response.isSuccessful){
+                    Logger.i("Get ShoppingCart \n${response.body().toString()}")
+                    currentShoppingCartResponse.value = response.body()
+                    onSuccessCallback()
+                }
+            }
+        }catch (e: Exception){
+            errorMessage = e.message.toString()
+            Logger.e("FAILURE getting shoppingCarts")
         }
     }
 }

@@ -7,8 +7,12 @@ import okhttp3.RequestBody
 import pab.lop.illustrashopandroid.data.model.user.user_response
 import pab.lop.illustrashopandroid.data.model.family.family_request
 import pab.lop.illustrashopandroid.data.model.family.family_response
+import pab.lop.illustrashopandroid.data.model.product_shopping.product_shopping_request
+import pab.lop.illustrashopandroid.data.model.product_shopping.product_shopping_response
 import pab.lop.illustrashopandroid.data.model.product_stock.product_stock_request
 import pab.lop.illustrashopandroid.data.model.product_stock.product_stock_response
+import pab.lop.illustrashopandroid.data.model.shoppin.shopping_cart_request
+import pab.lop.illustrashopandroid.data.model.shopping_cart.shopping_cart_response
 import pab.lop.illustrashopandroid.data.model.user.user_request
 import pab.lop.illustrashopandroid.utils.URL_HEAD_API
 import retrofit2.Call
@@ -119,6 +123,27 @@ interface ApiServices {
 
     @DELETE("product/stock/{id}")
     suspend fun deleteProductStock(@Path(value = "id" )oldProductId: String): Response<Any>
+
+
+    /********************SHOPPING_CART**********************/
+
+    @GET("shopping_cart/user/{id_user}")
+    suspend fun getShoppingCart(@Path(value = "id_user") id_user : String): Response<shopping_cart_response>
+
+    @POST("shopping_cart")
+    suspend fun createShoppingCart(@Body newShoppingCart : shopping_cart_request) : Response<shopping_cart_response>
+
+
+    /********************PRODUCT_SHOPPING**********************/
+
+    @GET("product/shopping/cart/{id_cart}")
+    suspend fun getAllProductsFromShoppingCart(@Path(value = "id_cart") id_cart : String) : Response<List<product_shopping_response>>
+
+    @POST("product/shopping")
+    suspend fun createProductShopping(@Body newProductShopping : product_shopping_request) : Response<product_shopping_response>
+
+    @PUT("product/shopping/{id}")
+    suspend fun updateProductShopping(@Path(value = "id") product_id: String, @Body product: product_shopping_response): Response<Any>
 
 
 }

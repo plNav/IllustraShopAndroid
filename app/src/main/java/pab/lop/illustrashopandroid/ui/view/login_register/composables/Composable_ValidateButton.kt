@@ -26,11 +26,14 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.orhanobut.logger.Logger
 import pab.lop.illustrashopandroid.R
+import pab.lop.illustrashopandroid.data.model.shoppin.shopping_cart_request
 import pab.lop.illustrashopandroid.data.model.user.user_request
 import pab.lop.illustrashopandroid.ui.theme.Spacing
 import pab.lop.illustrashopandroid.ui.view.login_register.LoginRegisterViewModel
 import pab.lop.illustrashopandroid.utils.getSHA256
+import pab.lop.illustrashopandroid.utils.shoppingCartSelected
 import pab.lop.illustrashopandroid.utils.userSelected
 import pablo_lonav.android.utils.ScreenNav
 
@@ -189,7 +192,13 @@ fun validateClick(
     loginRegisterViewModel.createUser(newUser){
         userSelected = loginRegisterViewModel.currentUserResponse.value
         Toast.makeText(context, context.getString(R.string.register_correct) + "\n" + userSelected!!.username, Toast.LENGTH_SHORT).show()
-        navController.navigate(ScreenNav.MainScreen.route)
+        if(userSelected!!._id.isNotEmpty()){
+            loginRegisterViewModel.createShoppingCart(shopping_cart_request(userSelected!!._id)){
+                shoppingCartSelected = loginRegisterViewModel.currentShoppingCartResponse.value
+                Logger.i("User and Shopping Cart created")
+                navController.navigate(ScreenNav.MainScreen.route)
+            }
+        }
     }
 }
 

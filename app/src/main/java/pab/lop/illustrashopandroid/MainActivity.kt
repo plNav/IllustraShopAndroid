@@ -25,6 +25,7 @@ import pab.lop.illustrashopandroid.ui.view.admin.composables.Edit_Product
 import pab.lop.illustrashopandroid.ui.view.login_register.LoginRegisterViewModel
 import pab.lop.illustrashopandroid.ui.view.login_register.composables.Register
 import pab.lop.illustrashopandroid.ui.view.main.MainViewModel
+import pab.lop.illustrashopandroid.ui.view.main.composables.ShoppingCart
 import pab.lop.illustrashopandroid.ui.view.pay.PayViewModel
 import pab.lop.illustrashopandroid.ui.view.pay.composables.Pay
 import pab.lop.illustrashopandroid.utils.WindowInfo
@@ -68,7 +69,7 @@ class MainActivity : ComponentActivity() {
 
                 NavHost(
                     navController = navController,
-                    startDestination = ScreenNav.MainScreen.route
+                    startDestination = ScreenNav.LoginScreen.route
                 ) {
 
                     /*** LOGIN SCREEN ***/
@@ -108,6 +109,19 @@ class MainActivity : ComponentActivity() {
                             customSpacing = customSpacing
                         )
                         BackHandler(true) { }
+                    }
+
+                    /*** SHOPPING CART SCREEN ***/
+                    composable(
+                        route = ScreenNav.ShoppingCartScreen.route
+                    ) {
+                        ShoppingCart(
+                            navController = navController,
+                            mainViewModel = mainViewModel,
+                            context = applicationContext,
+                            customSpacing = customSpacing
+                        )
+                        BackHandler(false) { }
                     }
 
                     /*** UPLOAD SCREEN ***/

@@ -53,4 +53,10 @@
     <string name="illustrashop">ILLUSTRASHOP</string>
     <string name="addWish">Añadir a la lista de deseos</string>
     <string name="addShopping">Añadir a la cesta</string>
+    <string name="empty_cart">Cesta vacía</string>
+    <string name="shopping_cart">Cesta de la compra</string>
+    <string name="buyNow">Comprar Ahora!</string>
+    <string name="total">TOTAL</string>
+    <string name="save">GUARDAR</string>
+
 </resources>

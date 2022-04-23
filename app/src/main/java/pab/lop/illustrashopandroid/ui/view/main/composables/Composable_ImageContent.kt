@@ -80,23 +80,6 @@ fun PagerScope.ImageContent(
             //   modifier = Modifier.fillMaxSize(0.8f)
         )
 
-        /*      CoilImage(
-                            imageModel = "${URL_HEAD_IMAGES}${
-                                imagesByFamily.get(family)?.get(page)
-                            }",
-                            contentScale = ContentScale.Inside,
-                            previewPlaceholder = R.drawable.red,
-
-                            error = ImageBitmap.imageResource(R.drawable.broken_image),
-                            modifier = Modifier.fillMaxHeight(0.8f),
-
-                            )*/
-
-        /* Image(
-                                 painter = rememberAsyncImagePainter("${URL_HEAD_IMAGES}${imagesByFamily.get(family)?.get(page)}"),
-                                 contentDescription = null,
-                                 modifier = Modifier.size(1128.dp)
-                            )*/
 
         Logger.d(
             """

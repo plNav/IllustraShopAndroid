@@ -40,6 +40,7 @@ import androidx.navigation.NavController
 import pab.lop.illustrashopandroid.R
 import pab.lop.illustrashopandroid.ui.theme.*
 import pab.lop.illustrashopandroid.ui.view.login_register.LoginRegisterViewModel
+import pab.lop.illustrashopandroid.utils.shoppingCartSelected
 import pab.lop.illustrashopandroid.utils.userDefaultNoAuth
 import pab.lop.illustrashopandroid.utils.userSelected
 import pablo_lonav.android.utils.ScreenNav
@@ -62,8 +63,9 @@ fun Login(
 
     val keyboardController = LocalSoftwareKeyboardController.current
 
-    val email = remember { mutableStateOf("") }
-    val password = remember { mutableStateOf("") }
+    //TODO DEV CREDENTIALS HARDCODED
+    val email = remember { mutableStateOf("pab2@email.com") }
+    val password = remember { mutableStateOf("1234") }
 
     var passwordVisibility by remember { mutableStateOf(false) }
 
@@ -289,12 +291,16 @@ fun validateLoginClick(
     else {
         loginRegisterViewModel.validateUser(email.value, password.value, onSuccessCallback = {
             userSelected = loginRegisterViewModel.currentUserResponse.value
-            Toast.makeText(
-                context,
-                context.getString(R.string.login_correct) + "\n" + userSelected!!.username,
-                Toast.LENGTH_SHORT
-            ).show()
-            navController.navigate(ScreenNav.MainScreen.route)
+
+            if(userSelected!!._id.isNotEmpty()){
+                loginRegisterViewModel.getShoppingCartFromUser(userSelected!!._id){
+                    shoppingCartSelected = loginRegisterViewModel.currentShoppingCartResponse.value
+                    Toast.makeText(
+                        context, context.getString(R.string.login_correct) + "\n" + userSelected!!.username, Toast.LENGTH_SHORT
+                    ).show()
+                    navController.navigate(ScreenNav.MainScreen.route)
+                }
+            }
         }, onFailureCallback = {
             Toast.makeText(context, context.getString(R.string.login_incorrect), Toast.LENGTH_SHORT).show()
         })

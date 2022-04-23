@@ -16,7 +16,6 @@ data class user_response(
     var phone : String,
     var pay_method : String,
     var pay_number : String,
-    var shopping_card_id : String,
     var total_spent : Float,
     var register_count : Float,
     var verified_buys : List<String>,

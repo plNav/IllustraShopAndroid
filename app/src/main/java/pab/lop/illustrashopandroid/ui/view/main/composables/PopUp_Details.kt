@@ -26,13 +26,18 @@ import androidx.compose.ui.window.Dialog
 import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
+import com.orhanobut.logger.Logger
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import pab.lop.illustrashopandroid.R
+import pab.lop.illustrashopandroid.data.model.product_shopping.product_shopping_request
+import pab.lop.illustrashopandroid.data.model.shoppin.shopping_cart_request
 import pab.lop.illustrashopandroid.ui.theme.Spacing
 import pab.lop.illustrashopandroid.ui.view.main.MainViewModel
 import pab.lop.illustrashopandroid.utils.URL_HEAD_IMAGES
+import pab.lop.illustrashopandroid.utils.currentShoppingProducts
 import pab.lop.illustrashopandroid.utils.productSelected
+import pab.lop.illustrashopandroid.utils.shoppingCartSelected
 
 @Composable
 fun PopUpDetails(
@@ -119,12 +124,34 @@ fun PopUpDetails(
                     modifier = Modifier
                         .fillMaxWidth()
                         .clickable(onClick = {
-                            addShoppingCart.value = true
-                            popUpDetailsOpen.value = false
-                            scope.launch {
-                                snackbarHostState.currentSnackbarData?.dismiss()
-                                snackbarHostState.showSnackbar("")
+                            var isRepeated = false
+
+
+                            if(currentShoppingProducts.isEmpty()){
+                                createProductShopping(mainViewModel, addShoppingCart, popUpDetailsOpen, scope, snackbarHostState)
+                            }else{
+                                for(product in currentShoppingProducts){
+                                    if(product.name == productSelected!!.name){
+                                        product.amount++
+                                        product.total = product.amount * product.price
+                                        isRepeated = true
+                                        mainViewModel.updateProductShopping(product){
+                                            Logger.i("Update OK")
+                                        }
+                                    }
+                                }
+                                if(!isRepeated){
+                                    createProductShopping(mainViewModel, addShoppingCart, popUpDetailsOpen, scope, snackbarHostState)
+                                }else{
+                                    addShoppingCart.value = true
+                                    popUpDetailsOpen.value = false
+                                    scope.launch {
+                                        snackbarHostState.currentSnackbarData?.dismiss()
+                                        snackbarHostState.showSnackbar("")
+                                    }
+                                }
                             }
+
                         })
                 ) {
 
@@ -158,10 +185,35 @@ fun PopUpDetails(
                             .clip(RoundedCornerShape(4.dp))
                             .background(brush = verticalGradient)
                             .padding(12.dp)
-
                     )
                 }
             }
+        }
+    }
+}
+
+private fun createProductShopping(
+    mainViewModel: MainViewModel,
+    addShoppingCart: MutableState<Boolean>,
+    popUpDetailsOpen: MutableState<Boolean>,
+    scope: CoroutineScope,
+    snackbarHostState: SnackbarHostState
+) {
+    val product = product_shopping_request(
+        id_shopping_cart = shoppingCartSelected!!._id,
+        id_product = productSelected!!._id,
+        name = productSelected!!.name,
+        image = productSelected!!.image,
+        price = productSelected!!.price,
+    )
+
+    mainViewModel.createProductShopping(newProduct = product) {
+        currentShoppingProducts.add(mainViewModel.currentProductShoppingResponse!!)
+        addShoppingCart.value = true
+        popUpDetailsOpen.value = false
+        scope.launch {
+            snackbarHostState.currentSnackbarData?.dismiss()
+            snackbarHostState.showSnackbar("")
         }
     }
 }

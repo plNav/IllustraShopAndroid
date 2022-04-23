@@ -1,5 +1,7 @@
 package pab.lop.illustrashopandroid.ui.view.main.composables
 
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.*
@@ -14,18 +16,25 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.orhanobut.logger.Logger
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import pab.lop.illustrashopandroid.R
+import pab.lop.illustrashopandroid.ui.view.main.MainViewModel
+import pab.lop.illustrashopandroid.utils.currentShoppingProducts
+import pab.lop.illustrashopandroid.utils.shoppingCartSelected
+import pablo_lonav.android.utils.ScreenNav
 
 @Composable
 fun TopAppBar(
     verticalGradient: Brush,
     scope: CoroutineScope,
     scaffoldState: ScaffoldState,
-    snackbarHostState: SnackbarHostState,
-    addShoppingCart: MutableState<Boolean>
+    addShoppingCart: MutableState<Boolean>,
+    navController: NavController,
+    mainViewModel: MainViewModel,
+    context: Context
 ) {
     TopAppBar(
         elevation = 0.dp,
@@ -51,15 +60,15 @@ fun TopAppBar(
         actions = {
             IconButton(
                 onClick = {
-                    /* TODO ICON BUTTON ACTION --> IR AL CARRITO */
-                    scope.launch {
-                        snackbarHostState.currentSnackbarData?.dismiss()
-                        snackbarHostState.showSnackbar("")
+                    mainViewModel.getAllProductShopping(shoppingCartSelected!!._id) {
+                        currentShoppingProducts = mainViewModel.currentProductsShopping.toMutableList()
+                        if(currentShoppingProducts.isEmpty()) Toast.makeText(context, context.getString(R.string.empty_cart), Toast.LENGTH_SHORT).show()
+                        else navController.navigate(ScreenNav.ShoppingCartScreen.route)
                     }
                 }
             ) {
                 Icon(
-                    if(addShoppingCart.value) Icons.Filled.AddShoppingCart else Icons.Filled.ShoppingCart,
+                    if (addShoppingCart.value) Icons.Filled.AddShoppingCart else Icons.Filled.ShoppingCart,
                     contentDescription = "ShoppingCart",
                     tint = /*if(addShoppingCart.value) Color.Yellow else*/ Color.White,
                 )

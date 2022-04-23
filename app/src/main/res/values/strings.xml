@@ -52,4 +52,9 @@
     <string name="illustrashop">ILLUSTRASHOP</string>
     <string name="addWish">Add to WishList</string>
     <string name="addShopping">Add to Shopping Cart</string>
+    <string name="empty_cart">Shopping Cart Empty</string>
+    <string name="shopping_cart">Shopping Cart</string>
+    <string name="buyNow">Buy Now!</string>
+    <string name="total">TOTAL</string>
+    <string name="save">SAVE</string>
 </resources>
