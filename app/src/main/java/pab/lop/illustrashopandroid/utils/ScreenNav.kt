@@ -12,6 +12,8 @@ sealed class ScreenNav(val route: String) {
     object AdminScreen : ScreenNav("admin_screen")
     object ProductEditScreen : ScreenNav("product_edit_screen")
 
+    object PayScreen : ScreenNav("pay_screen")
+
 
     fun withArgs(vararg args: String) : String{
         return buildString{
