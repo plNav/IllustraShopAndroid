@@ -2,7 +2,6 @@ package pab.lop.illustrashopandroid.utils.admob
 
 import android.content.Context
 import androidx.navigation.NavController
-import androidx.navigation.NavHostController
 import com.google.android.gms.ads.AdError
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.FullScreenContentCallback
@@ -11,7 +10,7 @@ import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import com.orhanobut.logger.Logger
 import pab.lop.illustrashopandroid.utils.TEST_INTERSTITIAL
-import pablo_lonav.android.utils.ScreenNav
+import pab.lop.illustrashopandroid.utils.ScreenNav
 
 var interstitialAd : InterstitialAd? = null
 

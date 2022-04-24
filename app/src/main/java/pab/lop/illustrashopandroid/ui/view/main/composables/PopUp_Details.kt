@@ -51,20 +51,14 @@ fun PopUpDetails(
     addShoppingCart: MutableState<Boolean>,
     context: Context,
 ) {
-    var scale by remember { mutableStateOf(1f) }
-    val painter = rememberAsyncImagePainter(productSelected!!.image)
-
 
     Dialog(
-        onDismissRequest = {
-            popUpDetailsOpen.value = false
-        }) {
-
+        onDismissRequest = { popUpDetailsOpen.value = false }
+    ) {
         Surface(
             modifier = Modifier
                 .padding(customSpacing.small)
                 .wrapContentHeight(),
-
             shape = RoundedCornerShape(5.dp),
             color = Color.White
         ) {
@@ -74,13 +68,12 @@ fun PopUpDetails(
                     .background(brush = verticalGradient)
             ) {
                 Row(
-                    horizontalArrangement = Arrangement.End,
-                    verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(brush = verticalGradient)
+                        .background(brush = verticalGradient),
+                    horizontalArrangement = Arrangement.End,
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-
 
                     /************ TITLE ************/
                     Text(
@@ -95,19 +88,12 @@ fun PopUpDetails(
                             .clickable(onClick = { })
                     )
 
-
                     /************ CLOSE ************/
                     IconButton(
                         modifier = Modifier
                             .clip(RoundedCornerShape(4.dp))
                             .background(Color.Transparent),
-                        onClick = {
-                            popUpDetailsOpen.value = false
-                            scope.launch {
-                                snackbarHostState.currentSnackbarData?.dismiss()
-                                snackbarHostState.showSnackbar("")
-                            }
-                        },
+                        onClick = { popUpDetailsOpen.value = false }
                     ) {
                         Icon(
                             Icons.Filled.Close,
@@ -168,20 +154,18 @@ fun PopUpDetails(
                                     }
                                 }
                             }
-
                         })
                 ) {
 
                     Text(
-                        text = stringResource(R.string.addShopping),
-                        textAlign = TextAlign.Center,
-                        style = MaterialTheme.typography.body1.copy(color = Color.White),
                         modifier = Modifier
                             .fillMaxWidth()
                             .clip(RoundedCornerShape(4.dp))
                             .background(brush = verticalGradient)
-                            .padding(12.dp)
-
+                            .padding(12.dp),
+                        text = stringResource(R.string.addShopping),
+                        textAlign = TextAlign.Center,
+                        style = MaterialTheme.typography.body1.copy(color = Color.White),
                     )
                 }
 
@@ -189,19 +173,18 @@ fun PopUpDetails(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clickable(onClick = {
-                        })
+                        .clickable(onClick = { /* TODO */ })
                 ) {
 
                     Text(
-                        text = stringResource(R.string.addWish),
-                        textAlign = TextAlign.Center,
-                        style = MaterialTheme.typography.body1.copy(color = Color.White),
                         modifier = Modifier
                             .fillMaxWidth()
                             .clip(RoundedCornerShape(4.dp))
                             .background(brush = verticalGradient)
-                            .padding(12.dp)
+                            .padding(12.dp),
+                        text = stringResource(R.string.addWish),
+                        textAlign = TextAlign.Center,
+                        style = MaterialTheme.typography.body1.copy(color = Color.White)
                     )
                 }
             }
@@ -277,7 +260,6 @@ fun ZoomableImage(
                     }
                 }
             }
-
     ) {
         SubcomposeAsyncImage(
             model = ImageRequest.Builder(LocalContext.current)

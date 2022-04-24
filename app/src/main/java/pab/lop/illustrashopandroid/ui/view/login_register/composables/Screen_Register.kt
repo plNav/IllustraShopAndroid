@@ -30,7 +30,8 @@ import androidx.navigation.NavController
 import pab.lop.illustrashopandroid.R
 import pab.lop.illustrashopandroid.ui.theme.Spacing
 import pab.lop.illustrashopandroid.ui.view.login_register.LoginRegisterViewModel
-import pablo_lonav.android.utils.ScreenNav
+import pab.lop.illustrashopandroid.utils.ScreenNav
+import pab.lop.illustrashopandroid.utils.userSelected
 
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -39,10 +40,10 @@ fun Register(
     navController: NavController,
     loginRegisterViewModel: LoginRegisterViewModel,
     context: Context,
-    customSpacing: Spacing
+    customSpacing: Spacing,
+    isEditionMode: Boolean
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
-
 
     //Gradients
     val verticalGradient = Brush.verticalGradient(
@@ -64,11 +65,11 @@ fun Register(
 
 
     //Basic Fields
-    val email = remember { mutableStateOf("") }
-    val emailChecked = remember { mutableStateOf(false) }
+    val email = remember { mutableStateOf(if (isEditionMode) userSelected!!.email else "") }
+    val emailChecked = remember { mutableStateOf(isEditionMode) }
 
-    val username = remember { mutableStateOf("") }
-    val usernameChecked = remember { mutableStateOf(false) }
+    val username = remember { mutableStateOf(if (isEditionMode) userSelected!!.username else "") }
+    val usernameChecked = remember { mutableStateOf(isEditionMode) }
 
     val password1 = remember { mutableStateOf("") }
     val password2 = remember { mutableStateOf("") }
@@ -76,15 +77,66 @@ fun Register(
     val passwordVisibility = remember { mutableStateOf(false) }
 
 
+    //Pay Fields //TODO PAY_METHOD & PAY_NUMBER
+    val name = remember { mutableStateOf(if (isEditionMode) userSelected!!.name else "") }
+    val nameChecked = remember {
+        mutableStateOf(
+            if (isEditionMode) userSelected!!.name.isNotEmpty()
+            else false
+        )
+    }
 
-    //Pay Fields
+    val lastName = remember { mutableStateOf(if(isEditionMode) userSelected!!.last_name else "")}
+    val lastNameChecked = remember {
+        mutableStateOf(
+            if (isEditionMode) userSelected!!.last_name.isNotEmpty()
+            else false
+        )
+    }
 
+    val country = remember { mutableStateOf(if(isEditionMode) userSelected!!.country else "")}
+    val countryChecked = remember {
+        mutableStateOf(
+            if (isEditionMode) userSelected!!.country.isNotEmpty()
+            else false
+        )
+    }
+
+    val address = remember { mutableStateOf(if(isEditionMode) userSelected!!.address else "")}
+    val addressChecked = remember {
+        mutableStateOf(
+            if (isEditionMode) userSelected!!.address.isNotEmpty()
+            else false
+        )
+    }
+
+    val postalCode = remember { mutableStateOf(if(isEditionMode) userSelected!!.postal_code else "")}
+    val postalCodeChecked = remember {
+        mutableStateOf(
+            if (isEditionMode) userSelected!!.postal_code.isNotEmpty()
+            else false
+        )
+    }
+
+    val phone = remember { mutableStateOf(if(isEditionMode) userSelected!!.phone else "")}
+    val phoneChecked = remember {
+        mutableStateOf(
+            if (isEditionMode) userSelected!!.phone.isNotEmpty()
+            else false
+        )
+    }
 
     //Check by Group
-    val basicInfoChecked = remember { mutableStateOf(false) }
-    val payInfoChecked = remember { mutableStateOf(true) }
+    val basicInfoChecked = remember { mutableStateOf(isEditionMode) }
+    val payInfoChecked = remember { mutableStateOf(false) }
 
     basicInfoChecked.value = (emailChecked.value && usernameChecked.value && passwordChecked.value)
+    payInfoChecked.value = (nameChecked.value
+            && lastNameChecked.value
+            && countryChecked.value
+            && addressChecked.value
+            && postalCodeChecked.value
+            && phoneChecked.value)
 
 
     //Booleans categories
@@ -103,6 +155,15 @@ fun Register(
         firstLoad.value = false
     }
 
+    val popUpPasswordOpen = remember {mutableStateOf(false)}
+    val passwordValidated = remember { mutableStateOf(false)}
+    if(popUpPasswordOpen.value){
+        PopUpPassword(
+            popUpPasswordOpen = popUpPasswordOpen,
+            passwordValidated = passwordValidated
+        )
+    }
+
     LazyColumn(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -113,12 +174,14 @@ fun Register(
     ) {
         item {
             TitleAndBack(
+                isEditionMode = isEditionMode,
                 customSpacing = customSpacing,
                 navController = navController
             )
         }
         item {
             BasicInfo(
+                isEditionMode = isEditionMode,
                 customSpacing = customSpacing,
                 email = email,
                 emailChecked = emailChecked,
@@ -136,6 +199,7 @@ fun Register(
         }
         item {
             DropdownButtonPayInfo(
+                isEditionMode = isEditionMode,
                 verticalGradient = verticalGradient,
                 verticalGradientDisabled = verticalGradientDisabled,
                 customSpacing = customSpacing,
@@ -145,16 +209,27 @@ fun Register(
         if (openBuyInfo.value) {
             item {
                 PayInfo(
+                    isEditionMode = isEditionMode,
                     customSpacing = customSpacing,
-                    email = email,
-                    password = password1,
-                    keyboardController = keyboardController,
-                    passwordVisibility = passwordVisibility
+                    name = name,
+                    nameChecked = nameChecked,
+                    lastName = lastName,
+                    lastNameChecked = lastNameChecked,
+                    country = country,
+                    countryChecked = countryChecked,
+                    address = address,
+                    addressChecked = addressChecked,
+                    postalCode = postalCode,
+                    postalCodeChecked = postalCodeChecked,
+                    phone = phone,
+                    phoneChecked = phoneChecked,
+                    context = context
                 )
             }
         }
         item {
             RegisterButton(
+                isEditionMode = isEditionMode,
                 verticalGradientDisabled = verticalGradientDisabled,
                 verticalGradient = verticalGradient,
                 customSpacing = customSpacing,
@@ -166,28 +241,49 @@ fun Register(
                 navController = navController,
                 email = email,
                 username = username,
-                password = password1
+                password = password2,
+                name = name,
+                nameChecked = nameChecked,
+                lastName = lastName,
+                lastNameChecked = lastNameChecked,
+                country = country,
+                countryChecked = countryChecked,
+                address = address,
+                addressChecked = addressChecked,
+                postalCode = postalCode,
+                postalCodeChecked = postalCodeChecked,
+                phone = phone,
+                phoneChecked = phoneChecked,
+                popUpPasswordOpen = popUpPasswordOpen,
+                passwordValidated = passwordValidated
             )
         }
     }
+}
+
+@Composable
+fun PopUpPassword(popUpPasswordOpen: MutableState<Boolean>, passwordValidated: MutableState<Boolean>) {
+    TODO("Not yet implemented")
 }
 
 
 @Composable
 private fun TitleAndBack(
     customSpacing: Spacing,
-    navController: NavController
+    navController: NavController,
+    isEditionMode: Boolean
 ) {
     Column(
         modifier = Modifier.fillMaxWidth()
     ) {
-        //TODO TITLE AND BACK
 
         Spacer(modifier = Modifier.width(customSpacing.mediumSmall))
 
         IconButton(
-            onClick = { navController.navigate(ScreenNav.LoginScreen.route) },
-
+            onClick = {
+                if (isEditionMode) navController.navigate(ScreenNav.MainScreen.route)
+                else navController.navigate(ScreenNav.LoginScreen.route)
+            },
             modifier = Modifier
                 .clip(RoundedCornerShape(4.dp))
                 .align(Alignment.Start)
@@ -201,7 +297,7 @@ private fun TitleAndBack(
         }
 
         Text(
-            text = stringResource(R.string.register),
+            text = if (isEditionMode) stringResource(R.string.edit_personal_info) else stringResource(R.string.register),
             fontSize = 20.sp,
             fontWeight = FontWeight.ExtraBold,
             modifier = Modifier.align(Alignment.CenterHorizontally)
@@ -215,7 +311,8 @@ fun DropdownButtonPayInfo(
     verticalGradientDisabled: Brush,
     verticalGradient: Brush,
     customSpacing: Spacing,
-    openBuyInfo: MutableState<Boolean>
+    openBuyInfo: MutableState<Boolean>,
+    isEditionMode: Boolean
 ) {
 
     Card(
@@ -231,7 +328,14 @@ fun DropdownButtonPayInfo(
                 .background(if (openBuyInfo.value) verticalGradient else verticalGradientDisabled)
         ) {
             Text(
-                text = if (openBuyInfo.value) stringResource(R.string.show_pay_info_now) else stringResource(R.string.show_pay_info_later),
+                text =
+                if(isEditionMode){
+                    if(openBuyInfo.value) stringResource(R.string.edit_pay_info_now)
+                    else stringResource(R.string.edit_pay_info_later)
+                }else {
+                    if (openBuyInfo.value) stringResource(R.string.show_pay_info_now)
+                    else stringResource(R.string.show_pay_info_later)
+                },
                 modifier = Modifier
                     .padding(customSpacing.mediumLarge, customSpacing.default, customSpacing.mediumLarge, customSpacing.default),
                 color = Color.White

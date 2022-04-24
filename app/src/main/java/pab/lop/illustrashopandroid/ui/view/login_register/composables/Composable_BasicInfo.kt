@@ -40,7 +40,8 @@ fun BasicInfo(
     emailChecked: MutableState<Boolean>,
     emailList: MutableState<List<String>>,
     usernameList: MutableState<List<String>>,
-    context: Context
+    context: Context,
+    isEditionMode: Boolean
 ) {
 
     val alreadyUseError = context.getString(R.string.already_use_error)
@@ -70,8 +71,6 @@ fun BasicInfo(
         Spacer(modifier = Modifier.height(customSpacing.mediumMedium))
 
         /************ EMAIL ************/
-
-        /************ EMAIL ************/
         OutlinedTextField(
             value = email.value,
             onValueChange = {
@@ -86,15 +85,13 @@ fun BasicInfo(
                 }
             },
             singleLine = true,
+            keyboardOptions = KeyboardOptions.Default.copy(
+                capitalization = KeyboardCapitalization.Words,
+                autoCorrect = false,
+                keyboardType = KeyboardType.Text,
+                imeAction = ImeAction.Next,
+            ),
             label = {
-                Text(
-                    text = stringResource(R.string.email),
-                    style = TextStyle(
-                        color = MaterialTheme.colors.secondary
-                    )
-                )
-            },
-            placeholder = {
                 Text(
                     text = stringResource(R.string.email),
                     style = TextStyle(
@@ -132,7 +129,6 @@ fun BasicInfo(
 
         Spacer(modifier = Modifier.height(spaceBetweenFields))
 
-        /************ USERNAME ************/
 
         /************ USERNAME ************/
         OutlinedTextField(
@@ -149,15 +145,13 @@ fun BasicInfo(
                 }
             },
             singleLine = true,
+            keyboardOptions = KeyboardOptions.Default.copy(
+                capitalization = KeyboardCapitalization.Words,
+                autoCorrect = false,
+                keyboardType = KeyboardType.Text,
+                imeAction = ImeAction.Next,
+            ),
             label = {
-                Text(
-                    text = stringResource(R.string.username),
-                    style = TextStyle(
-                        color = MaterialTheme.colors.secondary
-                    )
-                )
-            },
-            placeholder = {
                 Text(
                     text = stringResource(R.string.username),
                     style = TextStyle(
@@ -195,7 +189,7 @@ fun BasicInfo(
 
         Spacer(modifier = Modifier.height(spaceBetweenFields))
 
-        /************ PASSWORD ************/
+//TODO PASSWORDS IN EDITION MODE == ASK PASSWORD CONFIRMATION BEFORE UPDATE
 
         /************ PASSWORD ************/
         OutlinedTextField(
@@ -208,14 +202,6 @@ fun BasicInfo(
                     style = TextStyle(
                         color = MaterialTheme.colors.secondary
                     )
-                )
-            },
-            placeholder = {
-                Text(
-                    text = stringResource(R.string.Password),
-                    style = TextStyle(
-                        color = MaterialTheme.colors.secondary
-                    ),
                 )
             },
             visualTransformation =
@@ -258,7 +244,6 @@ fun BasicInfo(
 
         Spacer(modifier = Modifier.height(spaceBetweenFields))
 
-        /************ REPEAT PASSWORD ************/
 
         /************ REPEAT PASSWORD ************/
         OutlinedTextField(
@@ -277,14 +262,6 @@ fun BasicInfo(
                     style = TextStyle(
                         color = MaterialTheme.colors.secondary
                     )
-                )
-            },
-            placeholder = {
-                Text(
-                    text = stringResource(R.string.repeat_password),
-                    style = TextStyle(
-                        color = MaterialTheme.colors.secondary
-                    ),
                 )
             },
             visualTransformation =

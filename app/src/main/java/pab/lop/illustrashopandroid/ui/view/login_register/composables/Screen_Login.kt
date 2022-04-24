@@ -3,7 +3,6 @@ package pab.lop.illustrashopandroid.ui.view.login_register.composables
 import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -33,7 +32,6 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.*
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -42,9 +40,8 @@ import pab.lop.illustrashopandroid.ui.theme.*
 import pab.lop.illustrashopandroid.ui.view.login_register.LoginRegisterViewModel
 import pab.lop.illustrashopandroid.utils.admob.composables.InterstitialButton
 import pab.lop.illustrashopandroid.utils.shoppingCartSelected
-import pab.lop.illustrashopandroid.utils.userDefaultNoAuth
 import pab.lop.illustrashopandroid.utils.userSelected
-import pablo_lonav.android.utils.ScreenNav
+import pab.lop.illustrashopandroid.utils.ScreenNav
 
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -238,7 +235,7 @@ fun Login(
         /************ REGISTER ************/
         Button(
             elevation = ButtonDefaults.elevation(0.dp),
-            onClick = { navController.navigate(ScreenNav.RegisterScreen.route) },
+            onClick = { navController.navigate(ScreenNav.RegisterScreen.withArgs(false))},
             colors = ButtonDefaults.buttonColors(
                 backgroundColor = Color.Transparent,
                 contentColor = Color(0xFFFFF5EE),
@@ -264,20 +261,9 @@ fun Login(
             )
         }
 
-        /************NO REGISTER ************/
         Spacer(modifier = Modifier.height(customSpacing.mediumLarge))
 
-        Text(
-            text = stringResource(R.string.no_auth),
-            color = MaterialTheme.colors.primary,
-            textDecoration = TextDecoration.Underline,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.clickable {
-
-                userSelected = userDefaultNoAuth
-                navController.navigate(ScreenNav.MainScreen.route)
-            }
-        )
+        /************NO REGISTER ************/
         InterstitialButton(navController = navController)
     }
 }

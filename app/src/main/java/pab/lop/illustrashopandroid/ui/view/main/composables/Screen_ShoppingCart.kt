@@ -25,7 +25,7 @@ import pab.lop.illustrashopandroid.data.model.product_shopping.product_shopping_
 import pab.lop.illustrashopandroid.ui.theme.Spacing
 import pab.lop.illustrashopandroid.ui.view.main.MainViewModel
 import pab.lop.illustrashopandroid.utils.currentShoppingProducts
-import pablo_lonav.android.utils.ScreenNav
+import pab.lop.illustrashopandroid.utils.ScreenNav
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable

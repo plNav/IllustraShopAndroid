@@ -45,7 +45,7 @@ fun Body(
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(5.dp)
+                            .padding(start = 10.dp, top = 5.dp)
                     )
                     HorizontalPager(
                         count = familyProducts.get(family)?.size ?: 2,

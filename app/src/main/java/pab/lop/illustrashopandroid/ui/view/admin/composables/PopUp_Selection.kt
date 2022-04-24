@@ -35,7 +35,7 @@ import pab.lop.illustrashopandroid.ui.view.admin.AdminViewModel
 import pab.lop.illustrashopandroid.utils.familyNameList
 import pab.lop.illustrashopandroid.utils.familySelected
 import pab.lop.illustrashopandroid.utils.productSelected
-import pablo_lonav.android.utils.ScreenNav
+import pab.lop.illustrashopandroid.utils.ScreenNav
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable

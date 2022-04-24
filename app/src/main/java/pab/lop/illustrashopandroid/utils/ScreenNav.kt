@@ -1,4 +1,4 @@
-package pablo_lonav.android.utils
+package pab.lop.illustrashopandroid.utils
 
 /** Clase para almacenar las rutas, con y sin parametros */
 sealed class ScreenNav(val route: String) {
@@ -15,8 +15,10 @@ sealed class ScreenNav(val route: String) {
 
     object PayScreen : ScreenNav("pay_screen")
 
+    object PersonalInfoScreen : ScreenNav("personal_info_screen")
 
-    fun withArgs(vararg args: String) : String{
+
+    fun withArgs(vararg args: Any) : String{
         return buildString{
             append(route)
             args.forEach { arg -> append("/$arg") }

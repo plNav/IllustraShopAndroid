@@ -21,7 +21,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavController
 import pab.lop.illustrashopandroid.R
 import pab.lop.illustrashopandroid.ui.theme.Spacing
-import pablo_lonav.android.utils.ScreenNav
+import pab.lop.illustrashopandroid.utils.ScreenNav
 
 @Composable
 fun PopUp_Verification(

@@ -40,7 +40,7 @@ import pab.lop.illustrashopandroid.ui.view.admin.AdminViewModel
 import pab.lop.illustrashopandroid.utils.URL_HEAD_IMAGES
 import pab.lop.illustrashopandroid.utils.productSelected
 import pab.lop.illustrashopandroid.utils.regexSpecialChars
-import pablo_lonav.android.utils.ScreenNav
+import pab.lop.illustrashopandroid.utils.ScreenNav
 
 
 @OptIn(ExperimentalComposeUiApi::class, androidx.compose.foundation.ExperimentalFoundationApi::class)

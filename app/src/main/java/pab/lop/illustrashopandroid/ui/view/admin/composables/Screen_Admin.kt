@@ -30,7 +30,7 @@ import pab.lop.illustrashopandroid.R
 import pab.lop.illustrashopandroid.ui.theme.Spacing
 import pab.lop.illustrashopandroid.ui.view.admin.AdminViewModel
 import pab.lop.illustrashopandroid.utils.familyNameList
-import pablo_lonav.android.utils.ScreenNav
+import pab.lop.illustrashopandroid.utils.ScreenNav
 
 @Composable
 fun Admin_Screen(
@@ -123,7 +123,7 @@ fun Admin_Screen(
                     .clip(RoundedCornerShape(4.dp))
                     .fillMaxWidth(0.15f)
                     .background(Color.Transparent),
-                onClick = { navController.navigate(ScreenNav.LoginScreen.route) },
+                onClick = { navController.navigate(ScreenNav.MainScreen.route) },
             ) {
                 Icon(
                     Icons.Filled.ArrowBack,

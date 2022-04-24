@@ -60,4 +60,16 @@
     <string name="login_needed">You need to be logged to access shopping cart</string>
     <string name="login_needed_add">You can\'t add products without login</string>
     <string name="error">Error</string>
+    <string name="pressAgainDelete">Press again to delete</string>
+    <string name="edit_personal_info">Edit Personal Info</string>
+    <string name="logout">LOGOUT</string>
+    <string name="not_logged">Not logged</string>
+    <string name="edit_pay_info_now">Edit pay info now</string>
+    <string name="edit_pay_info_later">Edit pay info later</string>
+    <string name="lastName">Last Name</string>
+    <string name="country">City</string>
+    <string name="address">Address</string>
+    <string name="phone">Phone</string>
+    <string name="postalCode">Postal Code</string>
+    <string name="Standard">Standard</string>
 </resources>

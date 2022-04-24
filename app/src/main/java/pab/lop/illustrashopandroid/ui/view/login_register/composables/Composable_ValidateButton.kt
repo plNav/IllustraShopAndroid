@@ -35,7 +35,7 @@ import pab.lop.illustrashopandroid.ui.view.login_register.LoginRegisterViewModel
 import pab.lop.illustrashopandroid.utils.getSHA256
 import pab.lop.illustrashopandroid.utils.shoppingCartSelected
 import pab.lop.illustrashopandroid.utils.userSelected
-import pablo_lonav.android.utils.ScreenNav
+import pab.lop.illustrashopandroid.utils.ScreenNav
 
 @Composable
 fun RegisterButton(
@@ -51,6 +51,21 @@ fun RegisterButton(
     email: MutableState<String>,
     username: MutableState<String>,
     password: MutableState<String>,
+    isEditionMode: Boolean,
+    name: MutableState<String>,
+    nameChecked: MutableState<Boolean>,
+    lastName: MutableState<String>,
+    lastNameChecked: MutableState<Boolean>,
+    country: MutableState<String>,
+    countryChecked: MutableState<Boolean>,
+    address: MutableState<String>,
+    addressChecked: MutableState<Boolean>,
+    postalCode: MutableState<String>,
+    postalCodeChecked: MutableState<Boolean>,
+    phone: MutableState<String>,
+    phoneChecked: MutableState<Boolean>,
+    popUpPasswordOpen: MutableState<Boolean>,
+    passwordValidated: MutableState<Boolean>,
 ) {
 
     Card(
@@ -74,7 +89,16 @@ fun RegisterButton(
                     navController = navController,
                     email = email,
                     username = username,
-                    password = password
+                    password = password,
+                    isEditionMode = isEditionMode,
+                    popUpPasswordOpen = popUpPasswordOpen,
+                    passwordValidated = passwordValidated,
+                    phone = phone,
+                    postalCode = postalCode,
+                    address = address,
+                    country = country,
+                    lastName = lastName,
+                    name = name
                 )
                 else isValidated(
                     openBuyInfo = openBuyInfo,
@@ -134,7 +158,16 @@ fun RegisterButton(
                         navController = navController,
                         email = email,
                         username = username,
-                        password = password
+                        password = password,
+                        isEditionMode = isEditionMode,
+                        popUpPasswordOpen = popUpPasswordOpen,
+                        passwordValidated = passwordValidated,
+                        name = name,
+                        lastName = lastName,
+                        country = country,
+                        address = address,
+                        postalCode = postalCode,
+                        phone = phone
                     )
                     else isValidated(
                         openBuyInfo = openBuyInfo,
@@ -143,7 +176,7 @@ fun RegisterButton(
                         option1 = true,
                         option2 = false,
                         withToast = true,
-                        context = context
+                        context = context,
                     )
                 }
             ) {
@@ -172,31 +205,59 @@ fun validateClick(
     navController: NavController,
     email: MutableState<String>,
     username: MutableState<String>,
-    password: MutableState<String>
+    password: MutableState<String>,
+    isEditionMode: Boolean,
+    popUpPasswordOpen: MutableState<Boolean>,
+    passwordValidated: MutableState<Boolean>,
+    phone: MutableState<String>,
+    postalCode: MutableState<String>,
+    address: MutableState<String>,
+    country: MutableState<String>,
+    lastName: MutableState<String>,
+    name: MutableState<String>
 ) {
-    val newUser = user_request(
-        name = if(!allFields) "" else "",
-        last_name = if(!allFields) "" else "",
-        username = username.value,
-        email = email.value,
-        password = getSHA256(password.value),
-        rol = "Standard",
-        address = if(!allFields) "" else "",
-        country = if(!allFields) "" else "",
-        postal_code = if(!allFields) "" else "",
-        phone = if(!allFields) "" else "",
-        pay_method = if(!allFields) "" else "",
-        pay_number = if(!allFields) "" else ""
-    )
+    if (isEditionMode) {
+        if (!passwordValidated.value) popUpPasswordOpen.value = true
+        else {
+            userSelected!!.name = if (!allFields) "" else name.value
+            userSelected!!.last_name = if (!allFields) "" else lastName.value
+            userSelected!!.username = username.value
+            userSelected!!.email = email.value
+            userSelected!!.password = getSHA256(password.value)
+            userSelected!!.phone = if (!allFields) userSelected!!.phone else phone.value
+            userSelected!!.postal_code = if (!allFields) userSelected!!.postal_code else postalCode.value
+            userSelected!!.address = if (!allFields) userSelected!!.address else address.value
+            userSelected!!.country = if (!allFields) userSelected!!.country else country.value
 
-    loginRegisterViewModel.createUser(newUser){
-        userSelected = loginRegisterViewModel.currentUserResponse.value
-        Toast.makeText(context, context.getString(R.string.register_correct) + "\n" + userSelected!!.username, Toast.LENGTH_SHORT).show()
-        if(userSelected!!._id.isNotEmpty()){
-            loginRegisterViewModel.createShoppingCart(shopping_cart_request(userSelected!!._id)){
-                shoppingCartSelected = loginRegisterViewModel.currentShoppingCartResponse.value
-                Logger.i("User and Shopping Cart created")
-                navController.navigate(ScreenNav.MainScreen.route)
+            //TODO UPDATE
+
+        }
+
+    } else {
+        val newUser = user_request(
+            name = if (!allFields) "" else name.value,
+            last_name = if (!allFields) "" else lastName.value,
+            username = username.value,
+            email = email.value,
+            password = getSHA256(password.value),
+            rol = context.getString(R.string.Standard),
+            address = if (!allFields) "" else address.value,
+            country = if (!allFields) "" else country.value,
+            postal_code = if (!allFields) "" else postalCode.value,
+            phone = if (!allFields) "" else phone.value,
+            pay_method = if (!allFields) "" else "",
+            pay_number = if (!allFields) "" else ""
+        )
+
+        loginRegisterViewModel.createUser(newUser){
+            userSelected = loginRegisterViewModel.currentUserResponse.value
+            Toast.makeText(context, context.getString(R.string.register_correct) + "\n" + userSelected!!.username, Toast.LENGTH_SHORT).show()
+            if(userSelected!!._id.isNotEmpty()){
+                loginRegisterViewModel.createShoppingCart(shopping_cart_request(userSelected!!._id)){
+                    shoppingCartSelected = loginRegisterViewModel.currentShoppingCartResponse.value
+                    Logger.i("User and Shopping Cart created")
+                    navController.navigate(ScreenNav.MainScreen.route)
+                }
             }
         }
     }

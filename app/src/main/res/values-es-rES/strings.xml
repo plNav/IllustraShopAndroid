@@ -61,5 +61,17 @@
     <string name="login_needed">Debes iniciar sesión para acceder a la cesta</string>
     <string name="login_needed_add">Debes iniciar sesión para añadir productoss</string>
     <string name="error">Error</string>
+    <string name="pressAgainDelete">Pulsa otra para borrar</string>
+    <string name="edit_personal_info">Editar Información Personal</string>
+    <string name="logout">CERRAR SESIÓN</string>
+    <string name="not_logged">No has iniciado sesión</string>
+    <string name="edit_pay_info_now">Editar información de pago ahora</string>
+    <string name="edit_pay_info_later">Editar información de pago mas tarde</string>
+    <string name="lastName">Apellidos</string>
+    <string name="country">Ciudad</string>
+    <string name="address">Dirección</string>
+    <string name="phone">Teléfono</string>
+    <string name="postalCode">Código Postal</string>
+    <string name="Standard">Standard</string>
 
 </resources>
