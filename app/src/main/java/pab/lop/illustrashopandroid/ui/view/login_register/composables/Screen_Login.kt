@@ -40,6 +40,7 @@ import androidx.navigation.NavController
 import pab.lop.illustrashopandroid.R
 import pab.lop.illustrashopandroid.ui.theme.*
 import pab.lop.illustrashopandroid.ui.view.login_register.LoginRegisterViewModel
+import pab.lop.illustrashopandroid.utils.admob.composables.InterstitialButton
 import pab.lop.illustrashopandroid.utils.shoppingCartSelected
 import pab.lop.illustrashopandroid.utils.userDefaultNoAuth
 import pab.lop.illustrashopandroid.utils.userSelected
@@ -263,7 +264,7 @@ fun Login(
             )
         }
 
-
+        /************NO REGISTER ************/
         Spacer(modifier = Modifier.height(customSpacing.mediumLarge))
 
         Text(
@@ -272,10 +273,12 @@ fun Login(
             textDecoration = TextDecoration.Underline,
             fontWeight = FontWeight.Bold,
             modifier = Modifier.clickable {
+
                 userSelected = userDefaultNoAuth
                 navController.navigate(ScreenNav.MainScreen.route)
             }
         )
+        InterstitialButton(navController = navController)
     }
 }
 

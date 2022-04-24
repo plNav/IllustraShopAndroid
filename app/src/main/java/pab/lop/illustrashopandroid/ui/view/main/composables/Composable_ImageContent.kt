@@ -1,9 +1,10 @@
 package pab.lop.illustrashopandroid.ui.view.main.composables
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.Card
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
@@ -11,9 +12,12 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
+import coil.transform.CircleCropTransformation
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.PagerScope
 import com.google.accompanist.pager.calculateCurrentOffsetForPage
@@ -36,7 +40,7 @@ fun PagerScope.ImageContent(
     popUpDetailsOpen: MutableState<Boolean>
 ) {
     Card(
-        Modifier
+        modifier = Modifier
             //  .padding(5.dp)
             .clickable(onClick = {
                 productSelected = familyProducts
@@ -69,16 +73,34 @@ fun PagerScope.ImageContent(
 
             }
     ) {
-        AsyncImage(
+
+        SubcomposeAsyncImage(
             model = ImageRequest.Builder(LocalContext.current)
                 .data("$URL_HEAD_IMAGES${familyProducts.get(family)?.get(page)?.image}")
                 .crossfade(true)
                 .crossfade(1000)
                 .build(),
-            contentDescription = null,
-            //placeholder = painterResource(id = R.drawable.loading_image),
-            //   modifier = Modifier.fillMaxSize(0.8f)
+            loading = { CircularProgressIndicator() },
+            contentDescription = familyProducts.get(family)?.get(page)?.image,
+            contentScale = ContentScale.Crop,
+            error = {
+                Image(
+                    painter = painterResource(id = R.drawable.loading_image),
+                    contentDescription = stringResource(R.string.error),
+                )
+            },
         )
+        /*      AsyncImage(
+                  model = ImageRequest.Builder(LocalContext.current)
+                      .data("$URL_HEAD_IMAGES${familyProducts.get(family)?.get(page)?.image}")
+                      .crossfade(true)
+                      .crossfade(1000)
+                      .build(),
+                  contentDescription = null,
+
+                  //placeholder = painterResource(id = R.drawable.loading_image),
+                  //   modifier = Modifier.fillMaxSize(0.8f)
+              )*/
 
 
         Logger.d(

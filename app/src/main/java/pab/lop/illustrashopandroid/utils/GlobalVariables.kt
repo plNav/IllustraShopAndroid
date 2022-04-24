@@ -11,6 +11,10 @@ import kotlin.collections.HashMap
 const val URL_HEAD_API : String = "http://192.168.1.93:8082/api/"
 const val URL_HEAD_IMAGES : String = "http://192.168.1.93:8082/api/images/"
 
+const val TEST_BANNER : String = "ca-app-pub-3940256099942544/6300978111"
+//const val TEST_ADAPTIVE_BANNER : String = "ca-app-pub-3940256099942544~3347511713"
+const val TEST_INTERSTITIAL : String = "ca-app-pub-3940256099942544/1033173712"
+
 var familyProducts: HashMap<String, List<product_stock_response>> = hashMapOf()
 var excludedFamilies : MutableList<String> = mutableListOf("SecondFamily")
 var familyNameList : MutableList<String> = mutableListOf()

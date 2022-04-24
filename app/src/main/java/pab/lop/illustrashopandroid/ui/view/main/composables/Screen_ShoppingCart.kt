@@ -133,6 +133,7 @@ fun ShoppingCart(
                     .fillMaxWidth()
                     .clickable(onClick = {
                         //TODO VALIDACION DE PAGO
+                        navController.navigate(ScreenNav.PayScreen.route)
                     })
             ) {
 

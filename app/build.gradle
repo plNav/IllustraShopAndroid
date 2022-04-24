@@ -81,6 +81,8 @@ dependencies {
     //IMAGER ZOOM
   //  implementation 'com.github.umutsoysl:ComposeZoomableImage:0.1.0'
 
+    //ADDS
+    implementation 'com.google.android.gms:play-services-ads:20.6.0'
 
     //PAGER
     implementation "com.google.accompanist:accompanist-pager:0.19.0"

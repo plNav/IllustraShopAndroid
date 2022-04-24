@@ -19,6 +19,7 @@ import pab.lop.illustrashopandroid.data.model.product_stock.product_stock_respon
 import pab.lop.illustrashopandroid.ui.theme.Spacing
 import pab.lop.illustrashopandroid.ui.view.main.MainViewModel
 import pab.lop.illustrashopandroid.utils.*
+import pab.lop.illustrashopandroid.utils.admob.composables.AdaptiveBanner
 
 @SuppressLint("UnrememberedMutableState", "MutableCollectionMutableState")
 @RequiresApi(Build.VERSION_CODES.O)
@@ -76,6 +77,8 @@ fun Main(
             }
         }
     }
+
+
 
     if (loadProductsFamily.value)
         MainStart(

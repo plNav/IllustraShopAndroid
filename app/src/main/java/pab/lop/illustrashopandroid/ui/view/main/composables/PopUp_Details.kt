@@ -26,6 +26,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import coil.compose.AsyncImage
+import coil.compose.SubcomposeAsyncImage
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.orhanobut.logger.Logger
@@ -35,6 +36,7 @@ import pab.lop.illustrashopandroid.R
 import pab.lop.illustrashopandroid.data.model.product_shopping.product_shopping_request
 import pab.lop.illustrashopandroid.data.model.shoppin.shopping_cart_request
 import pab.lop.illustrashopandroid.ui.theme.Spacing
+import pab.lop.illustrashopandroid.ui.theme.SurfaceAlmostWhite
 import pab.lop.illustrashopandroid.ui.view.main.MainViewModel
 import pab.lop.illustrashopandroid.utils.*
 
@@ -78,7 +80,6 @@ fun PopUpDetails(
                         .fillMaxWidth()
                         .background(brush = verticalGradient)
                 ) {
-
 
 
                     /************ TITLE ************/
@@ -125,34 +126,48 @@ fun PopUpDetails(
                         .fillMaxWidth()
                         .clickable(onClick = {
                             var isRepeated = false
-                           if(userSelected == userDefaultNoAuth){
-                               Toast.makeText(context, context.getString(R.string.login_needed_add), Toast.LENGTH_SHORT ).show()
-                           }else{
-                               if(currentShoppingProducts.isEmpty()){
-                                   createProductShopping(mainViewModel, addShoppingCart, popUpDetailsOpen, scope, snackbarHostState)
-                               }else{
-                                   for(product in currentShoppingProducts){
-                                       if(product.name == productSelected!!.name){
-                                           product.amount++
-                                           product.total = product.amount * product.price
-                                           isRepeated = true
-                                           mainViewModel.updateProductShopping(product){
-                                               Logger.i("Update OK")
-                                           }
-                                       }
-                                   }
-                                   if(!isRepeated){
-                                       createProductShopping(mainViewModel, addShoppingCart, popUpDetailsOpen, scope, snackbarHostState)
-                                   }else{
-                                       addShoppingCart.value = true
-                                       popUpDetailsOpen.value = false
-                                       scope.launch {
-                                           snackbarHostState.currentSnackbarData?.dismiss()
-                                           snackbarHostState.showSnackbar("")
-                                       }
-                                   }
-                               }
-                           }
+                            if (userSelected == userDefaultNoAuth) {
+                                Toast
+                                    .makeText(context, context.getString(R.string.login_needed_add), Toast.LENGTH_SHORT)
+                                    .show()
+                            } else {
+                                if (currentShoppingProducts.isEmpty()) {
+                                    createProductShopping(
+                                        mainViewModel,
+                                        addShoppingCart,
+                                        popUpDetailsOpen,
+                                        scope,
+                                        snackbarHostState
+                                    )
+                                } else {
+                                    for (product in currentShoppingProducts) {
+                                        if (product.name == productSelected!!.name) {
+                                            product.amount++
+                                            product.total = product.amount * product.price
+                                            isRepeated = true
+                                            mainViewModel.updateProductShopping(product) {
+                                                Logger.i("Update OK")
+                                            }
+                                        }
+                                    }
+                                    if (!isRepeated) {
+                                        createProductShopping(
+                                            mainViewModel,
+                                            addShoppingCart,
+                                            popUpDetailsOpen,
+                                            scope,
+                                            snackbarHostState
+                                        )
+                                    } else {
+                                        addShoppingCart.value = true
+                                        popUpDetailsOpen.value = false
+                                        scope.launch {
+                                            snackbarHostState.currentSnackbarData?.dismiss()
+                                            snackbarHostState.showSnackbar("")
+                                        }
+                                    }
+                                }
+                            }
 
                         })
                 ) {
@@ -234,7 +249,9 @@ fun ZoomableImage(
     val offsetY = remember { mutableStateOf(1f) }
 
     Box(
+        contentAlignment = Alignment.Center,
         modifier = Modifier
+            .fillMaxWidth()
             .clip(RectangleShape)
             .background(Color.Transparent)
             .pointerInput(Unit) {
@@ -262,14 +279,21 @@ fun ZoomableImage(
             }
 
     ) {
-        AsyncImage(
+        SubcomposeAsyncImage(
             model = ImageRequest.Builder(LocalContext.current)
                 .data("$URL_HEAD_IMAGES${productSelected!!.image}")
                 .crossfade(true)
                 .crossfade(1000)
                 .build(),
-            contentDescription = null,
-            contentScale = contentScale,
+            loading = {
+                Column(
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    CircularProgressIndicator(color = SurfaceAlmostWhite)
+                }
+            },
             modifier = Modifier
                 .align(Alignment.Center)
                 .graphicsLayer {
@@ -282,7 +306,9 @@ fun ZoomableImage(
                         translationX = offsetX.value
                         translationY = offsetY.value
                     }
-                }
+                },
+            contentDescription = null,
+            contentScale = contentScale
         )
     }
 }

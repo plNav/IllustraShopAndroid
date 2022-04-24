@@ -66,8 +66,6 @@ fun PopUpEdition(
                         .background(brush = verticalGradient)
                 ) {
 
-
-
                     /************ TITLE ************/
                     Text(
                         text = "${currentLine.value!!.name}",
@@ -80,8 +78,6 @@ fun PopUpEdition(
                             .padding(12.dp)
                             .clickable(onClick = { })
                     )
-
-
 
 
                     /************ CLOSE ************/

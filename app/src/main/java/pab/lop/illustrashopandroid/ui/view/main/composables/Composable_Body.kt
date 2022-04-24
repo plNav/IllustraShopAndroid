@@ -19,19 +19,21 @@ import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerDefaults
 import com.google.accompanist.pager.rememberPagerState
 import pab.lop.illustrashopandroid.data.model.product_stock.product_stock_response
+import pab.lop.illustrashopandroid.utils.admob.composables.AdaptiveBanner
+import pab.lop.illustrashopandroid.utils.admob.composables.InlineBanner
 import pab.lop.illustrashopandroid.utils.excludedFamilies
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun Body(familyProducts: HashMap<String, List<product_stock_response>>, popUpDetailsOpen: MutableState<Boolean>) {
-    LazyColumn(
-       // modifier = Modifier.fillMaxSize()
-    ) {
+fun Body(
+    familyProducts: HashMap<String, List<product_stock_response>>,
+    popUpDetailsOpen: MutableState<Boolean>
+) {
+    LazyColumn{
         itemsIndexed(familyProducts.keys.toMutableList()) { index, family ->
             Column(
                 modifier = Modifier
                     .wrapContentHeight()
-                    //.fillMaxWidth()
                     .border(0.5.dp, MaterialTheme.colors.primaryVariant)
             ) {
                 if (!excludedFamilies.contains(family)) {
@@ -65,5 +67,6 @@ fun Body(familyProducts: HashMap<String, List<product_stock_response>>, popUpDet
                 }
             }
         }
+        item{ InlineBanner() }
     }
 }

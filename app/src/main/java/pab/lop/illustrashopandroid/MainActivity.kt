@@ -12,6 +12,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import com.google.android.gms.ads.MobileAds
 import com.orhanobut.logger.AndroidLogAdapter
 import com.orhanobut.logger.Logger
 import pab.lop.illustrashopandroid.ui.theme.IllustraShopAndroidTheme
@@ -29,10 +30,15 @@ import pab.lop.illustrashopandroid.ui.view.main.composables.ShoppingCart
 import pab.lop.illustrashopandroid.ui.view.pay.PayViewModel
 import pab.lop.illustrashopandroid.ui.view.pay.composables.Pay
 import pab.lop.illustrashopandroid.utils.WindowInfo
+import pab.lop.illustrashopandroid.utils.admob.addInterstitialCallbacks
+import pab.lop.illustrashopandroid.utils.admob.loadInterstitial
 import pab.lop.illustrashopandroid.utils.rememberWindowInfo
 import pablo_lonav.android.utils.ScreenNav
 
 class MainActivity : ComponentActivity() {
+    
+    private lateinit var customSpacing: Spacing
+
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,22 +46,22 @@ class MainActivity : ComponentActivity() {
         Logger.addLogAdapter(AndroidLogAdapter())
 
         //val activityKiller: () -> Unit = { this.finish() }
-        var customSpacing: Spacing
 
         val loginRegisterViewModel by viewModels<LoginRegisterViewModel>()
         val mainViewModel by viewModels<MainViewModel>()
         val adminViewModel by viewModels<AdminViewModel>()
         val payViewModel by viewModels<PayViewModel>()
 
-
         setContent {
+
             IllustraShopAndroidTheme {
+
+                //Ads
+                MobileAds.initialize(this)
 
                 // Color of status bar
                 val systemUiController = rememberSystemUiController()
-                systemUiController.setSystemBarsColor(
-                    color = MaterialTheme.colors.secondary
-                )
+                systemUiController.setSystemBarsColor(color = MaterialTheme.colors.secondary)
 
                 // Spacing depending on window size
                 val windowInfo = rememberWindowInfo()
@@ -64,6 +70,8 @@ class MainActivity : ComponentActivity() {
                     is WindowInfo.WindowType.Medium -> Spacing.SpacingMedium
                     is WindowInfo.WindowType.Expanded -> Spacing.SpacingExtended
                 }
+
+                /*** NAVIGATION GRAPH ***/
 
                 val navController = rememberNavController()
 
@@ -170,7 +178,7 @@ class MainActivity : ComponentActivity() {
                         Pay(
                             navController = navController,
                             payViewModel = payViewModel,
-                            context = applicationContext,
+                            contexttt = applicationContext,
                             customSpacing = customSpacing
                         )
                         BackHandler(false) { }
