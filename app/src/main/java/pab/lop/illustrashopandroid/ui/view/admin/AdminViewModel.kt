@@ -20,6 +20,7 @@ import okhttp3.RequestBody
 import pab.lop.illustrashopandroid.data.api.ApiServices
 import pab.lop.illustrashopandroid.data.model.family.family_request
 import pab.lop.illustrashopandroid.data.model.family.family_response
+import pab.lop.illustrashopandroid.data.model.order.order_response
 import pab.lop.illustrashopandroid.data.model.product_stock.product_stock_request
 import pab.lop.illustrashopandroid.data.model.product_stock.product_stock_response
 import pab.lop.illustrashopandroid.utils.ProgressRequestBody
@@ -38,7 +39,7 @@ class AdminViewModel : ViewModel() {
     var productListResponse : List<product_stock_response> by mutableStateOf(listOf())
     var familyListResponse : List<family_response> by mutableStateOf(listOf())
     var updateOkResponse : Boolean by mutableStateOf(false)
-
+    var allOrdersResponse : List<order_response> by mutableStateOf(listOf())
 
     fun createFamily(family: family_request, onSuccessCallback: () -> Unit){
         val apiServices = ApiServices.getInstance()
@@ -366,7 +367,27 @@ class AdminViewModel : ViewModel() {
                 errorMessage = e.message.toString()
                 Logger.e("FAILURE delete ProductStock\n${e.message.toString()}")
             }
-        }    }
+        }
+    }
 
+    fun getOrders(onSuccessCallback: () -> Unit) {
+        viewModelScope.launch {
+            val apiServices = ApiServices.getInstance()
+            try {
+                val response : Response<List<order_response>> = apiServices.getOrders()
+                if (response.isSuccessful) {
+                    updateOkResponse = true
+                    Logger.i("SUCCESS getting orders $response ${response.body()}")
+                    allOrdersResponse = response.body()!!
+                    onSuccessCallback()
+                } else Logger.e("FAILURE getting orders response")
 
+            } catch (e: Exception) {
+                errorMessage = e.message.toString()
+                Logger.e("FAILURE getting orders \n${e.message.toString()}")
+            }
+
+        }
+
+    }
 }

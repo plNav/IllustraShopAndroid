@@ -25,6 +25,7 @@ import pab.lop.illustrashopandroid.ui.view.main.composables.Main
 import pab.lop.illustrashopandroid.ui.view.admin.AdminViewModel
 import pab.lop.illustrashopandroid.ui.view.admin.composables.Admin_Screen
 import pab.lop.illustrashopandroid.ui.view.admin.composables.Edit_Product
+import pab.lop.illustrashopandroid.ui.view.admin.composables.Orders
 import pab.lop.illustrashopandroid.ui.view.login_register.LoginRegisterViewModel
 import pab.lop.illustrashopandroid.ui.view.login_register.composables.Register
 import pab.lop.illustrashopandroid.ui.view.main.MainViewModel
@@ -168,6 +169,19 @@ class MainActivity : ComponentActivity() {
                         route = ScreenNav.AdminScreen.route
                     ) {
                         Admin_Screen(
+                            navController = navController,
+                            adminViewModel = adminViewModel,
+                            context = applicationContext,
+                            customSpacing = customSpacing
+                        )
+                        BackHandler(false) { }
+                    }
+
+                    /*** ORDER SCREEN ***/
+                    composable(
+                        route = ScreenNav.OrderScreen.route
+                    ) {
+                        Orders(
                             navController = navController,
                             adminViewModel = adminViewModel,
                             context = applicationContext,

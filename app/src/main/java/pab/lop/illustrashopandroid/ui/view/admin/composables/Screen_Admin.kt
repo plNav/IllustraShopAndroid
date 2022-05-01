@@ -27,10 +27,12 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.orhanobut.logger.Logger
 import pab.lop.illustrashopandroid.R
+import pab.lop.illustrashopandroid.data.model.order.order_response
 import pab.lop.illustrashopandroid.ui.theme.Spacing
 import pab.lop.illustrashopandroid.ui.view.admin.AdminViewModel
 import pab.lop.illustrashopandroid.utils.familyNameList
 import pab.lop.illustrashopandroid.utils.ScreenNav
+import pab.lop.illustrashopandroid.utils.allOrders
 
 @Composable
 fun Admin_Screen(
@@ -260,8 +262,10 @@ fun Admin_Screen(
                     .background(brush = verticalGradientDisabled)
                     .padding(12.dp)
                     .clickable(onClick = {
-                        //TODO Pedidos
-                        Toast.makeText(context,"Not implemented yet", Toast.LENGTH_SHORT).show()
+                        adminViewModel.getOrders(){
+                            allOrders = adminViewModel.allOrdersResponse as MutableList<order_response>
+                            navController.navigate(ScreenNav.OrderScreen.route)
+                        }
                     })
             )
 

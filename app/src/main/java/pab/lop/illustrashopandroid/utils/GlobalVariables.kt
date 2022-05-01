@@ -1,6 +1,7 @@
 package pab.lop.illustrashopandroid.utils
 
 import pab.lop.illustrashopandroid.data.model.family.family_response
+import pab.lop.illustrashopandroid.data.model.order.order_response
 import pab.lop.illustrashopandroid.data.model.product_shopping.product_shopping_response
 import pab.lop.illustrashopandroid.data.model.product_stock.product_stock_response
 import pab.lop.illustrashopandroid.data.model.shopping_cart.shopping_cart_response
@@ -26,6 +27,7 @@ var familySelected : family_response? = null
 var userSelected : user_response? = null
 var shoppingCartSelected : shopping_cart_response? = null
 var currentShoppingProducts : MutableList<product_shopping_response> = mutableListOf()
+var allOrders : MutableList<order_response> = mutableListOf()
 
 val userDefaultNoAuth = user_response(
     _id = "",

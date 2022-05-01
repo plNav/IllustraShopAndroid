@@ -7,6 +7,8 @@ import okhttp3.RequestBody
 import pab.lop.illustrashopandroid.data.model.user.user_response
 import pab.lop.illustrashopandroid.data.model.family.family_request
 import pab.lop.illustrashopandroid.data.model.family.family_response
+import pab.lop.illustrashopandroid.data.model.order.order_request
+import pab.lop.illustrashopandroid.data.model.order.order_response
 import pab.lop.illustrashopandroid.data.model.product_shopping.product_shopping_request
 import pab.lop.illustrashopandroid.data.model.product_shopping.product_shopping_response
 import pab.lop.illustrashopandroid.data.model.product_stock.product_stock_request
@@ -144,6 +146,18 @@ interface ApiServices {
 
     @PUT("product/shopping/{id}")
     suspend fun updateProductShopping(@Path(value = "id") product_id: String, @Body product: product_shopping_response): Response<Any>
+
+    @DELETE("product/shopping/{id}")
+    suspend fun deleteProductShopping(@Path(value = "id" ) id: String): Response<Any>
+
+
+
+    /********************ORDER**********************/
+    @GET("order")
+    suspend fun getOrders(): Response<List<order_response>>
+
+    @POST("order")
+    suspend fun createOrder(@Body order : order_request) : Response<Any>
 
 
 }

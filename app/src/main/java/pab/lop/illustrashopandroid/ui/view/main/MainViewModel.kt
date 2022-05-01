@@ -9,6 +9,8 @@ import androidx.lifecycle.viewModelScope
 import com.orhanobut.logger.Logger
 import kotlinx.coroutines.launch
 import pab.lop.illustrashopandroid.data.api.ApiServices
+import pab.lop.illustrashopandroid.data.model.order.order_request
+import pab.lop.illustrashopandroid.data.model.order.order_response
 import pab.lop.illustrashopandroid.data.model.product_shopping.product_shopping_request
 import pab.lop.illustrashopandroid.data.model.product_shopping.product_shopping_response
 import pab.lop.illustrashopandroid.data.model.user.user_response
@@ -27,6 +29,7 @@ class MainViewModel : ViewModel() {
     var currentProductsShopping : MutableList<product_shopping_response> by mutableStateOf(mutableListOf())
     var updateOkResponse : Boolean by mutableStateOf(false)
     var currentProductShoppingResponse : product_shopping_response? by mutableStateOf(null)
+    var currentOrder : order_response? by mutableStateOf(null)
 
 
 
@@ -234,6 +237,69 @@ class MainViewModel : ViewModel() {
             }catch (e: Exception){
                 errorMessage = e.message.toString()
                 Logger.e("FAILURE updatee product Shopping\n${e.message.toString()}")
+            }
+        }
+    }
+
+    fun markBoughtProducts(products: List<product_shopping_response>, onSuccessCallback: () -> Unit) {
+        viewModelScope.launch {
+            val apiServices = ApiServices.getInstance()
+            updateOkResponse = false
+            try{
+                for(product in products){
+                    if(!product.bought){
+                        product.bought = true
+                        val response = apiServices.updateProductShopping(product._id, product)
+                        if (response.isSuccessful){
+                            updateOkResponse = true
+                            Logger.i("SUCCESS updateProductShopping \n $response ${response.body()}")
+                        }else Logger.e("FAILURE response update product Shopping ")
+                    }
+                }
+                Logger.i("Update all products bought ok")
+                onSuccessCallback()
+
+            }catch (e: Exception){
+                errorMessage = e.message.toString()
+                Logger.e("FAILURE updatee product Shopping\n${e.message.toString()}")
+            }
+        }
+    }
+
+    fun createOrder(order: order_request, onSuccessCallback: () -> Unit) {
+
+        val apiServices = ApiServices.getInstance()
+        viewModelScope.launch {
+            try {
+                val response: Response<Any> = apiServices.createOrder(order)
+                if (response.isSuccessful) {
+                    Logger.i("Create order OK \n $response \n ${response.body()}")
+                    onSuccessCallback()
+                } else Logger.e("Error order creation response $response")
+            } catch (e: Exception) {
+                errorMessage = e.message.toString()
+                Logger.e("FAILURE create order")
+            }
+
+        }
+    }
+
+    fun deleteProductsCart(products : List<product_shopping_response>, onSuccessCallback: () -> Unit){
+        viewModelScope.launch {
+            val apiServices = ApiServices.getInstance()
+            updateOkResponse = false
+            try{
+                for(product in products){
+                    val response = apiServices.deleteProductShopping(product._id)
+                    if(response.isSuccessful) continue
+                    else throw Exception("Fail deleting $product")
+                }
+                Logger.i("All products cart deleted OK")
+                onSuccessCallback()
+
+            }catch (e: Exception){
+                errorMessage = e.message.toString()
+                Logger.e("FAILURE deleting all products shopping \n${e.message.toString()}")
             }
         }
     }

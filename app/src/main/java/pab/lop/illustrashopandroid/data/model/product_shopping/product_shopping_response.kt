@@ -9,5 +9,6 @@ data class product_shopping_response(
     val price : Float,
     var total : Float,
     var amount : Float,
-    val comments : String
+    val comments : String,
+    var bought : Boolean
 )

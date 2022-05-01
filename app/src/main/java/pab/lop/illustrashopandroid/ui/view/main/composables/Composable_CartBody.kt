@@ -28,83 +28,85 @@ fun CartBody(
         contentPadding = PaddingValues(5.dp),
     ) {
         for (product in currentShoppingProducts) {
-            item {
-                Card(
+            if(!product.bought){
+                item {
+                    Card(
 
-                    modifier = Modifier.combinedClickable(
-                        onClick = {
-                            currentLine.value = product
-                            openPopUpEdition.value = true
-                        }
-                    )
-                ) {
-                    Text(
-                        text = "${product.amount}",
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(10.dp)
-                    )
-                }
-            }
-            item(span = { GridItemSpan(2) }) {
-                Card(
-                    modifier = Modifier.combinedClickable(
-
-                        onClick = {
-                            currentLine.value = product
-                            openPopUpEdition.value = true
-
-                        }
-                    )
-                ) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.combinedClickable(
+                            onClick = {
+                                currentLine.value = product
+                                openPopUpEdition.value = true
+                            }
+                        )
                     ) {
                         Text(
-                            text = product.name,
+                            text = "${product.amount}",
                             modifier = Modifier
-                                .fillMaxWidth(0.8f)
+                                .fillMaxSize()
                                 .padding(10.dp)
                         )
                     }
                 }
-            }
-            item {
-                Card(
-                    modifier = Modifier.combinedClickable(
+                item(span = { GridItemSpan(2) }) {
+                    Card(
+                        modifier = Modifier.combinedClickable(
 
-                        onClick = {
-                            currentLine.value = product
-                            openPopUpEdition.value = true
+                            onClick = {
+                                currentLine.value = product
+                                openPopUpEdition.value = true
+
+                            }
+                        )
+                    ) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Text(
+                                text = product.name,
+                                modifier = Modifier
+                                    .fillMaxWidth(0.8f)
+                                    .padding(10.dp)
+                            )
                         }
-                    )
-                ) {
-                    Text(
-                        text = "${product.price}€",
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(10.dp)
-                    )
+                    }
                 }
-            }
-            item {
-                Card(
-                    modifier = Modifier.combinedClickable(
-                        onClick = {
-                            currentLine.value = product
-                            openPopUpEdition.value = true
-                        }
-                    )
-                ) {
-                    Text(
-                        text =
-                        if (product.total.toString().length >= 5)
-                            "${product.total.toString().substring(0, 4).toFloat()}€"
-                        else "${product.total}€",
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(10.dp)
-                    )
+                item {
+                    Card(
+                        modifier = Modifier.combinedClickable(
+
+                            onClick = {
+                                currentLine.value = product
+                                openPopUpEdition.value = true
+                            }
+                        )
+                    ) {
+                        Text(
+                            text = "${product.price}€",
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(10.dp)
+                        )
+                    }
+                }
+                item {
+                    Card(
+                        modifier = Modifier.combinedClickable(
+                            onClick = {
+                                currentLine.value = product
+                                openPopUpEdition.value = true
+                            }
+                        )
+                    ) {
+                        Text(
+                            text =
+                            if (product.total.toString().length >= 5)
+                                "${product.total.toString().substring(0, 4).toFloat()}€"
+                            else "${product.total}€",
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(10.dp)
+                        )
+                    }
                 }
             }
 

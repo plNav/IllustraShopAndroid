@@ -21,11 +21,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import pab.lop.illustrashopandroid.R
+import pab.lop.illustrashopandroid.data.model.order.order_request
 import pab.lop.illustrashopandroid.data.model.product_shopping.product_shopping_response
 import pab.lop.illustrashopandroid.ui.theme.Spacing
 import pab.lop.illustrashopandroid.ui.view.main.MainViewModel
 import pab.lop.illustrashopandroid.utils.currentShoppingProducts
 import pab.lop.illustrashopandroid.utils.ScreenNav
+import pab.lop.illustrashopandroid.utils.allOrders
+import pab.lop.illustrashopandroid.utils.userSelected
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -45,7 +48,9 @@ fun ShoppingCart(
 
     if (isSaved.value) {
         total.value = 0f
-        for (item in currentShoppingProducts) total.value += item.total
+        for (item in currentShoppingProducts){
+            if(!item.bought)total.value += item.total
+        }
         isSaved.value = false
     }
 
@@ -133,7 +138,19 @@ fun ShoppingCart(
                     .fillMaxWidth()
                     .clickable(onClick = {
                         //TODO VALIDACION DE PAGO
-                        navController.navigate(ScreenNav.PayScreen.route)
+
+                        val order = order_request(
+                            user = userSelected!!,
+                            products = currentShoppingProducts,
+                            total = total.value,
+                            status = "PENDING"
+                        )
+
+                        mainViewModel.createOrder(order){
+                            mainViewModel.markBoughtProducts(currentShoppingProducts){
+                                navController.navigate(ScreenNav.PayScreen.route)
+                            }
+                        }
                     })
             ) {
 
