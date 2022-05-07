@@ -229,10 +229,12 @@ class MainViewModel : ViewModel() {
             val apiServices = ApiServices.getInstance()
             updateOkResponse = false
             try{
+                product.total = product.amount * product.price
                 val response = apiServices.updateProductShopping(product._id, product)
                 if (response.isSuccessful){
                     updateOkResponse = true
                     Logger.i("SUCCESS updateProductShopping \n $response ${response.body()}")
+                    onSuccessCallback()
                 }else Logger.e("FAILURE response update product Shopping ")
             }catch (e: Exception){
                 errorMessage = e.message.toString()

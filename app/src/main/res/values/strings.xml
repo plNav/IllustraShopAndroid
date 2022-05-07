@@ -72,4 +72,12 @@
     <string name="phone">Phone</string>
     <string name="postalCode">Postal Code</string>
     <string name="Standard">Standard</string>
+    <string name="PENDING">PENDING</string>
+    <string name="ALL">ALL</string>
+    <string name="SENT">SENT</string>
+    <string name="products">PRODUCTS</string>
+    <string name="product">Product</string>
+    <string name="cant">Cant.</string>
+    <string name="orders">Orders</string>
+    <string name="whislist">Whislist</string>
 </resources>

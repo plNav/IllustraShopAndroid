@@ -229,7 +229,7 @@ fun validateClick(
             userSelected!!.address = if (!allFields) userSelected!!.address else address.value
             userSelected!!.country = if (!allFields) userSelected!!.country else country.value
 
-            //TODO UPDATE
+            //TODO UPDATE USER
 
         }
 

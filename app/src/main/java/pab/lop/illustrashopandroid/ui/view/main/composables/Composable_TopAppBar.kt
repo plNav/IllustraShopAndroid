@@ -69,7 +69,9 @@ fun TopAppBar(
                     ).show()
                     else mainViewModel.getAllProductShopping(shoppingCartSelected!!._id) {
                         currentShoppingProducts = mainViewModel.currentProductsShopping.toMutableList()
-                        if (currentShoppingProducts.isEmpty()) Toast.makeText(
+                        var hasToBuy = false
+                        currentShoppingProducts.forEach{product -> if(!product.bought)hasToBuy = true }
+                        if (currentShoppingProducts.isEmpty() || !hasToBuy) Toast.makeText(
                             context,
                             context.getString(R.string.empty_cart),
                             Toast.LENGTH_SHORT

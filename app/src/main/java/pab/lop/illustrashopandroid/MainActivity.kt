@@ -25,7 +25,7 @@ import pab.lop.illustrashopandroid.ui.view.main.composables.Main
 import pab.lop.illustrashopandroid.ui.view.admin.AdminViewModel
 import pab.lop.illustrashopandroid.ui.view.admin.composables.Admin_Screen
 import pab.lop.illustrashopandroid.ui.view.admin.composables.Edit_Product
-import pab.lop.illustrashopandroid.ui.view.admin.composables.Orders
+import pab.lop.illustrashopandroid.ui.view.admin.composables.OrderStart
 import pab.lop.illustrashopandroid.ui.view.login_register.LoginRegisterViewModel
 import pab.lop.illustrashopandroid.ui.view.login_register.composables.Register
 import pab.lop.illustrashopandroid.ui.view.main.MainViewModel
@@ -119,6 +119,7 @@ class MainActivity : ComponentActivity() {
                         Main(
                             navController = navController,
                             mainViewModel = mainViewModel,
+                            adminViewModel = adminViewModel,
                             context = applicationContext,
                             customSpacing = customSpacing
                         )
@@ -179,17 +180,18 @@ class MainActivity : ComponentActivity() {
 
                     /*** ORDER SCREEN ***/
                     composable(
-                        route = ScreenNav.OrderScreen.route
+                        route = "${ScreenNav.OrderScreen.route}/{isAdmin}",
+                        arguments = listOf(navArgument("isAdmin") { type = NavType.BoolType })
                     ) {
-                        Orders(
+                        OrderStart(
                             navController = navController,
                             adminViewModel = adminViewModel,
                             context = applicationContext,
-                            customSpacing = customSpacing
+                            customSpacing = customSpacing,
+                            isAdmin = it.arguments!!.getBoolean("isAdmin")
                         )
                         BackHandler(false) { }
                     }
-
                     /*** PAY SCREEN ***/
                     composable(
                         route = ScreenNav.PayScreen.route

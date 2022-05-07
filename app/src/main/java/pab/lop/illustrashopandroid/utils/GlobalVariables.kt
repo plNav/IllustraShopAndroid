@@ -16,6 +16,10 @@ const val TEST_BANNER : String = "ca-app-pub-3940256099942544/6300978111"
 //const val TEST_ADAPTIVE_BANNER : String = "ca-app-pub-3940256099942544~3347511713"
 const val TEST_INTERSTITIAL : String = "ca-app-pub-3940256099942544/1033173712"
 
+const val PENDING = "PENDING"
+const val SENT = "SENT"
+const val ENDED = "ENDED"
+
 var familyProducts: HashMap<String, List<product_stock_response>> = hashMapOf()
 var excludedFamilies : MutableList<String> = mutableListOf("SecondFamily")
 var familyNameList : MutableList<String> = mutableListOf()
@@ -28,6 +32,7 @@ var userSelected : user_response? = null
 var shoppingCartSelected : shopping_cart_response? = null
 var currentShoppingProducts : MutableList<product_shopping_response> = mutableListOf()
 var allOrders : MutableList<order_response> = mutableListOf()
+var userOrders : MutableList<order_response> = mutableListOf()
 
 val userDefaultNoAuth = user_response(
     _id = "",

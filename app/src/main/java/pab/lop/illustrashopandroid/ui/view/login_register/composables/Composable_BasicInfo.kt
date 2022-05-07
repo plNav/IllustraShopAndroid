@@ -273,11 +273,7 @@ fun BasicInfo(
                 keyboardType = KeyboardType.Number,
                 imeAction = ImeAction.Done,
             ),
-            keyboardActions = KeyboardActions(
-                onDone = {
-                    keyboardController?.hide()
-                    //TODO PERFORM ONCLICK VALIDATE
-                }),
+            keyboardActions = KeyboardActions(onDone = { keyboardController?.hide() }),
             trailingIcon = {
                 val image =
                     if (passwordVisibility.value) Icons.Filled.Visibility

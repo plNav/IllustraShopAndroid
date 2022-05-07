@@ -199,11 +199,8 @@ fun PopUp_Create_Family(
                             .padding(12.dp)
                             .clickable(onClick = {
                                 if (nameVerified.value) {
-                                    //TODO crear familia
                                     adminViewModel.createFamily(family_request(name = customName.value)) {
                                         createFamilyOpen.value = false
-                                       // loadProductsFamily.value = false
-                                       // startLoading.value = false
                                     }
                                 }
                             })

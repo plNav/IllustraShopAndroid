@@ -127,7 +127,7 @@ fun PopUpDetails(
                                     )
                                 } else {
                                     for (product in currentShoppingProducts) {
-                                        if (product.name == productSelected!!.name) {
+                                        if (!product.bought && product.name == productSelected!!.name) {
                                             product.amount++
                                             product.total = product.amount * product.price
                                             isRepeated = true
@@ -205,6 +205,7 @@ private fun createProductShopping(
         name = productSelected!!.name,
         image = productSelected!!.image,
         price = productSelected!!.price,
+        total = productSelected!!.price
     )
 
     mainViewModel.createProductShopping(newProduct = product) {

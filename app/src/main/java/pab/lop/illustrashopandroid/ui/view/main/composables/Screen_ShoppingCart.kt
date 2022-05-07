@@ -27,7 +27,6 @@ import pab.lop.illustrashopandroid.ui.theme.Spacing
 import pab.lop.illustrashopandroid.ui.view.main.MainViewModel
 import pab.lop.illustrashopandroid.utils.currentShoppingProducts
 import pab.lop.illustrashopandroid.utils.ScreenNav
-import pab.lop.illustrashopandroid.utils.allOrders
 import pab.lop.illustrashopandroid.utils.userSelected
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -69,7 +68,8 @@ fun ShoppingCart(
             verticalGradient = verticalGradient,
             openPopUpEdition = openPopUpEdition,
             customSpacing = customSpacing,
-            currentLine = currentLine
+            currentLine = currentLine,
+            isSaved = isSaved
         )
     }
 
@@ -100,7 +100,6 @@ fun ShoppingCart(
                         IconButton(
                             onClick = {
                                 if (isEditionMode.value) {
-                                    //TODO update
                                     isSaved.value = true
                                     Toast.makeText(context, "Updating....", Toast.LENGTH_SHORT).show()
                                 }
@@ -128,7 +127,10 @@ fun ShoppingCart(
                     .weight(1f)
                     .padding(5.dp)
             ) {
-                CartBody(currentLine, openPopUpEdition)
+                CartBody(
+                    currentLine = currentLine,
+                    openPopUpEdition = openPopUpEdition,
+                )
             }
             Spacer(modifier = Modifier.height(customSpacing.small))
 

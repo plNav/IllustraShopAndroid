@@ -29,10 +29,8 @@ private val LightColorPalette = lightColors(
     onSecondary = OnSecondaryRed,
     surface = SurfaceAlmostWhite,
     background = SurfaceAlmostWhite,
-   // onSurface = SurfaceAlmostBlack
 )
 
-//TODO IMPLEMENTAR NO ACTION BAR
 @Composable
 fun IllustraShopAndroidTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
@@ -44,56 +42,11 @@ fun IllustraShopAndroidTheme(
         LightColorPalette
     }
 
-    /*   val windowInfo = rememberWindowInfo()
-
-       when (windowInfo.screenWidthInfo) {
-           is WindowInfo.WindowType.Compat -> {
-
-               val localSpacing = localSpacingCompact
-               val localData = SpacingCompact(
-                   default  = 0.dp,
-                   extraSmall  = 4.dp,
-                   small  = 8.dp,
-                   mediumSmall = 16.dp,
-                   mediumMedium = 22.dp,
-                   mediumLarge = 28.dp,
-                   large  = 34.dp,
-                   extraLarge  = 60.dp
-               )
-               CompositionLocalProvider(localSpacing provides localData) {
-                   MaterialTheme(
-                       colors = colors,
-                       typography = Typography,
-                       shapes = Shapes,
-                       content = content
-                   )
-               }
-           }
-           is WindowInfo.WindowType.Medium -> {
-               val localSpacing = localSpacingMedium
-               val localData = SpacingMedium()
-               CompositionLocalProvider(localSpacing provides localData) {
-                   MaterialTheme(
-                       colors = colors,
-                       typography = Typography,
-                       shapes = Shapes,
-                       content = content
-                   )
-               }
-           }
-           else -> {
-               val localSpacing = localSpacingExtended
-               val localData = SpacingExtended()*/
-    //  CompositionLocalProvider(localSpacing provides localData) {
     MaterialTheme(
         colors = colors,
         typography = Typography,
         shapes = Shapes,
         content = content
     )
-    // }
 }
-/*   }
-}
-*/
 

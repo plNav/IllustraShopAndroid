@@ -32,7 +32,6 @@ fun CartHeader(
             .padding(5.dp)
     ) {
         /***HEADER***/
-        /***HEADER***/
         LazyVerticalGrid(
             cells = GridCells.Fixed(5),
             contentPadding = PaddingValues(5.dp),
@@ -75,7 +74,7 @@ fun CartHeader(
                         //.padding(10.dp)
                     ) {
                         Text(
-                            text = "CANT.",
+                            text = stringResource(R.string.cant).uppercase(),
                             modifier = Modifier
                                 .fillMaxSize()
                                 .padding(5.dp),
@@ -100,7 +99,7 @@ fun CartHeader(
                         // .padding(10.dp)
                     ) {
                         Text(
-                            text = "NOMBRE",
+                            text = stringResource(R.string.name).uppercase(),
                             modifier = Modifier
                                 .fillMaxSize()
                                 .padding(5.dp),

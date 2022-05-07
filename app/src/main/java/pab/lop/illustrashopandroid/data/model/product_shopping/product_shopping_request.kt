@@ -6,4 +6,5 @@ data class product_shopping_request(
     var name : String,
     var image : String,
     var price : Float,
+    var total : Float
 )

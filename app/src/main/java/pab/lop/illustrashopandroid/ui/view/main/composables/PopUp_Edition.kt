@@ -35,6 +35,7 @@ import pab.lop.illustrashopandroid.R
 import pab.lop.illustrashopandroid.data.model.product_shopping.product_shopping_response
 import pab.lop.illustrashopandroid.ui.theme.Spacing
 import pab.lop.illustrashopandroid.ui.view.main.MainViewModel
+import pab.lop.illustrashopandroid.utils.ScreenNav
 import pab.lop.illustrashopandroid.utils.URL_HEAD_IMAGES
 
 @Composable
@@ -45,7 +46,8 @@ fun PopUpEdition(
     verticalGradient: Brush,
     openPopUpEdition: MutableState<Boolean>,
     customSpacing: Spacing,
-    currentLine: MutableState<product_shopping_response?>
+    currentLine: MutableState<product_shopping_response?>,
+    isSaved: MutableState<Boolean>
 ) {
     val amount = remember { mutableStateOf(currentLine.value!!.amount) }
     val deleteConfirmation = remember { mutableStateOf(false) }
@@ -177,16 +179,6 @@ fun PopUpEdition(
 
                     Spacer(modifier = Modifier.height(customSpacing.small))
 
-                    /*    Row(
-                            modifier = Modifier
-                                .fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceEvenly
-                        ) {
-                            Text("Amount")
-                            Text("Button +")
-                            Text("Button -")
-                        }
-                        Spacer(modifier = Modifier.height(customSpacing.mediumSmall))*/
 
                 }
 
@@ -196,8 +188,11 @@ fun PopUpEdition(
                     modifier = Modifier
                         .fillMaxWidth()
                         .clickable(onClick = {
-
+                            currentLine.value!!.amount = amount.value
                             mainViewModel.updateProductShopping(currentLine.value!!) {
+                                openPopUpEdition.value = false
+                                isSaved.value = true
+                                navController.navigate(ScreenNav.ShoppingCartScreen.route)
                                 Logger.i("Update OK")
                             }
 

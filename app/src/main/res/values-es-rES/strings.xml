@@ -73,5 +73,13 @@
     <string name="phone">Teléfono</string>
     <string name="postalCode">Código Postal</string>
     <string name="Standard">Standard</string>
+    <string name="PENDING">PENDIENTE</string>
+    <string name="ALL">TODOS</string>
+    <string name="SENT">ENVIADO</string>
+    <string name="products">PRODUCTOS</string>
+    <string name="product">Artículo</string>
+    <string name="cant">Cant.</string>
+    <string name="orders">Pedidos</string>
+    <string name="whislist">Lista de Deseos</string>
 
 </resources>

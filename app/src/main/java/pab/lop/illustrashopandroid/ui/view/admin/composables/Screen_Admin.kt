@@ -264,7 +264,7 @@ fun Admin_Screen(
                     .clickable(onClick = {
                         adminViewModel.getOrders(){
                             allOrders = adminViewModel.allOrdersResponse as MutableList<order_response>
-                            navController.navigate(ScreenNav.OrderScreen.route)
+                            navController.navigate(ScreenNav.OrderScreen.withArgs(true))
                         }
                     })
             )

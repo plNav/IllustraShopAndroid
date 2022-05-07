@@ -11,3 +11,8 @@ val OnSecondaryRed = Color(0xFFd63031)
 
 val SurfaceAlmostBlack = Color(0xFF1e272e)
 val SurfaceAlmostWhite = Color(0xFFecf0f1)
+
+
+val RedPending = Color(0xfffab1a0)
+val YellowSent = Color(0xffffeaa7)
+val GreenEnd = Color(0x4655EFC4)

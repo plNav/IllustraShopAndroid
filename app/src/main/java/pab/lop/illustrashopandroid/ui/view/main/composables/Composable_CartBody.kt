@@ -19,7 +19,7 @@ import pab.lop.illustrashopandroid.utils.currentShoppingProducts
 @Composable
 fun CartBody(
     currentLine: MutableState<product_shopping_response?>,
-    openPopUpEdition: MutableState<Boolean>
+    openPopUpEdition: MutableState<Boolean>,
 ) {
     LazyVerticalGrid(
         cells = GridCells.Fixed(5),

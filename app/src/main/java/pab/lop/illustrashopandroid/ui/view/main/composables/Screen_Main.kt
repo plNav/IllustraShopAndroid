@@ -4,33 +4,22 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.*
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.LayoutDirection
-import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.orhanobut.logger.Logger
 import kotlinx.coroutines.CoroutineScope
-import pab.lop.illustrashopandroid.R
 import pab.lop.illustrashopandroid.data.model.product_stock.product_stock_response
 import pab.lop.illustrashopandroid.ui.theme.Spacing
+import pab.lop.illustrashopandroid.ui.view.admin.AdminViewModel
 import pab.lop.illustrashopandroid.ui.view.main.MainViewModel
 import pab.lop.illustrashopandroid.utils.*
-import pab.lop.illustrashopandroid.utils.ScreenNav
 
 @SuppressLint("UnrememberedMutableState", "MutableCollectionMutableState")
 @RequiresApi(Build.VERSION_CODES.O)
@@ -39,7 +28,8 @@ fun Main(
     navController: NavController,
     mainViewModel: MainViewModel,
     context: Context,
-    customSpacing: Spacing
+    customSpacing: Spacing,
+    adminViewModel: AdminViewModel
 ) {
     val loadProductsFamily = remember { mutableStateOf(false) }
     val startLoading = remember { mutableStateOf(false) }
@@ -104,7 +94,8 @@ fun Main(
             verticalGradient = verticalGradient,
             verticalGradientDisabled = verticalGradientDisabled,
             addShoppingCart = addShoppingCart,
-            customSpacing = customSpacing
+            customSpacing = customSpacing,
+            adminViewModel = adminViewModel
         )
 
     if (popUpDetailsOpen.value) {
@@ -137,6 +128,7 @@ fun MainStart(
     addShoppingCart: MutableState<Boolean>,
     customSpacing: Spacing,
     verticalGradientDisabled: Brush,
+    adminViewModel: AdminViewModel,
 ) {
 
     Scaffold(
@@ -153,7 +145,8 @@ fun MainStart(
                 scaffoldState = scaffoldState,
                 customSpacing = customSpacing,
                 scope = scope,
-                mainViewModel = mainViewModel
+                mainViewModel = mainViewModel,
+                adminViewModel = adminViewModel
             )
         },
         topBar = {
@@ -172,108 +165,7 @@ fun MainStart(
     }
 }
 
-@Composable
-fun MainDrawer(
-    navController: NavController,
-    context: Context,
-    verticalGradient: Brush,
-    scaffoldState: ScaffoldState,
-    customSpacing: Spacing,
-    scope: CoroutineScope,
-    mainViewModel: MainViewModel,
-    verticalGradientDisabled: Brush
-) {
-    //Text("hola", modifier = Modifier.fillMaxWidth())
-    Column(
-        Modifier
-            .fillMaxHeight()
-            .fillMaxWidth(0.65f)
-            .padding(10.dp),
-        horizontalAlignment = Alignment.Start,
-        verticalArrangement = Arrangement.SpaceAround
-    ) {
 
-        /*** USER INFO ***/
-        Card(Modifier.fillMaxWidth()) {
-            Text(if (userSelected == userDefaultNoAuth) stringResource(R.string.not_logged) else  userSelected!!.username)
-        }
-
-        /*** EDIT PERSONAL INFO ***/
-        Text(
-            text =
-                if (userSelected == userDefaultNoAuth) stringResource(R.string.register)
-                else stringResource(R.string.edit_personal_info),
-            textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.body1.copy(color = Color.White),
-            modifier = Modifier
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(4.dp))
-                .background(brush = verticalGradientDisabled)
-                .padding(12.dp)
-                .clickable(onClick = {
-                    if (userSelected == userDefaultNoAuth) navController.navigate(ScreenNav.RegisterScreen.withArgs(false))
-                    else navController.navigate(ScreenNav.RegisterScreen.withArgs(true))
-                })
-        )
-
-        /*** WISHLIST ***/
-        Text(
-            text = stringResource(R.string.new_product),
-            textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.body1.copy(color = Color.White),
-            modifier = Modifier
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(4.dp))
-                .background(brush = verticalGradientDisabled)
-                .padding(12.dp)
-                .clickable(onClick = { navController.navigate(ScreenNav.ImageUploadScreen.route) })
-        )
-
-        /*** DELIVERS ***/
-        Text(
-            text = stringResource(R.string.new_product),
-            textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.body1.copy(color = Color.White),
-            modifier = Modifier
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(4.dp))
-                .background(brush = verticalGradientDisabled)
-                .padding(12.dp)
-                .clickable(onClick = { navController.navigate(ScreenNav.ImageUploadScreen.route) })
-        )
-
-        /*** ADMIN SETTINGS IF USER ROL == ADMIN ***/
-        Text(
-            text = stringResource(R.string.menu_admin),
-            textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.body1.copy(color = Color.White),
-            modifier = Modifier
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(4.dp))
-                .background(brush = verticalGradientDisabled)
-                .padding(12.dp)
-                .clickable(onClick = { navController.navigate(ScreenNav.AdminScreen.route) })
-        )
-
-        /*** CLOSE SESSION - INIT SESSION IF NO AUTH USER ***/
-        Text(
-            modifier = Modifier
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(4.dp))
-                .background(brush = verticalGradientDisabled)
-                .padding(12.dp)
-                .clickable(onClick = {
-                    userSelected = null
-                    navController.navigate(ScreenNav.LoginScreen.route)
-                }),
-            text =
-                if (userSelected == userDefaultNoAuth) stringResource(R.string.login)
-                else stringResource(R.string.logout),
-            textAlign = TextAlign.Center,
-            style = MaterialTheme.typography.body1.copy(color = Color.White),
-            )
-    }
-}
 
 
 @Composable
