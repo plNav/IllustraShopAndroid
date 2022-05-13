@@ -30,6 +30,7 @@ import pab.lop.illustrashopandroid.ui.view.login_register.LoginRegisterViewModel
 import pab.lop.illustrashopandroid.ui.view.login_register.composables.Register
 import pab.lop.illustrashopandroid.ui.view.main.MainViewModel
 import pab.lop.illustrashopandroid.ui.view.main.composables.ShoppingCart
+import pab.lop.illustrashopandroid.ui.view.main.composables.WishList
 import pab.lop.illustrashopandroid.ui.view.pay.PayViewModel
 import pab.lop.illustrashopandroid.ui.view.pay.composables.Pay
 import pab.lop.illustrashopandroid.ui.view.settings.SettingsViewModel
@@ -131,6 +132,19 @@ class MainActivity : ComponentActivity() {
                         route = ScreenNav.ShoppingCartScreen.route
                     ) {
                         ShoppingCart(
+                            navController = navController,
+                            mainViewModel = mainViewModel,
+                            context = applicationContext,
+                            customSpacing = customSpacing
+                        )
+                        BackHandler(false) { }
+                    }
+
+                    /*** WISHLIST SCREEN ***/
+                    composable(
+                        route = ScreenNav.WishScreen.route
+                    ) {
+                        WishList(
                             navController = navController,
                             mainViewModel = mainViewModel,
                             context = applicationContext,

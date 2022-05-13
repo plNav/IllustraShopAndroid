@@ -19,7 +19,7 @@ data class user_response(
     var total_spent : Float,
     var register_count : Float,
     var verified_buys : List<String>,
-    var wishlist : List<String>,
+    var wishlist : MutableList<String>,
     var first_register : Date,
     var last_register : Date
     )

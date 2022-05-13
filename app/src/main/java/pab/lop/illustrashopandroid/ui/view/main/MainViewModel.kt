@@ -10,7 +10,6 @@ import com.orhanobut.logger.Logger
 import kotlinx.coroutines.launch
 import pab.lop.illustrashopandroid.data.api.ApiServices
 import pab.lop.illustrashopandroid.data.model.order.order_request
-import pab.lop.illustrashopandroid.data.model.order.order_response
 import pab.lop.illustrashopandroid.data.model.product_shopping.product_shopping_request
 import pab.lop.illustrashopandroid.data.model.product_shopping.product_shopping_response
 import pab.lop.illustrashopandroid.data.model.user.user_response
@@ -29,8 +28,8 @@ class MainViewModel : ViewModel() {
     var currentProductsShopping : MutableList<product_shopping_response> by mutableStateOf(mutableListOf())
     var updateOkResponse : Boolean by mutableStateOf(false)
     var currentProductShoppingResponse : product_shopping_response? by mutableStateOf(null)
-    var currentOrder : order_response? by mutableStateOf(null)
-
+    var productStockResponse : product_stock_response? by mutableStateOf(null)
+    var productListResponse : MutableList<product_stock_response> by mutableStateOf(mutableListOf())
 
 
     private var errorMessage: String by mutableStateOf("")
@@ -49,6 +48,51 @@ class MainViewModel : ViewModel() {
                 Logger.e("FAILURE getAllUsers \n $e")
             }
         }
+    }
+
+    private fun getProductStock(id: String, onSuccessCallback: () -> Unit){
+        val apiServices = ApiServices.getInstance()
+        viewModelScope.launch {
+            val response: Response<product_stock_response> = apiServices.getProductStock(id)
+            if (response.isSuccessful) {
+                Logger.i("Get productStock \n${response.body().toString()}")
+                productStockResponse = response.body()
+                onSuccessCallback()
+            }
+        }
+    }
+
+    fun getAllProductStock(productList : MutableList<String>, onSuccessCallback: () -> Unit){
+           val apiServices = ApiServices.getInstance()
+        viewModelScope.launch {
+            try {
+              //  val products = productList.joinToString("-")
+              //  Logger.i(products)
+                val response: Response<List<product_stock_response>> =
+                    apiServices.getProductsWish(products = productList as ArrayList<String>)
+                if (response.isSuccessful) {
+                    Logger.i("Get products List ok \n${response.body().toString()}")
+                    productListResponse = response.body() as MutableList<product_stock_response>
+                    onSuccessCallback()
+                } else Logger.e("ErrorGetAllProductWish response \n${response.body().toString()}")
+            }catch (e : Exception){
+                Logger.e("Error get all products wish \n ${e.message}")
+            }
+        }
+
+
+
+
+    // productListResponse.clear()
+           /* for(product in productList){
+                viewModelScope.launch {
+
+                getProductStock(product){
+                  productStockResponse?.let { productListResponse.add(it) }
+              }
+            }
+            onSuccessCallback()
+        }*/
     }
 
     fun getProductsFamily(onSuccessCallback: () -> Unit) {
@@ -194,26 +238,6 @@ class MainViewModel : ViewModel() {
                 if (response.isSuccessful) {
                     Logger.i("all product shopping ok \n${response.body().toString()}")
                     currentProductsShopping = mutableListOf()
-
-                    /*for(product : product_shopping_response in response.body()!!){
-                        if(currentProductsShopping.isNotEmpty()){
-                            var isRepeated = false
-                            for (repeated in currentProductsShopping){
-                                if(repeated.name == product.name){
-                                    repeated.amount++
-                                    repeated.total = repeated.price * repeated.amount
-                                    isRepeated = true
-                                }
-                            }
-                            if(!isRepeated){
-                                product.total = product.amount * product.price
-                                currentProductsShopping.add(product)
-                            }
-                        }else{
-                            product.total = product.amount * product.price
-                            currentProductsShopping.add(product)
-                        }
-                    }*/
                     currentProductsShopping = (response.body() as MutableList<product_shopping_response>?)!!
                     onSuccessCallback()
                 } else Logger.e("Error get all product shopping $response")
@@ -305,5 +329,43 @@ class MainViewModel : ViewModel() {
             }
         }
     }
+
+    fun deleteProductSelected(id: String, onSuccessCallback: () -> Unit) {
+
+        val apiServices = ApiServices.getInstance()
+        viewModelScope.launch {
+            try {
+                val response: Response<Any> = apiServices.deleteProductShopping(id)
+                if (response.isSuccessful) {
+                    Logger.i("delete product shoping OK \n $response \n ${response.body()}")
+                    onSuccessCallback()
+                } else Logger.e("Error delete product shoping response $response")
+            } catch (e: Exception) {
+                errorMessage = e.message.toString()
+                Logger.e("FAILURE delete product shoping")
+            }
+
+        }
+    }
+
+    fun updateUserComplete(id: String, user: user_response, onSuccessCallback: () -> Unit) {
+        viewModelScope.launch {
+            val apiServices = ApiServices.getInstance()
+            updateOkResponse = false
+            try{
+                val response = apiServices.updateUserComplete(id = id, user = user)
+                if (response.isSuccessful){
+                    updateOkResponse = true
+                    Logger.i("SUCCESS updateuser $response ${response.body()}")
+                    onSuccessCallback()
+                }else Logger.e("FAILURE response updateUser $user ")
+
+            }catch (e: Exception){
+                errorMessage = e.message.toString()
+                Logger.e("FAILURE update user\n${e.message.toString()}")
+            }
+        }
+    }
+
 
 }

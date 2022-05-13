@@ -217,21 +217,8 @@ fun validateClick(
     name: MutableState<String>
 ) {
     if (isEditionMode) {
-        if (!passwordValidated.value) popUpPasswordOpen.value = true
-        else {
-            userSelected!!.name = if (!allFields) "" else name.value
-            userSelected!!.last_name = if (!allFields) "" else lastName.value
-            userSelected!!.username = username.value
-            userSelected!!.email = email.value
-            userSelected!!.password = getSHA256(password.value)
-            userSelected!!.phone = if (!allFields) userSelected!!.phone else phone.value
-            userSelected!!.postal_code = if (!allFields) userSelected!!.postal_code else postalCode.value
-            userSelected!!.address = if (!allFields) userSelected!!.address else address.value
-            userSelected!!.country = if (!allFields) userSelected!!.country else country.value
+        popUpPasswordOpen.value = true
 
-            //TODO UPDATE USER
-
-        }
 
     } else {
         val newUser = user_request(

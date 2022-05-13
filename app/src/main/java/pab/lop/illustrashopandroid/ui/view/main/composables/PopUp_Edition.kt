@@ -35,8 +35,7 @@ import pab.lop.illustrashopandroid.R
 import pab.lop.illustrashopandroid.data.model.product_shopping.product_shopping_response
 import pab.lop.illustrashopandroid.ui.theme.Spacing
 import pab.lop.illustrashopandroid.ui.view.main.MainViewModel
-import pab.lop.illustrashopandroid.utils.ScreenNav
-import pab.lop.illustrashopandroid.utils.URL_HEAD_IMAGES
+import pab.lop.illustrashopandroid.utils.*
 
 @Composable
 fun PopUpEdition(
@@ -157,8 +156,14 @@ fun PopUpEdition(
                             onClick = {
                                 if (amount.value == 1f) {
                                     if (deleteConfirmation.value) {
-                                        //TODO DELETE PRODUCT
-                                        openPopUpEdition.value = false
+                                            mainViewModel.deleteProductSelected(id = currentLine.value!!._id){
+                                                mainViewModel.getAllProductShopping(shoppingCartSelected!!._id) {
+                                                    currentShoppingProducts =
+                                                        mainViewModel.currentProductsShopping.toMutableList()
+                                                    openPopUpEdition.value = false
+                                                    navController.navigate(ScreenNav.ShoppingCartScreen.route)
+                                                }
+                                            }
                                     } else {
                                         deleteConfirmation.value = true
                                         Toast.makeText(context, context.getString(R.string.pressAgainDelete), Toast.LENGTH_SHORT)

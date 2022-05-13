@@ -56,11 +56,6 @@ fun Main(
         endY = 100f
     )
 
-    val verticalGradientIncomplete = Brush.verticalGradient(
-        colors = listOf(MaterialTheme.colors.onSecondary, Color.DarkGray),
-        startY = 0f,
-        endY = 100f
-    )
 
     if (!startLoading.value) {
         startLoading.value = true
@@ -107,7 +102,10 @@ fun Main(
             verticalGradient = verticalGradient,
             snackbarHostState = snackbarHostState,
             addShoppingCart = addShoppingCart,
-            context = context
+            context = context,
+            verticalGradientDisabled = verticalGradientDisabled,
+            isWishList = false,
+            navController = navController
         )
     }
 }

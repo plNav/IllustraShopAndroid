@@ -26,6 +26,9 @@ class LoginRegisterViewModel : ViewModel() {
     var usernameListResponse : List<String> by mutableStateOf(listOf())
     var emailListResponse : List<String> by mutableStateOf(listOf())
 
+    var updateOkResponse : Boolean by mutableStateOf(false)
+
+
     private var errorMessage: String by mutableStateOf("")
 
 
@@ -141,6 +144,43 @@ class LoginRegisterViewModel : ViewModel() {
         }catch (e: Exception){
             errorMessage = e.message.toString()
             Logger.e("FAILURE getting shoppingCarts")
+        }
+    }
+
+    fun updateUserPartial(id: String, user: user_response, onSuccessCallback: () -> Unit) {
+        viewModelScope.launch {
+            val apiServices = ApiServices.getInstance()
+            updateOkResponse = false
+            try{
+                val response = apiServices.updateUserPartial(id = id, user = user)
+                if (response.isSuccessful){
+                    updateOkResponse = true
+                    Logger.i("SUCCESS updateOrder $response ${response.body()}")
+                    onSuccessCallback()
+                }else Logger.e("FAILURE response updateUser $user ")
+
+            }catch (e: Exception){
+                errorMessage = e.message.toString()
+                Logger.e("FAILURE update user\n${e.message.toString()}")
+            }
+        }
+    }
+    fun updateUserComplete(id: String, user: user_response, onSuccessCallback: () -> Unit) {
+        viewModelScope.launch {
+            val apiServices = ApiServices.getInstance()
+            updateOkResponse = false
+            try{
+                val response = apiServices.updateUserComplete(id = id, user = user)
+                if (response.isSuccessful){
+                    updateOkResponse = true
+                    Logger.i("SUCCESS updateOrder $response ${response.body()}")
+                    onSuccessCallback()
+                }else Logger.e("FAILURE response updateUser $user ")
+
+            }catch (e: Exception){
+                errorMessage = e.message.toString()
+                Logger.e("FAILURE update user\n${e.message.toString()}")
+            }
         }
     }
 }

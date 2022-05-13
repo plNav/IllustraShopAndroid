@@ -10,6 +10,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.ExpandLess
+import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -25,6 +27,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import coil.compose.SubcomposeAsyncImage
 import coil.compose.rememberAsyncImagePainter
@@ -50,7 +53,19 @@ fun PopUpDetails(
     snackbarHostState: SnackbarHostState,
     addShoppingCart: MutableState<Boolean>,
     context: Context,
+    verticalGradientDisabled: Brush,
+    isWishList: Boolean,
+    navController: NavController,
 ) {
+
+    val verticalGradientIncomplete = Brush.verticalGradient(
+        colors = listOf(MaterialTheme.colors.onSecondary, Color.DarkGray),
+        startY = 0f,
+        endY = 100f
+    )
+
+    val isInWishList = remember { mutableStateOf(userSelected!!.wishlist.contains(productSelected!!._id)) }
+
 
     Dialog(
         onDismissRequest = { popUpDetailsOpen.value = false }
@@ -161,7 +176,7 @@ fun PopUpDetails(
                         modifier = Modifier
                             .fillMaxWidth()
                             .clip(RoundedCornerShape(4.dp))
-                            .background(brush = verticalGradient)
+                            .background(brush = if (userSelected!! == userDefaultNoAuth) verticalGradientDisabled else verticalGradient)
                             .padding(12.dp),
                         text = stringResource(R.string.addShopping),
                         textAlign = TextAlign.Center,
@@ -169,24 +184,58 @@ fun PopUpDetails(
                     )
                 }
 
+
                 /************ ADD TO WISHLIST ************/
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clickable(onClick = { /* TODO */ })
+                        .clickable(onClick = {
+                            if (isWishList) {
+                                userSelected!!.wishlist.remove(productSelected!!._id)
+                                mainViewModel.updateUserComplete(userSelected!!._id, userSelected!!) {
+                                    mainViewModel.getAllProductStock(userSelected!!.wishlist) {
+                                        wishlistProducts = mainViewModel.productListResponse
+                                        navController.navigate(ScreenNav.WishScreen.route)
+                                    }
+                                }
+                            } else {
+                                if (userSelected!! == userDefaultNoAuth) {
+                                    Toast
+                                        .makeText(context, context.getString(R.string.not_logged), Toast.LENGTH_SHORT)
+                                        .show()
+                                } else {
+                                    if (!isInWishList.value) {
+                                        userSelected!!.wishlist.add(productSelected!!._id)
+                                        mainViewModel.updateUserComplete(userSelected!!._id, userSelected!!) {
+                                            popUpDetailsOpen.value = false
+                                        }
+                                    } else {
+                                        Toast
+                                            .makeText(context, context.getString(R.string.already_wishlist), Toast.LENGTH_SHORT)
+                                            .show()
+                                    }
+                                }
+                            }
+                        })
                 ) {
 
                     Text(
                         modifier = Modifier
                             .fillMaxWidth()
                             .clip(RoundedCornerShape(4.dp))
-                            .background(brush = verticalGradient)
+                            .background(
+                                brush =
+                                if (isWishList) verticalGradientIncomplete
+                                else if (userSelected!! == userDefaultNoAuth || isInWishList.value) verticalGradientDisabled
+                                else verticalGradient
+                            )
                             .padding(12.dp),
-                        text = stringResource(R.string.addWish),
+                        text = if (isWishList) stringResource(R.string.delete_wishlist) else stringResource(R.string.addWish),
                         textAlign = TextAlign.Center,
                         style = MaterialTheme.typography.body1.copy(color = Color.White)
                     )
                 }
+
             }
         }
     }

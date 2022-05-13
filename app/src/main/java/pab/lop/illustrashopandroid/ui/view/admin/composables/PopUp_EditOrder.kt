@@ -37,6 +37,7 @@ import pab.lop.illustrashopandroid.ui.theme.Spacing
 import pab.lop.illustrashopandroid.ui.theme.SurfaceAlmostBlack
 import pab.lop.illustrashopandroid.ui.view.admin.AdminViewModel
 import pab.lop.illustrashopandroid.utils.*
+import java.util.*
 
 @Composable
 fun PopUp_EditOrder(
@@ -139,7 +140,7 @@ fun PopUp_EditOrder(
 
                 /************ PRODUCTS INFO ************/
 
-                LazyColumn(Modifier.fillMaxHeight( if (isAdmin) 0.3f else 0.6f)) {
+                LazyColumn(Modifier.fillMaxHeight(if (isAdmin) 0.3f else 0.6f)) {
                     itemsIndexed(orderSelected.value!!.products) { _, product ->
                         Card(Modifier.padding(customSpacing.small)) {
                             Row(
@@ -149,28 +150,28 @@ fun PopUp_EditOrder(
                                     .fillMaxWidth()
                                     .padding(customSpacing.small)
                             ) {
-                               Box(
-                                   modifier = Modifier
-                                       .height(customSpacing.extraLarge)
-                                       .width(customSpacing.extraLarge)
-                               ){
-                                   SubcomposeAsyncImage(
-                                       model = ImageRequest.Builder(LocalContext.current)
-                                           .data("$URL_HEAD_IMAGES${product.image}")
-                                           .crossfade(true)
-                                           .crossfade(1000)
-                                           .build(),
-                                       contentDescription = null,
-                                       loading = { CircularProgressIndicator(modifier = Modifier.fillMaxSize()) },
-                                       contentScale = ContentScale.Crop,
-                                       error = {
-                                           Image(
-                                               painter = painterResource(id = R.drawable.loading_image),
-                                               contentDescription = stringResource(R.string.error),
-                                           )
-                                       },
-                                   )
-                               }
+                                Box(
+                                    modifier = Modifier
+                                        .height(customSpacing.extraLarge)
+                                        .width(customSpacing.extraLarge)
+                                ) {
+                                    SubcomposeAsyncImage(
+                                        model = ImageRequest.Builder(LocalContext.current)
+                                            .data("$URL_HEAD_IMAGES${product.image}")
+                                            .crossfade(true)
+                                            .crossfade(1000)
+                                            .build(),
+                                        contentDescription = null,
+                                        loading = { CircularProgressIndicator(modifier = Modifier.fillMaxSize()) },
+                                        contentScale = ContentScale.Crop,
+                                        error = {
+                                            Image(
+                                                painter = painterResource(id = R.drawable.loading_image),
+                                                contentDescription = stringResource(R.string.error),
+                                            )
+                                        },
+                                    )
+                                }
 
                                 Text(
                                     modifier = Modifier.padding(customSpacing.small),
@@ -200,7 +201,7 @@ fun PopUp_EditOrder(
                     ) {
 
 
-                        if(isAdmin){
+                        if (isAdmin) {
                             Button(
                                 modifier = Modifier
                                     .height(customSpacing.superLarge)
@@ -249,13 +250,15 @@ fun PopUp_EditOrder(
                             ) {
                                 Icon(Icons.Filled.Done, contentDescription = null, tint = Color.White)
                             }
-                        }else{
-                            Text(text = when(orderSelected.value!!.status){
-                                PENDING -> stringResource(R.string.PENDING)
-                                SENT -> stringResource(R.string.SENT)
-                                ENDED -> stringResource(R.string.SENT)
-                                else -> stringResource(R.string.error)
-                            })
+                        } else {
+                            Text(
+                                text = when (orderSelected.value!!.status) {
+                                    PENDING -> stringResource(R.string.PENDING)
+                                    SENT -> stringResource(R.string.SENT)
+                                    ENDED -> stringResource(R.string.SENT)
+                                    else -> stringResource(R.string.error)
+                                }
+                            )
                         }
                     }
                 }
@@ -274,32 +277,30 @@ fun PopUp_EditOrder(
                     /************ OK ************/
                     Text(
                         text = stringResource(R.string.Ok),
-                        textAlign = TextAlign.Center,
-                        style = MaterialTheme.typography.body1.copy(color = Color.White),
                         modifier = Modifier
                             .fillMaxWidth()
                             .clip(RoundedCornerShape(4.dp))
                             .background(brush = verticalGradient)
                             .padding(12.dp)
                             .clickable(onClick = {
-
-                                if(isAdmin){
+                                if (isAdmin) {
                                     orderSelected.value!!.status = filter.value
-
-
-                                    //TODO UPDATE ORDER
-                                    adminViewModel.getOrders {
-                                        isEditOpen.value = false
-                                        allOrders = adminViewModel.allOrdersResponse as MutableList<order_response>
-                                        navController.navigate(ScreenNav.OrderScreen.withArgs(true))
+                                    orderSelected.value!!.date_arrive = Date();
+                                    adminViewModel.updateOrder(order = orderSelected.value!!) {
+                                        adminViewModel.getOrders {
+                                            isEditOpen.value = false
+                                            allOrders = adminViewModel.allOrdersResponse as MutableList<order_response>
+                                            navController.navigate(ScreenNav.OrderScreen.withArgs(true))
+                                        }
                                     }
-                                }else{
-                                    //TODO GET USER ORDERS X2
-                                    navController.navigate(ScreenNav.OrderScreen.withArgs(false))
-
+                                } else {
+                                    adminViewModel.getUserOrders(userId = userSelected!!._id) {
+                                        navController.navigate(ScreenNav.OrderScreen.withArgs(false))
+                                    }
                                 }
-
-                            })
+                            }),
+                        textAlign = TextAlign.Center,
+                        style = MaterialTheme.typography.body1.copy(color = Color.White)
                     )
 
                     Spacer(

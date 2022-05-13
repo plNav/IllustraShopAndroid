@@ -80,4 +80,12 @@
     <string name="cant">Cant.</string>
     <string name="orders">Orders</string>
     <string name="whislist">Whislist</string>
+    <string name="update_password">Update password?</string>
+    <string name="old_password">Old Password</string>
+    <string name="password_correct">Password Correct!</string>
+    <string name="password_incorrect">Password Incorrect</string>
+    <string name="FINISHED">FINISHED</string>
+    <string name="logged_as">Logged as:</string>
+    <string name="already_wishlist">Product already in wishlist</string>
+    <string name="delete_wishlist">Delete from Wishlist</string>
 </resources>

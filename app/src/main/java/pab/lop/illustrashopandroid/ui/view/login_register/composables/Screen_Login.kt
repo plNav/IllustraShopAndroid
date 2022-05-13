@@ -158,7 +158,7 @@ fun Login(
             keyboardOptions = KeyboardOptions.Default.copy(
                 capitalization = KeyboardCapitalization.Words,
                 autoCorrect = false,
-                keyboardType = KeyboardType.Number,
+                keyboardType = KeyboardType.Password,
                 imeAction = ImeAction.Done,
             ),
             keyboardActions = KeyboardActions(onDone = { keyboardController?.hide() }),

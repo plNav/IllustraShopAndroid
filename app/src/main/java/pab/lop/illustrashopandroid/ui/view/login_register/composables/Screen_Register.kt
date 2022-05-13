@@ -1,16 +1,16 @@
 package pab.lop.illustrashopandroid.ui.view.login_register.composables
 
 import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.ExpandLess
-import androidx.compose.material.icons.filled.ExpandMore
+import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -23,14 +23,19 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.*
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavController
 import pab.lop.illustrashopandroid.R
 import pab.lop.illustrashopandroid.ui.theme.Spacing
 import pab.lop.illustrashopandroid.ui.view.login_register.LoginRegisterViewModel
 import pab.lop.illustrashopandroid.utils.ScreenNav
+import pab.lop.illustrashopandroid.utils.getSHA256
 import pab.lop.illustrashopandroid.utils.userSelected
 
 
@@ -73,8 +78,9 @@ fun Register(
 
     val password1 = remember { mutableStateOf("") }
     val password2 = remember { mutableStateOf("") }
-    val passwordChecked = remember { mutableStateOf(false) }
+    val passwordChecked = remember { mutableStateOf(isEditionMode) }
     val passwordVisibility = remember { mutableStateOf(false) }
+    val passwordUpdate = remember { mutableStateOf(false) }
 
 
     //Pay Fields //TODO PAY_METHOD & PAY_NUMBER
@@ -86,7 +92,7 @@ fun Register(
         )
     }
 
-    val lastName = remember { mutableStateOf(if(isEditionMode) userSelected!!.last_name else "")}
+    val lastName = remember { mutableStateOf(if (isEditionMode) userSelected!!.last_name else "") }
     val lastNameChecked = remember {
         mutableStateOf(
             if (isEditionMode) userSelected!!.last_name.isNotEmpty()
@@ -94,7 +100,7 @@ fun Register(
         )
     }
 
-    val country = remember { mutableStateOf(if(isEditionMode) userSelected!!.country else "")}
+    val country = remember { mutableStateOf(if (isEditionMode) userSelected!!.country else "") }
     val countryChecked = remember {
         mutableStateOf(
             if (isEditionMode) userSelected!!.country.isNotEmpty()
@@ -102,7 +108,7 @@ fun Register(
         )
     }
 
-    val address = remember { mutableStateOf(if(isEditionMode) userSelected!!.address else "")}
+    val address = remember { mutableStateOf(if (isEditionMode) userSelected!!.address else "") }
     val addressChecked = remember {
         mutableStateOf(
             if (isEditionMode) userSelected!!.address.isNotEmpty()
@@ -110,7 +116,7 @@ fun Register(
         )
     }
 
-    val postalCode = remember { mutableStateOf(if(isEditionMode) userSelected!!.postal_code else "")}
+    val postalCode = remember { mutableStateOf(if (isEditionMode) userSelected!!.postal_code else "") }
     val postalCodeChecked = remember {
         mutableStateOf(
             if (isEditionMode) userSelected!!.postal_code.isNotEmpty()
@@ -118,7 +124,7 @@ fun Register(
         )
     }
 
-    val phone = remember { mutableStateOf(if(isEditionMode) userSelected!!.phone else "")}
+    val phone = remember { mutableStateOf(if (isEditionMode) userSelected!!.phone else "") }
     val phoneChecked = remember {
         mutableStateOf(
             if (isEditionMode) userSelected!!.phone.isNotEmpty()
@@ -155,12 +161,27 @@ fun Register(
         firstLoad.value = false
     }
 
-    val popUpPasswordOpen = remember {mutableStateOf(false)}
-    val passwordValidated = remember { mutableStateOf(false)}
-    if(popUpPasswordOpen.value){
+
+    val popUpPasswordOpen = remember { mutableStateOf(false) }
+    val passwordValidated = remember { mutableStateOf(false) }
+    if (popUpPasswordOpen.value) {
         PopUpPassword(
             popUpPasswordOpen = popUpPasswordOpen,
-            passwordValidated = passwordValidated
+            passwordValidated = passwordValidated,
+            customSpacing = customSpacing,
+            verticalGradient = verticalGradient,
+            context = context,
+            allFields = openBuyInfo.value,
+            name = name,
+            lastName = lastName,
+            username = username,
+            email = email,
+            phone = phone,
+            postalCode = postalCode,
+            address = address,
+            country = country,
+            navController = navController,
+            loginRegisterViewModel = loginRegisterViewModel
         )
     }
 
@@ -190,6 +211,7 @@ fun Register(
                 password1 = password1,
                 password2 = password2,
                 passwordChecked = passwordChecked,
+                passwordUpdate = passwordUpdate,
                 passwordVisibility = passwordVisibility,
                 keyboardController = keyboardController,
                 emailList = emailList,
@@ -261,10 +283,6 @@ fun Register(
     }
 }
 
-@Composable
-fun PopUpPassword(popUpPasswordOpen: MutableState<Boolean>, passwordValidated: MutableState<Boolean>) {
-    TODO("Not yet implemented")
-}
 
 
 @Composable
@@ -329,25 +347,27 @@ fun DropdownButtonPayInfo(
         ) {
             Text(
                 text =
-                if(isEditionMode){
-                    if(openBuyInfo.value) stringResource(R.string.edit_pay_info_now)
+                if (isEditionMode) {
+                    if (openBuyInfo.value) stringResource(R.string.edit_pay_info_now)
                     else stringResource(R.string.edit_pay_info_later)
-                }else {
+                } else {
                     if (openBuyInfo.value) stringResource(R.string.show_pay_info_now)
                     else stringResource(R.string.show_pay_info_later)
                 },
                 modifier = Modifier
-                    .padding(customSpacing.mediumLarge, customSpacing.default, customSpacing.mediumLarge, customSpacing.default),
+                    .padding(customSpacing.mediumLarge, customSpacing.default, customSpacing.mediumLarge, customSpacing.default)
+                    .fillMaxWidth(0.7f),
                 color = Color.White
             )
 
             IconButton(
-                modifier = Modifier.padding(
-                    customSpacing.default,
-                    customSpacing.default,
-                    customSpacing.small,
-                    customSpacing.default
-                ),
+                modifier = Modifier
+                    .padding(
+                        customSpacing.default,
+                        customSpacing.default,
+                        customSpacing.small,
+                        customSpacing.default
+                    ),
                 onClick = { openBuyInfo.value = !openBuyInfo.value }
             ) {
                 Icon(

@@ -23,6 +23,7 @@ import pab.lop.illustrashopandroid.data.model.family.family_response
 import pab.lop.illustrashopandroid.data.model.order.order_response
 import pab.lop.illustrashopandroid.data.model.product_stock.product_stock_request
 import pab.lop.illustrashopandroid.data.model.product_stock.product_stock_response
+import pab.lop.illustrashopandroid.data.model.user.user_response
 import pab.lop.illustrashopandroid.utils.ProgressRequestBody
 import retrofit2.Response
 import retrofit2.await
@@ -390,4 +391,45 @@ class AdminViewModel : ViewModel() {
         }
 
     }
+
+    fun updateOrder(order: order_response, onSuccessCallback: () -> Unit) {
+        viewModelScope.launch {
+            val apiServices = ApiServices.getInstance()
+            updateOkResponse = false
+            try{
+                val response = apiServices.updateOrder(oldOrderId = order._id, newOrder = order)
+                if (response.isSuccessful){
+                    updateOkResponse = true
+                    Logger.i("SUCCESS updateOrder $response ${response.body()}")
+                    onSuccessCallback()
+                }else Logger.e("FAILURE response updateOrder ${order.user.username} ")
+
+            }catch (e: Exception){
+                errorMessage = e.message.toString()
+                Logger.e("FAILURE update order\n${e.message.toString()}")
+            }
+        }
+    }
+
+    fun getUserOrders(userId: String, onSuccessCallback: () -> Unit) {
+        viewModelScope.launch {
+            val apiServices = ApiServices.getInstance()
+            try {
+                val response : Response<List<order_response>> = apiServices.getUserOrders(id = userId)
+                if (response.isSuccessful) {
+                    updateOkResponse = true
+                    Logger.i("SUCCESS getting user orders $response ${response.body()}")
+                    allOrdersResponse = response.body()!!
+                    onSuccessCallback()
+                } else Logger.e("FAILURE getting user orders response")
+
+            } catch (e: Exception) {
+                errorMessage = e.message.toString()
+                Logger.e("FAILURE getting user orders \n${e.message.toString()}")
+            }
+
+        }
+    }
+
+
 }

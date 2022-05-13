@@ -38,7 +38,6 @@ fun ShoppingCart(
     customSpacing: Spacing
 ) {
     val scaffoldState = rememberScaffoldState()
-    val isEditionMode = remember { mutableStateOf(false) }
     val isSaved = remember { mutableStateOf(true) }
     val currentLine = remember { mutableStateOf<product_shopping_response?>(null) }
     val openPopUpEdition = remember { mutableStateOf(false) }
@@ -96,23 +95,6 @@ fun ShoppingCart(
                         Icon(Icons.Filled.ArrowBack, contentDescription = null, tint = Color.White)
                     }
                 },
-                /*    actions = {
-                        IconButton(
-                            onClick = {
-                                if (isEditionMode.value) {
-                                    isSaved.value = true
-                                    Toast.makeText(context, "Updating....", Toast.LENGTH_SHORT).show()
-                                }
-                                isEditionMode.value = !isEditionMode.value
-                            }
-                        ) {
-                            Icon(
-                                if (isEditionMode.value) Icons.Filled.Save else Icons.Filled.Edit,
-                                contentDescription = "ShoppingCart",
-                                tint = *//*if(addShoppingCart.value) Color.Yellow else*//* Color.White,
-                        )
-                    }
-                }*/
             )
         }
     ) {
@@ -121,7 +103,6 @@ fun ShoppingCart(
             CartHeader(customSpacing, total)
 
             Card(
-                //    backgroundColor = colorResource(id = R.color.gris_muy_claro),
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(1f)

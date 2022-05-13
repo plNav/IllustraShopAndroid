@@ -54,9 +54,6 @@ interface ApiServices {
     @Headers("Accept: Application/json")
 
 
-
-
-
     /********************USER**********************/
 
     @GET("user")
@@ -77,6 +74,12 @@ interface ApiServices {
 
     @POST("user")
     suspend fun createUser(@Body newUser: user_request): Response<user_response>
+
+    @PUT("user/update_partial/{id}")
+    suspend fun updateUserPartial(@Path(value = "id") id: String, @Body user: user_response): Response<Any>
+
+    @PUT("user/update_complete/{id}")
+    suspend fun updateUserComplete(@Path(value = "id") id: String, @Body user: user_response): Response<Any>
 
 
 
@@ -116,6 +119,13 @@ interface ApiServices {
 
     @GET("product/stock")
     suspend fun getProducts(): Response<List<product_stock_response>>
+
+    @GET("product/stock/{id}")
+    suspend fun getProductStock(@Path(value = "id")id: String): Response<product_stock_response>
+
+    @GET("product/wish/{array}")
+    suspend fun getProductsWish(@Path(value = "array") products: ArrayList<String>): Response<List<product_stock_response>>
+
 
     @POST("product/stock")
     suspend fun createProductStock(@Body newProduct: product_stock_request): Response<product_stock_response>
@@ -158,6 +168,12 @@ interface ApiServices {
 
     @POST("order")
     suspend fun createOrder(@Body order : order_request) : Response<Any>
+
+    @PUT("order/{id}")
+    suspend fun updateOrder(@Path(value = "id") oldOrderId: String,@Body newOrder: order_response): Response<Any>
+
+    @GET("order/{id}")
+    suspend fun getUserOrders(@Path(value = "id") id: String): Response<List<order_response>>
 
 
 }

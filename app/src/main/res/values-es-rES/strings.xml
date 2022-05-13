@@ -81,5 +81,13 @@
     <string name="cant">Cant.</string>
     <string name="orders">Pedidos</string>
     <string name="whislist">Lista de Deseos</string>
+    <string name="update_password">Actualizar contraseña?</string>
+    <string name="old_password">Contraseña vieja</string>
+    <string name="password_correct">Contraseña Correcta!</string>
+    <string name="password_incorrect">Contraseña Incorrecta</string>
+    <string name="FINISHED">TERMINADO</string>
+    <string name="logged_as">Registrado como:</string>
+    <string name="already_wishlist">El producto ya esta en la lista de deseos</string>
+    <string name="delete_wishlist">Delete from Wishlist</string>
 
 </resources>

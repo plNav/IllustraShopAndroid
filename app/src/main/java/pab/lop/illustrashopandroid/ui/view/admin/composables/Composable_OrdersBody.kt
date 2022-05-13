@@ -14,6 +14,8 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
+import pab.lop.illustrashopandroid.R
 import pab.lop.illustrashopandroid.data.model.order.order_response
 import pab.lop.illustrashopandroid.ui.theme.GreenEnd
 import pab.lop.illustrashopandroid.ui.theme.RedPending
@@ -29,7 +31,10 @@ fun Orders(
     isEditOpen: MutableState<Boolean>,
     isAdmin: Boolean
 ) {
-    val ordersSelected = if(isAdmin) allOrders else userOrders
+    val ordersSelected = if (isAdmin) allOrders else userOrders
+    val finished: String = stringResource(R.string.FINISHED)
+    val pending: String = stringResource(R.string.PENDING)
+    val sent: String = stringResource(R.string.SENT)
 
     LazyColumn(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -72,7 +77,13 @@ fun Orders(
                     Text(item.user.username)
                     Text("${item.date_order.month} - ${item.date_order.day}")
                     Text(item.total.toString() + " €")
-                    Text(item.status)
+                    Text(
+                        when (item.status.uppercase()) {
+                            PENDING -> pending
+                            SENT -> sent
+                            else -> finished
+                        }
+                    )
                     Icon(Icons.Filled.Edit, contentDescription = null, tint = Color.Black)
 
                 }

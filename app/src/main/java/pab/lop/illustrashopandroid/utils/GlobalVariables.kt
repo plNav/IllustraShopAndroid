@@ -33,6 +33,7 @@ var shoppingCartSelected : shopping_cart_response? = null
 var currentShoppingProducts : MutableList<product_shopping_response> = mutableListOf()
 var allOrders : MutableList<order_response> = mutableListOf()
 var userOrders : MutableList<order_response> = mutableListOf()
+var wishlistProducts : MutableList<product_stock_response> = mutableListOf()
 
 val userDefaultNoAuth = user_response(
     _id = "",
@@ -51,7 +52,7 @@ val userDefaultNoAuth = user_response(
     total_spent = 0.0f,
     register_count = 0.0f,
     verified_buys = listOf(),
-    wishlist = listOf(),
+    wishlist = mutableListOf(),
     first_register = Date(),
     last_register = Date()
 )

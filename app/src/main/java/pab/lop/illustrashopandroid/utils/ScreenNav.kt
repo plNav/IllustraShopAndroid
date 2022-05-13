@@ -8,6 +8,7 @@ sealed class ScreenNav(val route: String) {
 
     object MainScreen : ScreenNav("main_screen")
     object ShoppingCartScreen : ScreenNav("shopping_cart_screen")
+    object WishScreen : ScreenNav("wish_screen")
 
     object ImageUploadScreen : ScreenNav("image_upload_screen")
     object AdminScreen : ScreenNav("admin_screen")

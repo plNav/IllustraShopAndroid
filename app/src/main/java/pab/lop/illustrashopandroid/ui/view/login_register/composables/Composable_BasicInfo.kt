@@ -3,6 +3,8 @@ package pab.lop.illustrashopandroid.ui.view.login_register.composables
 import android.content.Context
 import android.util.Patterns
 import android.widget.Toast
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -12,15 +14,19 @@ import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.SoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.*
+import androidx.compose.ui.unit.dp
 import pab.lop.illustrashopandroid.R
 import pab.lop.illustrashopandroid.ui.theme.Spacing
 import pab.lop.illustrashopandroid.utils.regexSpecialChars
@@ -41,7 +47,8 @@ fun BasicInfo(
     emailList: MutableState<List<String>>,
     usernameList: MutableState<List<String>>,
     context: Context,
-    isEditionMode: Boolean
+    isEditionMode: Boolean,
+    passwordUpdate: MutableState<Boolean>
 ) {
 
     val alreadyUseError = context.getString(R.string.already_use_error)
@@ -189,10 +196,45 @@ fun BasicInfo(
 
         Spacer(modifier = Modifier.height(spaceBetweenFields))
 
-//TODO PASSWORDS IN EDITION MODE == ASK PASSWORD CONFIRMATION BEFORE UPDATE
+        if(isEditionMode){
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(MaterialTheme.shapes.small)
+                    .clickable(
+                        indication = rememberRipple(color = MaterialTheme.colors.primary),
+                        interactionSource = remember { MutableInteractionSource() },
+                        onClick = {
+                            passwordUpdate.value = !passwordUpdate.value
+                            if(!passwordUpdate.value) passwordChecked.value = true
+                            else {
+                                password1.value = ""
+                                password2.value = ""
+                                passwordChecked.value = false
+                            }
+                        }
+                    )
+                    .requiredHeight(ButtonDefaults.MinHeight)
+                    .padding(4.dp),
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Checkbox(
+                    checked = passwordUpdate.value,
+                    onCheckedChange = null
+                )
+
+                Spacer(Modifier.size(6.dp))
+
+                Text(
+                    text = stringResource(R.string.update_password)
+                )
+            }
+        }
 
         /************ PASSWORD ************/
         OutlinedTextField(
+            enabled = if(!isEditionMode) true else passwordUpdate.value,
             value = password1.value,
             onValueChange = { it.also { password1.value = it } },
             singleLine = true,
@@ -210,7 +252,7 @@ fun BasicInfo(
             keyboardOptions = KeyboardOptions.Default.copy(
                 capitalization = KeyboardCapitalization.Words,
                 autoCorrect = false,
-                keyboardType = KeyboardType.Number,
+                keyboardType = KeyboardType.Password,
                 imeAction = ImeAction.Next,
             ),
             trailingIcon = {
@@ -247,6 +289,7 @@ fun BasicInfo(
 
         /************ REPEAT PASSWORD ************/
         OutlinedTextField(
+            enabled = if(!isEditionMode) true else passwordUpdate.value,
             value = password2.value,
             onValueChange = {
                 it.also {
@@ -270,7 +313,7 @@ fun BasicInfo(
             keyboardOptions = KeyboardOptions.Default.copy(
                 capitalization = KeyboardCapitalization.Words,
                 autoCorrect = false,
-                keyboardType = KeyboardType.Number,
+                keyboardType = KeyboardType.Password,
                 imeAction = ImeAction.Done,
             ),
             keyboardActions = KeyboardActions(onDone = { keyboardController?.hide() }),
