@@ -1,11 +1,14 @@
 package pab.lop.illustrashopandroid.ui.view.main.composables
 
 import android.content.Context
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -17,9 +20,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import coil.compose.SubcomposeAsyncImage
+import coil.request.ImageRequest
 import pab.lop.illustrashopandroid.R
 import pab.lop.illustrashopandroid.data.model.product_stock.product_stock_response
 import pab.lop.illustrashopandroid.ui.theme.Spacing
@@ -38,7 +46,7 @@ fun WishList(
     val openPopUpDetails = remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
-    val addToShoppingCart = remember {mutableStateOf(false)}
+    val addToShoppingCart = remember { mutableStateOf(false) }
 
 
     val verticalGradient = Brush.verticalGradient(
@@ -52,7 +60,7 @@ fun WishList(
         endY = 100f
     )
 
-    if(openPopUpDetails.value){
+    if (openPopUpDetails.value) {
         PopUpDetails(
             mainViewModel = mainViewModel,
             scope = scope,
@@ -98,22 +106,73 @@ fun WishList(
     ) {
 
         LazyColumn(
+            modifier = Modifier
+                .padding(customSpacing.mediumMedium)
+                .fillMaxSize(),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.padding(customSpacing.small)
         ) {
             itemsIndexed(wishlistProducts) { _, item ->
                 Card(
-                    Modifier
-                        .fillMaxWidth()
-                        .background(MaterialTheme.colors.surface)
-                        .padding(customSpacing.mediumSmall)
-                        .clickable(onClick = {
-                            productSelected = item
-                            openPopUpDetails.value = true
-                        })
+                    modifier = Modifier.padding(vertical = customSpacing.mediumSmall, horizontal = customSpacing.small),
+                    shape = RoundedCornerShape(15.dp)
                 ) {
-                    Text(item.name)
+                    Card(
+                        Modifier
+                            .fillMaxWidth()
+                            .background(verticalGradient)
+                            .padding(customSpacing.small)
+                            .clickable(onClick = {
+                                productSelected = item
+                                openPopUpDetails.value = true
+                            }),
+                        shape = RoundedCornerShape(15.dp)
+                    ) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            Card(
+                                modifier = Modifier
+                                    .width(100.dp)
+                                    .height(100.dp)
+                                    .padding(customSpacing.small),
+                                shape = RoundedCornerShape(15.dp),
+                                border = BorderStroke(2.dp, Color.DarkGray),
+
+                                ) {
+                                SubcomposeAsyncImage(
+                                    model = ImageRequest.Builder(LocalContext.current)
+                                        .data("$URL_HEAD_IMAGES${item.image}")
+                                        .crossfade(true)
+                                        .crossfade(1000)
+                                        .build(),
+                                    contentDescription = null,
+                                    loading = { CircularProgressIndicator(modifier = Modifier.fillMaxSize()) },
+                                    contentScale = ContentScale.Crop,
+                                    error = {
+                                        Image(
+                                            painter = painterResource(id = R.drawable.loading_image),
+                                            contentDescription = stringResource(R.string.error),
+                                        )
+                                    },
+                                )
+                            }
+
+
+                            Column(
+                                modifier = Modifier.fillMaxSize(),
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.Center
+                            ) {
+
+                                Text(text = item.name)
+                                Spacer(modifier = Modifier.height(customSpacing.small))
+                                Text(text = "${item.price}€")
+                            }
+                        }
+                    }
                 }
             }
         }

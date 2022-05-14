@@ -1,6 +1,9 @@
 package pab.lop.illustrashopandroid.ui.view.main.composables
 
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
+import android.os.Environment
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -16,9 +19,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat.startActivity
 import androidx.navigation.NavController
 import pab.lop.illustrashopandroid.R
 import pab.lop.illustrashopandroid.data.model.order.order_request
@@ -43,6 +48,8 @@ fun ShoppingCart(
     val openPopUpEdition = remember { mutableStateOf(false) }
 
     val total = remember { mutableStateOf(0f) }
+
+    val currentContext = LocalContext.current
 
     if (isSaved.value) {
         total.value = 0f
@@ -120,7 +127,7 @@ fun ShoppingCart(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable(onClick = {
-                        //TODO VALIDACION DE PAGO
+                        //TODO VALIDACION DE PAGO - COMPRA
 
                         val order = order_request(
                             user = userSelected!!,
@@ -131,7 +138,8 @@ fun ShoppingCart(
 
                         mainViewModel.createOrder(order){
                             mainViewModel.markBoughtProducts(currentShoppingProducts){
-                                navController.navigate(ScreenNav.PayScreen.route)
+                                linkToWebpage(currentContext)
+                                navController.navigate(ScreenNav.MainScreen.route)
                             }
                         }
                     })
@@ -153,6 +161,12 @@ fun ShoppingCart(
 
         }
     }
+}
+
+fun linkToWebpage(context: Context) {
+    val openURL = Intent(Intent.ACTION_VIEW)
+    openURL.data = Uri.parse("https://www.paypal.com/")
+    startActivity(context, openURL, null)
 }
 
 
