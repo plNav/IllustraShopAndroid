@@ -99,7 +99,7 @@ private fun OrderTopBar(verticalGradient: Brush, navController: NavController) {
         navigationIcon = {
             IconButton(
                 onClick = {
-                    navController.navigate(ScreenNav.AdminScreen.route)
+                    navController.navigate(ScreenNav.MainScreen.route)
                 }) {
                 Icon(Icons.Filled.ArrowBack, contentDescription = null, tint = Color.White)
             }

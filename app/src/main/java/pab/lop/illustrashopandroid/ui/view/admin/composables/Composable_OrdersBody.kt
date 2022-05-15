@@ -31,7 +31,7 @@ fun Orders(
     isEditOpen: MutableState<Boolean>,
     isAdmin: Boolean
 ) {
-    val ordersSelected = if (isAdmin) allOrders else userOrders
+    val ordersSelected = allOrders
     val finished: String = stringResource(R.string.FINISHED)
     val pending: String = stringResource(R.string.PENDING)
     val sent: String = stringResource(R.string.SENT)

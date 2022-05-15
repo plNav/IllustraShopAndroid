@@ -415,6 +415,7 @@ class AdminViewModel : ViewModel() {
         viewModelScope.launch {
             val apiServices = ApiServices.getInstance()
             try {
+                allOrdersResponse = listOf()
                 val response : Response<List<order_response>> = apiServices.getUserOrders(id = userId)
                 if (response.isSuccessful) {
                     updateOkResponse = true

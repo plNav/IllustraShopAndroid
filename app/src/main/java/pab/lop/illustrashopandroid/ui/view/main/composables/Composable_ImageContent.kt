@@ -1,5 +1,6 @@
 package pab.lop.illustrashopandroid.ui.view.main.composables
 
+import android.graphics.BitmapFactory
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -27,6 +28,8 @@ import pab.lop.illustrashopandroid.R
 import pab.lop.illustrashopandroid.data.model.product_stock.product_stock_response
 import pab.lop.illustrashopandroid.utils.URL_HEAD_IMAGES
 import pab.lop.illustrashopandroid.utils.productSelected
+import java.io.IOException
+import java.net.URL
 
 import kotlin.math.absoluteValue
 
@@ -114,3 +117,4 @@ fun PagerScope.ImageContent(
         )
     }
 }
+
