@@ -89,5 +89,6 @@
     <string name="logged_as">Registrado como:</string>
     <string name="already_wishlist">El producto ya esta en la lista de deseos</string>
     <string name="delete_wishlist">Delete from Wishlist</string>
+    <string name="upaid">sin pagar</string>
 
 </resources>

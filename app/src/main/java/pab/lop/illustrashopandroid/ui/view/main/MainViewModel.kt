@@ -1,6 +1,7 @@
 package pab.lop.illustrashopandroid.ui.view.main
 
 import android.annotation.SuppressLint
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -30,6 +31,7 @@ class MainViewModel : ViewModel() {
     var currentProductShoppingResponse : product_shopping_response? by mutableStateOf(null)
     var productStockResponse : product_stock_response? by mutableStateOf(null)
     var productListResponse : MutableList<product_stock_response> by mutableStateOf(mutableListOf())
+    var currentPayPalresponse : String by mutableStateOf("")
 
 
     private var errorMessage: String by mutableStateOf("")
@@ -297,8 +299,14 @@ class MainViewModel : ViewModel() {
         val apiServices = ApiServices.getInstance()
         viewModelScope.launch {
             try {
-                val response: Response<Any> = apiServices.createOrder(order)
+                Logger.i(order.status)
+                order.status = "UNPAID"
+                val response: Response<Any> = apiServices.createOrder(
+                    pay = order.total,
+                    order = order
+                )
                 if (response.isSuccessful) {
+                    currentPayPalresponse = response.body().toString()
                     Logger.i("Create order OK \n $response \n ${response.body()}")
                     onSuccessCallback()
                 } else Logger.e("Error order creation response $response")

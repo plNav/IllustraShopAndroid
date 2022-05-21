@@ -3,7 +3,6 @@ package pab.lop.illustrashopandroid.ui.view.main.composables
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.os.Environment
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -127,18 +126,16 @@ fun ShoppingCart(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable(onClick = {
-                        //TODO VALIDACION DE PAGO - COMPRA
-
                         val order = order_request(
                             user = userSelected!!,
-                            products = currentShoppingProducts,
+                            products = currentShoppingProducts.filter { !it.bought },
                             total = total.value,
                             status = "PENDING"
                         )
 
                         mainViewModel.createOrder(order){
                             mainViewModel.markBoughtProducts(currentShoppingProducts){
-                                linkToWebpage(currentContext)
+                                linkToWebpage(currentContext, mainViewModel)
                                 navController.navigate(ScreenNav.MainScreen.route)
                             }
                         }
@@ -163,9 +160,9 @@ fun ShoppingCart(
     }
 }
 
-fun linkToWebpage(context: Context) {
+fun linkToWebpage(context: Context, mainViewModel: MainViewModel) {
     val openURL = Intent(Intent.ACTION_VIEW)
-    openURL.data = Uri.parse("https://www.paypal.com/")
+    openURL.data = Uri.parse(mainViewModel.currentPayPalresponse)
     startActivity(context, openURL, null)
 }
 

@@ -35,6 +35,7 @@ fun Orders(
     val finished: String = stringResource(R.string.FINISHED)
     val pending: String = stringResource(R.string.PENDING)
     val sent: String = stringResource(R.string.SENT)
+    val unpaid: String = stringResource(R.string.upaid)
 
     LazyColumn(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -63,7 +64,8 @@ fun Orders(
                 backgroundColor = when (item.status) {
                     PENDING -> RedPending
                     SENT -> YellowSent
-                    else -> GreenEnd
+                    ENDED -> GreenEnd
+                    else -> Color.Red
                 }
             ) {
                 Row(
@@ -81,7 +83,8 @@ fun Orders(
                         when (item.status.uppercase()) {
                             PENDING -> pending
                             SENT -> sent
-                            else -> finished
+                            ENDED -> finished
+                            else -> unpaid
                         }
                     )
                     Icon(Icons.Filled.Edit, contentDescription = null, tint = Color.Black)

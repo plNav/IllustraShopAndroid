@@ -166,8 +166,8 @@ interface ApiServices {
     @GET("order")
     suspend fun getOrders(): Response<List<order_response>>
 
-    @POST("order")
-    suspend fun createOrder(@Body order : order_request) : Response<Any>
+    @POST("payment/create_order/{pay}")
+    suspend fun createOrder(@Path(value = "pay") pay: Float, @Body order : order_request) : Response<Any>
 
     @PUT("order/{id}")
     suspend fun updateOrder(@Path(value = "id") oldOrderId: String,@Body newOrder: order_response): Response<Any>
