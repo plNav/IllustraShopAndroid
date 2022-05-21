@@ -188,6 +188,7 @@ class MainViewModel : ViewModel() {
 
             } catch (e: Exception) {
                 Logger.e("FAILURE getProductsFamily \n $e")
+                onSuccessCallback()
             }
         }
     }
