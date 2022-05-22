@@ -67,7 +67,7 @@ dependencies {
     //COIL
     implementation("io.coil-kt:coil-compose:2.0.0-rc02")
     implementation "com.github.skydoves:landscapist-coil:1.5.1"
-
+    
     //STATUS BAR
     implementation "com.google.accompanist:accompanist-systemuicontroller:0.17.0"
 

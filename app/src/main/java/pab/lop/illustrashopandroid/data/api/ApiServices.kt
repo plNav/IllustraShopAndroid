@@ -4,6 +4,7 @@ import android.media.Image
 import com.orhanobut.logger.Logger
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import pab.lop.illustrashopandroid.data.model.analytics.analytics_response
 import pab.lop.illustrashopandroid.data.model.user.user_response
 import pab.lop.illustrashopandroid.data.model.family.family_request
 import pab.lop.illustrashopandroid.data.model.family.family_response
@@ -174,6 +175,10 @@ interface ApiServices {
 
     @GET("order/{id}")
     suspend fun getUserOrders(@Path(value = "id") id: String): Response<List<order_response>>
+
+    /********************ANALYTICS**********************/
+    @GET("analytics")
+    suspend fun getAnalytics(): Response<analytics_response>
 
 
 }

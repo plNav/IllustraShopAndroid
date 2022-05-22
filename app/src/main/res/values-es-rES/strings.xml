@@ -90,5 +90,8 @@
     <string name="already_wishlist">El producto ya esta en la lista de deseos</string>
     <string name="delete_wishlist">Delete from Wishlist</string>
     <string name="upaid">sin pagar</string>
+    <string name="buys">Compras</string>
+    <string name="users">Usuarios</string>
+    <string name="analytics">Analytics</string>
 
 </resources>

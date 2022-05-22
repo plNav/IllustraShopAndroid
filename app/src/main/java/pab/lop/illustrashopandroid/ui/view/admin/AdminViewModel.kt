@@ -18,12 +18,12 @@ import okhttp3.MultipartBody
 import okhttp3.MultipartBody.Part.Companion.createFormData
 import okhttp3.RequestBody
 import pab.lop.illustrashopandroid.data.api.ApiServices
+import pab.lop.illustrashopandroid.data.model.analytics.analytics_response
 import pab.lop.illustrashopandroid.data.model.family.family_request
 import pab.lop.illustrashopandroid.data.model.family.family_response
 import pab.lop.illustrashopandroid.data.model.order.order_response
 import pab.lop.illustrashopandroid.data.model.product_stock.product_stock_request
 import pab.lop.illustrashopandroid.data.model.product_stock.product_stock_response
-import pab.lop.illustrashopandroid.data.model.user.user_response
 import pab.lop.illustrashopandroid.utils.ProgressRequestBody
 import retrofit2.Response
 import retrofit2.await
@@ -41,6 +41,7 @@ class AdminViewModel : ViewModel() {
     var familyListResponse : List<family_response> by mutableStateOf(listOf())
     var updateOkResponse : Boolean by mutableStateOf(false)
     var allOrdersResponse : List<order_response> by mutableStateOf(listOf())
+    var analyticsResponse : analytics_response? by mutableStateOf(null)
 
     fun createFamily(family: family_request, onSuccessCallback: () -> Unit){
         val apiServices = ApiServices.getInstance()
@@ -427,6 +428,25 @@ class AdminViewModel : ViewModel() {
             } catch (e: Exception) {
                 errorMessage = e.message.toString()
                 Logger.e("FAILURE getting user orders \n${e.message.toString()}")
+            }
+
+        }
+    }
+
+    fun getAnalytics(onSuccessCallback: () -> Unit) {
+        viewModelScope.launch {
+            val apiServices = ApiServices.getInstance()
+            try {
+                val response : Response<analytics_response> = apiServices.getAnalytics()
+                if (response.isSuccessful) {
+                    Logger.i("SUCCESS getting analytics $response ${response.body()}")
+                    analyticsResponse = response.body()!!
+                    onSuccessCallback()
+                } else Logger.e("FAILURE getting analytics")
+
+            } catch (e: Exception) {
+                errorMessage = e.message.toString()
+                Logger.e("FAILURE getting analytics \n${e.message.toString()}")
             }
 
         }

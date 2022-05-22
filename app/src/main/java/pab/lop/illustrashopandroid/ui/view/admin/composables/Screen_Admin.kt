@@ -181,7 +181,7 @@ fun Admin_Screen(
 
             Spacer(
                 modifier = Modifier.height(
-                    customSpacing.extraLarge
+                    customSpacing.large
                 )
             )
 
@@ -200,7 +200,7 @@ fun Admin_Screen(
 
             Spacer(
                 modifier = Modifier.height(
-                    customSpacing.extraLarge
+                    customSpacing.large
                 )
             )
 
@@ -228,7 +228,7 @@ fun Admin_Screen(
 
             Spacer(
                 modifier = Modifier.height(
-                    customSpacing.extraLarge
+                    customSpacing.large
                 )
             )
 
@@ -247,7 +247,7 @@ fun Admin_Screen(
 
             Spacer(
                 modifier = Modifier.height(
-                    customSpacing.extraLarge
+                    customSpacing.large
                 )
             )
 
@@ -267,6 +267,25 @@ fun Admin_Screen(
                             navController.navigate(ScreenNav.OrderScreen.withArgs(true))
                         }
                     })
+            )
+
+            Spacer(
+                modifier = Modifier.height(
+                    customSpacing.large
+                )
+            )
+
+            /************ ANALYTICS ************/
+            Text(
+                text = (stringResource(R.string.analytics)).uppercase(),
+                textAlign = TextAlign.Center,
+                style = MaterialTheme.typography.body1.copy(color = Color.White),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(4.dp))
+                    .background(brush = verticalGradientDisabled)
+                    .padding(12.dp)
+                    .clickable(onClick = { navController.navigate(ScreenNav.AnalyticsScreen.route) })
             )
 
             Spacer(

@@ -19,13 +19,10 @@ import com.orhanobut.logger.AndroidLogAdapter
 import com.orhanobut.logger.Logger
 import pab.lop.illustrashopandroid.ui.theme.IllustraShopAndroidTheme
 import pab.lop.illustrashopandroid.ui.theme.Spacing
-import pab.lop.illustrashopandroid.ui.view.admin.composables.Image_Upload
 import pab.lop.illustrashopandroid.ui.view.login_register.composables.Login
 import pab.lop.illustrashopandroid.ui.view.main.composables.Main
 import pab.lop.illustrashopandroid.ui.view.admin.AdminViewModel
-import pab.lop.illustrashopandroid.ui.view.admin.composables.Admin_Screen
-import pab.lop.illustrashopandroid.ui.view.admin.composables.Edit_Product
-import pab.lop.illustrashopandroid.ui.view.admin.composables.OrderStart
+import pab.lop.illustrashopandroid.ui.view.admin.composables.*
 import pab.lop.illustrashopandroid.ui.view.login_register.LoginRegisterViewModel
 import pab.lop.illustrashopandroid.ui.view.login_register.composables.Register
 import pab.lop.illustrashopandroid.ui.view.main.MainViewModel
@@ -197,6 +194,19 @@ class MainActivity : ComponentActivity() {
                             context = applicationContext,
                             customSpacing = customSpacing,
                             isAdmin = it.arguments!!.getBoolean("isAdmin")
+                        )
+                        BackHandler(false) { }
+                    }
+
+                    /*** ANALYTICIS  SCREEN ***/
+                    composable(
+                        route = ScreenNav.AnalyticsScreen.route
+                    ) {
+                        Analytics(
+                            navController = navController,
+                            adminViewModel = adminViewModel,
+                            context = applicationContext,
+                            customSpacing = customSpacing,
                         )
                         BackHandler(false) { }
                     }

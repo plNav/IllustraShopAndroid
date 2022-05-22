@@ -89,4 +89,7 @@
     <string name="already_wishlist">Product already in wishlist</string>
     <string name="delete_wishlist">Delete from Wishlist</string>
     <string name="upaid">unpaid</string>
+    <string name="buys">Buys</string>
+    <string name="users">Users</string>
+    <string name="analytics">Analytics</string>
 </resources>
