@@ -12,16 +12,21 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
 import androidx.core.content.ContextCompat.startActivity
 import androidx.navigation.NavController
 import pab.lop.illustrashopandroid.R
@@ -29,9 +34,7 @@ import pab.lop.illustrashopandroid.data.model.order.order_request
 import pab.lop.illustrashopandroid.data.model.product_shopping.product_shopping_response
 import pab.lop.illustrashopandroid.ui.theme.Spacing
 import pab.lop.illustrashopandroid.ui.view.main.MainViewModel
-import pab.lop.illustrashopandroid.utils.currentShoppingProducts
-import pab.lop.illustrashopandroid.utils.ScreenNav
-import pab.lop.illustrashopandroid.utils.userSelected
+import pab.lop.illustrashopandroid.utils.*
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -45,6 +48,8 @@ fun ShoppingCart(
     val isSaved = remember { mutableStateOf(true) }
     val currentLine = remember { mutableStateOf<product_shopping_response?>(null) }
     val openPopUpEdition = remember { mutableStateOf(false) }
+    val openPopUpComment = remember { mutableStateOf(false) }
+    val comment = remember { mutableStateOf("") }
 
     val total = remember { mutableStateOf(0f) }
 
@@ -52,8 +57,8 @@ fun ShoppingCart(
 
     if (isSaved.value) {
         total.value = 0f
-        for (item in currentShoppingProducts){
-            if(!item.bought)total.value += item.total
+        for (item in currentShoppingProducts) {
+            if (!item.bought) total.value += item.total
         }
         isSaved.value = false
     }
@@ -75,6 +80,14 @@ fun ShoppingCart(
             customSpacing = customSpacing,
             currentLine = currentLine,
             isSaved = isSaved
+        )
+    }
+    if (openPopUpComment.value) {
+        PopUpComment(
+            verticalGradient = verticalGradient,
+            openPopUpComment = openPopUpComment,
+            customSpacing = customSpacing,
+            comment = comment
         )
     }
 
@@ -105,7 +118,7 @@ fun ShoppingCart(
         }
     ) {
 
-        Column() {
+        Column {
             CartHeader(customSpacing, total)
 
             Card(
@@ -121,6 +134,19 @@ fun ShoppingCart(
             }
             Spacer(modifier = Modifier.height(customSpacing.small))
 
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(5.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                ExtendedFloatingActionButtonExample(comment = comment, openPopUpComment = openPopUpComment)
+            }
+
+            Spacer(modifier = Modifier.height(customSpacing.small))
+
+
             /*** BUY NOW ***/
             Row(
                 modifier = Modifier
@@ -130,11 +156,12 @@ fun ShoppingCart(
                             user = userSelected!!,
                             products = currentShoppingProducts.filter { !it.bought },
                             total = total.value,
-                            status = "PENDING"
+                            status = "PENDING",
+                            comments = comment.value
                         )
 
-                        mainViewModel.createOrder(order){
-                            mainViewModel.markBoughtProducts(currentShoppingProducts){
+                        mainViewModel.createOrder(order) {
+                            mainViewModel.markBoughtProducts(currentShoppingProducts) {
                                 linkToWebpage(currentContext, mainViewModel)
                                 navController.navigate(ScreenNav.MainScreen.route)
                             }
@@ -160,10 +187,31 @@ fun ShoppingCart(
     }
 }
 
+
 fun linkToWebpage(context: Context, mainViewModel: MainViewModel) {
     val openURL = Intent(Intent.ACTION_VIEW)
     openURL.data = Uri.parse(mainViewModel.currentPayPalresponse)
     startActivity(context, openURL, null)
+}
+
+@Composable
+fun ExtendedFloatingActionButtonExample(comment: MutableState<String>, openPopUpComment: MutableState<Boolean>) {
+    ExtendedFloatingActionButton(
+
+        text = {
+            Text(
+                text = if (comment.value.isEmpty()) stringResource(R.string.add_comment) else stringResource(R.string.comment_added),
+                color = Color.White
+            )
+        },
+        onClick = { openPopUpComment.value = true },
+        icon = {
+            Icon(
+                imageVector = if (comment.value.isEmpty()) Icons.Filled.Comment else Icons.Filled.Check,
+                tint = Color.White,
+                contentDescription = ""
+            )
+        })
 }
 
 

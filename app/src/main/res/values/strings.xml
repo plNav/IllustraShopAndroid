@@ -93,4 +93,6 @@
     <string name="buys">Buys</string>
     <string name="users">Users</string>
     <string name="analytics">Analytics</string>
+    <string name="add_comment">Add comment</string>
+    <string name="comment_added">Comment added</string>
 </resources>

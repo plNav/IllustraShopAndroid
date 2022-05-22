@@ -11,5 +11,6 @@ data class order_response(
     var total: Float,
     var date_order : Date,
     var date_arrive: Date,
-    var status: String
+    var status: String,
+    var comments: String,
 )
