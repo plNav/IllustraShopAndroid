@@ -31,10 +31,6 @@ import pab.lop.illustrashopandroid.ui.view.login_register.composables.Register
 import pab.lop.illustrashopandroid.ui.view.main.MainViewModel
 import pab.lop.illustrashopandroid.ui.view.main.composables.ShoppingCart
 import pab.lop.illustrashopandroid.ui.view.main.composables.WishList
-import pab.lop.illustrashopandroid.ui.view.pay.PayViewModel
-import pab.lop.illustrashopandroid.ui.view.pay.composables.Pay
-import pab.lop.illustrashopandroid.ui.view.settings.SettingsViewModel
-import pab.lop.illustrashopandroid.ui.view.settings.composables.PersonalInfo
 import pab.lop.illustrashopandroid.utils.WindowInfo
 import pab.lop.illustrashopandroid.utils.rememberWindowInfo
 import pab.lop.illustrashopandroid.utils.ScreenNav
@@ -54,8 +50,6 @@ class MainActivity : ComponentActivity() {
         val loginRegisterViewModel by viewModels<LoginRegisterViewModel>()
         val mainViewModel by viewModels<MainViewModel>()
         val adminViewModel by viewModels<AdminViewModel>()
-        val payViewModel by viewModels<PayViewModel>()
-        val settingsViewModel by viewModels<SettingsViewModel>()
 
         setContent {
 
@@ -206,31 +200,7 @@ class MainActivity : ComponentActivity() {
                         )
                         BackHandler(false) { }
                     }
-                    /*** PAY SCREEN ***/
-                    composable(
-                        route = ScreenNav.PayScreen.route
-                    ) {
-                        Pay(
-                            navController = navController,
-                            payViewModel = payViewModel,
-                            contexttt = applicationContext,
-                            customSpacing = customSpacing
-                        )
-                        BackHandler(false) { }
-                    }
 
-                    /*** PERSONAL INFO SCREEN ***/
-                    composable(
-                        route = ScreenNav.PersonalInfoScreen.route
-                    ) {
-                        PersonalInfo(
-                            navController = navController,
-                            settingsViewModel = settingsViewModel,
-                            context = applicationContext,
-                            customSpacing = customSpacing
-                        )
-                        BackHandler(false) { }
-                    }
                 }
             }
         }
