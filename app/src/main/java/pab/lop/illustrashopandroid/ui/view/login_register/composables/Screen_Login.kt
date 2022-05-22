@@ -2,6 +2,7 @@ package pab.lop.illustrashopandroid.ui.view.login_register.composables
 
 import android.content.Context
 import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -27,6 +28,7 @@ import androidx.compose.ui.graphics.Brush
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -35,9 +37,19 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.ApiException
+import com.orhanobut.logger.Logger
+import kotlinx.coroutines.launch
 import pab.lop.illustrashopandroid.R
+import pab.lop.illustrashopandroid.data.model.shoppin.shopping_cart_request
+import pab.lop.illustrashopandroid.data.model.user.user_google
+import pab.lop.illustrashopandroid.data.model.user.user_request
 import pab.lop.illustrashopandroid.ui.theme.*
 import pab.lop.illustrashopandroid.ui.view.login_register.LoginRegisterViewModel
+import pab.lop.illustrashopandroid.utils.AuthResult
 import pab.lop.illustrashopandroid.utils.admob.composables.InterstitialButton
 import pab.lop.illustrashopandroid.utils.shoppingCartSelected
 import pab.lop.illustrashopandroid.utils.userSelected
@@ -58,6 +70,7 @@ fun Login(
         startY = 0f,
         endY = 100f
     )
+    var isLoading = remember { mutableStateOf(false) }
 
     val keyboardController = LocalSoftwareKeyboardController.current
 
@@ -66,6 +79,69 @@ fun Login(
     val password = remember { mutableStateOf("1234") }
 
     var passwordVisibility by remember { mutableStateOf(false) }
+
+    val scope = rememberCoroutineScope()
+    val text = remember { mutableStateOf<String?>(null) }
+    val user = remember(loginRegisterViewModel) { loginRegisterViewModel.user }.collectAsState()
+    val signInRequestCode = 1
+
+    val authResultLauncher = rememberLauncherForActivityResult(contract = AuthResult()) { task ->
+        try {
+            val account = task?.getResult(ApiException::class.java)
+            if (account == null) {
+                text.value = "Google Sign In Failed"
+
+            } else {
+                scope.launch {
+                    loginRegisterViewModel.setSignInValue(
+                        email = account.email!!,
+                        displayName = account.displayName!!
+                    )
+                }
+            }
+
+        } catch (e: ApiException) {
+            text.value = e.localizedMessage
+        }
+    }
+    user.value?.let {
+        Logger.wtf("user with google ok ${user.value!!.email}")
+        //GoogleSignInScreen(user.value!!)
+        loginRegisterViewModel.getAllEmails {
+            if (loginRegisterViewModel.emailListResponse.contains(user.value!!.email)) {
+                loginRegisterViewModel.getUserByEmail(user.value!!.email) {
+                    userSelected = loginRegisterViewModel.currentUserResponse.value
+                    loginRegisterViewModel.getShoppingCartFromUser(userSelected!!._id) {
+                        shoppingCartSelected = loginRegisterViewModel.currentShoppingCartResponse.value
+                        navController.navigate(ScreenNav.MainScreen.route)
+                    }
+                }
+            } else {
+                val userGoogle = user_request(
+                    username = user.value!!.displayName,
+                    email = user.value!!.email,
+                    password = " ",
+                    google = true,
+                    address = "",
+                    country = "",
+                    postal_code = "",
+                    pay_method = "",
+                    phone = "",
+                    pay_number = "",
+                    name = "",
+                    last_name = "",
+                    rol = "STANDARD"
+                )
+                loginRegisterViewModel.createUser(userGoogle) {
+                    userSelected = loginRegisterViewModel.currentUserResponse.value
+                    loginRegisterViewModel.createShoppingCart(shopping_cart_request(userSelected!!._id)) {
+                        navController.navigate(ScreenNav.MainScreen.route)
+                    }
+
+                }
+            }
+        }
+    }
 
 
     Column(
@@ -193,13 +269,15 @@ fun Login(
         /************ VALIDATE ************/
         Button(
             elevation = ButtonDefaults.elevation(0.dp),
-            onClick = { validateLoginClick(
-                context = context,
-                loginRegisterViewModel = loginRegisterViewModel,
-                navController = navController,
-                email = email,
-                password = password
-            ) },
+            onClick = {
+                validateLoginClick(
+                    context = context,
+                    loginRegisterViewModel = loginRegisterViewModel,
+                    navController = navController,
+                    email = email,
+                    password = password
+                )
+            },
             colors = ButtonDefaults.buttonColors(
                 backgroundColor = Color.Transparent,
                 contentColor = Color(0xFFFFF5EE),
@@ -231,7 +309,7 @@ fun Login(
         /************ REGISTER ************/
         Button(
             elevation = ButtonDefaults.elevation(0.dp),
-            onClick = { navController.navigate(ScreenNav.RegisterScreen.withArgs(false))},
+            onClick = { navController.navigate(ScreenNav.RegisterScreen.withArgs(false)) },
             colors = ButtonDefaults.buttonColors(
                 backgroundColor = Color.Transparent,
                 contentColor = Color(0xFFFFF5EE),
@@ -257,6 +335,25 @@ fun Login(
             )
         }
 
+        GoogleSignInButton(text = "Sign In with Google",
+            icon = painterResource(R.drawable.google),
+            loadingText = "Signing In...",
+            isLoading = isLoading.value,
+            onClick = {
+                isLoading.value = true
+                text.value = null
+                authResultLauncher.launch(signInRequestCode)
+            }
+        )
+
+        text.value?.let {
+            isLoading.value = false
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            Text(text = it)
+        }
+
         Spacer(modifier = Modifier.height(customSpacing.mediumLarge))
 
         /************NO REGISTER ************/
@@ -271,14 +368,14 @@ fun validateLoginClick(
     email: MutableState<String>,
     password: MutableState<String>
 ) {
-    if(email.value.isEmpty() || password.value.isEmpty())
+    if (email.value.isEmpty() || password.value.isEmpty())
         Toast.makeText(context, context.getString(R.string.login_incorrect), Toast.LENGTH_SHORT).show()
     else {
         loginRegisterViewModel.validateUser(email.value, password.value, onSuccessCallback = {
             userSelected = loginRegisterViewModel.currentUserResponse.value
 
-            if(userSelected!!._id.isNotEmpty()){
-                loginRegisterViewModel.getShoppingCartFromUser(userSelected!!._id){
+            if (userSelected!!._id.isNotEmpty()) {
+                loginRegisterViewModel.getShoppingCartFromUser(userSelected!!._id) {
                     shoppingCartSelected = loginRegisterViewModel.currentShoppingCartResponse.value
                     Toast.makeText(
                         context, context.getString(R.string.login_correct) + "\n" + userSelected!!.username, Toast.LENGTH_SHORT
@@ -291,3 +388,98 @@ fun validateLoginClick(
         })
     }
 }
+
+
+//NEWWWWWWWWWWWWWWWW
+fun getGoogleSignInClient(context: Context): GoogleSignInClient {
+    val signInOption = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+        .requestEmail()
+        .build()
+
+    return GoogleSignIn.getClient(context, signInOption)
+}
+
+@Composable
+fun SignInScreen(signInViewModel: LoginRegisterViewModel) {
+    val scope = rememberCoroutineScope()
+    val text = remember { mutableStateOf<String?>(null) }
+    val user = remember(signInViewModel) { signInViewModel.user }.collectAsState()
+    val signInRequestCode = 1
+
+    val authResultLaucher = rememberLauncherForActivityResult(contract = AuthResult()) { task ->
+        try {
+            val account = task?.getResult(ApiException::class.java)
+            if (account == null) {
+                text.value = "Google Sign In Failed"
+
+            } else {
+                scope.launch {
+                    signInViewModel.setSignInValue(
+                        email = account.email!!,
+                        displayName = account.displayName!!
+                    )
+                }
+            }
+
+        } catch (e: ApiException) {
+            text.value = e.localizedMessage
+        }
+    }
+
+    AuthView(errorText = text.value, onClick = {
+        text.value = null
+        authResultLaucher.launch(signInRequestCode)
+    }
+    )
+    user.value?.let {
+        GoogleSignInScreen(user.value!!)
+    }
+
+}
+
+@Composable
+fun AuthView(
+    errorText: String?,
+    onClick: () -> Unit
+) {
+    var isLoading = remember { mutableStateOf(false) }
+
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        GoogleSignInButton(text = "Sign In with Google",
+            icon = painterResource(R.drawable.google),
+            loadingText = "Signing In...",
+            isLoading = isLoading.value,
+            onClick = {
+                isLoading.value = true
+                onClick()
+            }
+        )
+
+        errorText?.let {
+            isLoading.value = false
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            Text(text = it)
+        }
+    }
+}
+
+@Composable
+fun GoogleSignInScreen(user: user_google) {
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text("Sign In Success")
+        Text(user.email)
+        Text(user.displayName)
+    }
+}
+
+

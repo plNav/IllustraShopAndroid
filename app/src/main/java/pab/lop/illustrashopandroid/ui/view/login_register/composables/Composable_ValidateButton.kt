@@ -233,7 +233,8 @@ fun validateClick(
             postal_code = if (!allFields) "" else postalCode.value,
             phone = if (!allFields) "" else phone.value,
             pay_method = if (!allFields) "" else "",
-            pay_number = if (!allFields) "" else ""
+            pay_number = if (!allFields) "" else "",
+            google = true
         )
 
         loginRegisterViewModel.createUser(newUser){

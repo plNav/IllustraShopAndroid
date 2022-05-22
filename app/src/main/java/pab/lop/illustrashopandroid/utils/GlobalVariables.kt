@@ -54,7 +54,8 @@ val userDefaultNoAuth = user_response(
     verified_buys = listOf(),
     wishlist = mutableListOf(),
     first_register = Date(),
-    last_register = Date()
+    last_register = Date(),
+    google = false
 )
 
 val shoppingCartDefaultNoAuth = shopping_cart_response(

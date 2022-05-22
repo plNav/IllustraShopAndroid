@@ -21,5 +21,6 @@ data class user_response(
     var verified_buys : List<String>,
     var wishlist : MutableList<String>,
     var first_register : Date,
-    var last_register : Date
+    var last_register : Date,
+    val google: Boolean
     )

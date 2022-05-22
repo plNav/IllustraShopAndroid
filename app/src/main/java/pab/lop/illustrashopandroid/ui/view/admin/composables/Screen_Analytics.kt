@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -19,15 +18,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.orhanobut.logger.Logger
 import pab.lop.illustrashopandroid.R
-import pab.lop.illustrashopandroid.data.model.analytics.analytics_response
 import pab.lop.illustrashopandroid.ui.theme.Spacing
 import pab.lop.illustrashopandroid.ui.view.admin.AdminViewModel
 import pab.lop.illustrashopandroid.utils.ScreenNav
-import kotlin.reflect.full.declaredMembers
-import kotlin.reflect.full.memberProperties
-import kotlin.reflect.full.valueParameters
 
 @Composable
 fun Analytics(

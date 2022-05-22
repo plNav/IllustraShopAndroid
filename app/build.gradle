@@ -64,6 +64,9 @@ dependencies {
     //NAVIGATION
     implementation("androidx.navigation:navigation-compose:2.5.0-alpha03")
 
+    //FIREBASE AUTH
+    implementation "com.google.android.gms:play-services-auth:20.2.0"
+
     //COIL
     implementation("io.coil-kt:coil-compose:2.0.0-rc02")
     implementation "com.github.skydoves:landscapist-coil:1.5.1"

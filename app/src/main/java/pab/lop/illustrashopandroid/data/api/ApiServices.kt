@@ -66,6 +66,11 @@ interface ApiServices {
         @Path("passwEncrypt") passwEncrypt: String
     ) : Response<List<user_response>>
 
+    @GET("user/email/{email}")
+    suspend fun getUserByEmail(@Path(value = "email") email : String): Response<ArrayList<user_response>>
+
+
+
 
     @GET("user/get/username")
     suspend fun getAllUsernames() : Response<List<String>>

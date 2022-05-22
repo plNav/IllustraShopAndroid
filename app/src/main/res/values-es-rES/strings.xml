@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">IllustraShopAndroid</string>
+    <string name="google_client_id">71870534655-0dppomjj8e0kaqn7i8a8po55evddof9v.apps.googleusercontent.com</string>
     <string name="login">INICIAR SESIÓN</string>
     <string name="email">Email</string>
     <string name="Password">Contraseña</string>

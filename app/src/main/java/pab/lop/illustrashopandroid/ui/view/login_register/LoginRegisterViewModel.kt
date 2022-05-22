@@ -9,9 +9,12 @@ import androidx.lifecycle.viewModelScope
 import com.orhanobut.logger.Logger
 import pab.lop.illustrashopandroid.data.api.ApiServices
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import pab.lop.illustrashopandroid.data.model.family.family_response
 import pab.lop.illustrashopandroid.data.model.shoppin.shopping_cart_request
 import pab.lop.illustrashopandroid.data.model.shopping_cart.shopping_cart_response
+import pab.lop.illustrashopandroid.data.model.user.user_google
 import pab.lop.illustrashopandroid.data.model.user.user_request
 import pab.lop.illustrashopandroid.data.model.user.user_response
 import pab.lop.illustrashopandroid.utils.getSHA256
@@ -30,6 +33,15 @@ class LoginRegisterViewModel : ViewModel() {
 
 
     private var errorMessage: String by mutableStateOf("")
+
+    private val _user : MutableStateFlow<user_google?> = MutableStateFlow(null)
+    val user : StateFlow<user_google?> = _user
+
+
+    suspend fun setSignInValue(email: String, displayName : String){
+        delay(2000)
+        _user.value = user_google(email,displayName)
+    }
 
 
     fun validateUser(email: String, passw: String, onSuccessCallback: () -> Unit, onFailureCallback: () -> Unit) {
@@ -173,13 +185,30 @@ class LoginRegisterViewModel : ViewModel() {
                 val response = apiServices.updateUserComplete(id = id, user = user)
                 if (response.isSuccessful){
                     updateOkResponse = true
-                    Logger.i("SUCCESS updateOrder $response ${response.body()}")
                     onSuccessCallback()
+                    Logger.i("SUCCESS updateOrder $response ${response.body()}")
                 }else Logger.e("FAILURE response updateUser $user ")
 
             }catch (e: Exception){
                 errorMessage = e.message.toString()
                 Logger.e("FAILURE update user\n${e.message.toString()}")
+            }
+        }
+    }
+
+    fun getUserByEmail(email: String, onSuccessCallback: () -> Unit) {
+        viewModelScope.launch {
+            val apiServices = ApiServices.getInstance()
+            try{
+                val response = apiServices.getUserByEmail(email)
+                if(response.isSuccessful){
+                    currentUserResponse.value = response.body()!![0]
+                    Logger.i("SUCCESS LOGIN WITH GOOGLE for $email ${response.body()}")
+                    onSuccessCallback()
+                }else Logger.e("FAILURE LOGIN WITH GOOGLE for $email")
+            }catch (e: Exception){
+                errorMessage = e.message.toString()
+                Logger.e("FAILURE Get User By Google")
             }
         }
     }
