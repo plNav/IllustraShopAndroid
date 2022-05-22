@@ -23,11 +23,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.MutableStateFlow
 import pab.lop.illustrashopandroid.R
 import pab.lop.illustrashopandroid.data.model.order.order_response
 import pab.lop.illustrashopandroid.ui.theme.Shapes
 import pab.lop.illustrashopandroid.ui.theme.Spacing
 import pab.lop.illustrashopandroid.ui.view.admin.AdminViewModel
+import pab.lop.illustrashopandroid.ui.view.login_register.LoginRegisterViewModel
 import pab.lop.illustrashopandroid.ui.view.main.MainViewModel
 import pab.lop.illustrashopandroid.utils.*
 
@@ -41,7 +43,8 @@ fun MainDrawer(
     scope: CoroutineScope,
     mainViewModel: MainViewModel,
     verticalGradientDisabled: Brush,
-    adminViewModel: AdminViewModel
+    adminViewModel: AdminViewModel,
+    loginRegisterViewModel: LoginRegisterViewModel
 ) {
     if(userSelected == null) userSelected = userDefaultNoAuth
 
@@ -218,8 +221,13 @@ fun MainDrawer(
                 .background(brush = verticalGradientDisabled)
                 .padding(12.dp)
                 .clickable(onClick = {
+                    if(userSelected!!.google){
+                        loginRegisterViewModel._user = MutableStateFlow(null)
+                        loginRegisterViewModel.user = loginRegisterViewModel._user
+                    }
                     userSelected = null
                     navController.navigate(ScreenNav.LoginScreen.route)
+
                 }),
             text =
             if (userSelected == userDefaultNoAuth) stringResource(R.string.login)

@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun GoogleSignInButton(
     text: String,
-    loadingText: String = "Signing in...",
+    loadingText: String = "",
     icon: Painter,
     isLoading: Boolean = false,
     shape: Shape = RoundedCornerShape(4.dp),
@@ -52,7 +52,7 @@ fun GoogleSignInButton(
         ) {
             Icon(
                 painter = icon,
-                modifier = Modifier.height(50.dp).width(50.dp),
+                modifier = Modifier.height(30.dp).width(30.dp),
                 contentDescription = "Google Sign In",
                 tint = Color.Unspecified
             )

@@ -95,4 +95,7 @@
     <string name="analytics">Analytics</string>
     <string name="add_comment">Add comment</string>
     <string name="comment_added">Comment added</string>
+    <string name="sign_google">Sign In with Google</string>
+    <string name="signing">Signing In...</string>
+    <string name="comment">Comment</string>
 </resources>

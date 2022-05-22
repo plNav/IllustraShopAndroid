@@ -34,8 +34,8 @@ class LoginRegisterViewModel : ViewModel() {
 
     private var errorMessage: String by mutableStateOf("")
 
-    private val _user : MutableStateFlow<user_google?> = MutableStateFlow(null)
-    val user : StateFlow<user_google?> = _user
+    var _user : MutableStateFlow<user_google?> = MutableStateFlow(null)
+    var user : StateFlow<user_google?> = _user
 
 
     suspend fun setSignInValue(email: String, displayName : String){

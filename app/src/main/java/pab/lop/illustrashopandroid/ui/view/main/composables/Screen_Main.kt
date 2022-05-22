@@ -18,6 +18,7 @@ import kotlinx.coroutines.CoroutineScope
 import pab.lop.illustrashopandroid.data.model.product_stock.product_stock_response
 import pab.lop.illustrashopandroid.ui.theme.Spacing
 import pab.lop.illustrashopandroid.ui.view.admin.AdminViewModel
+import pab.lop.illustrashopandroid.ui.view.login_register.LoginRegisterViewModel
 import pab.lop.illustrashopandroid.ui.view.main.MainViewModel
 import pab.lop.illustrashopandroid.utils.*
 
@@ -29,7 +30,8 @@ fun Main(
     mainViewModel: MainViewModel,
     context: Context,
     customSpacing: Spacing,
-    adminViewModel: AdminViewModel
+    adminViewModel: AdminViewModel,
+    loginRegisterViewModel: LoginRegisterViewModel
 ) {
     val loadProductsFamily = remember { mutableStateOf(false) }
     val startLoading = remember { mutableStateOf(false) }
@@ -90,7 +92,8 @@ fun Main(
             verticalGradientDisabled = verticalGradientDisabled,
             addShoppingCart = addShoppingCart,
             customSpacing = customSpacing,
-            adminViewModel = adminViewModel
+            adminViewModel = adminViewModel,
+            loginRegisterViewModel = loginRegisterViewModel
         )
 
     if (popUpDetailsOpen.value) {
@@ -111,7 +114,6 @@ fun Main(
 }
 
 
-@OptIn(ExperimentalPagerApi::class)
 @Composable
 fun MainStart(
     navController: NavController,
@@ -127,6 +129,7 @@ fun MainStart(
     customSpacing: Spacing,
     verticalGradientDisabled: Brush,
     adminViewModel: AdminViewModel,
+    loginRegisterViewModel: LoginRegisterViewModel
 ) {
 
     Scaffold(
@@ -144,7 +147,8 @@ fun MainStart(
                 customSpacing = customSpacing,
                 scope = scope,
                 mainViewModel = mainViewModel,
-                adminViewModel = adminViewModel
+                adminViewModel = adminViewModel,
+                loginRegisterViewModel = loginRegisterViewModel
             )
         },
         topBar = {

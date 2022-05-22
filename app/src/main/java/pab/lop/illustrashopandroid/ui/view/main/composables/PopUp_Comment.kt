@@ -30,7 +30,8 @@ fun PopUpComment(
     verticalGradient: Brush,
     openPopUpComment: MutableState<Boolean>,
     customSpacing: Spacing,
-    comment: MutableState<String>
+    comment: MutableState<String>,
+    isOrders: Boolean
 ) {
 
     val currentComment = remember { mutableStateOf(comment.value) }
@@ -51,6 +52,7 @@ fun PopUpComment(
                     .wrapContentHeight()
                     .background(brush = verticalGradient)
             ) {
+
                 Row(
                     horizontalArrangement = Arrangement.End,
                     verticalAlignment = Alignment.CenterVertically,
@@ -63,7 +65,7 @@ fun PopUpComment(
 
                     /************ TITLE ************/
                     Text(
-                        text = stringResource(R.string.add_comment),
+                        text = if(isOrders) stringResource(R.string.comment) else stringResource(R.string.add_comment),
                         textAlign = TextAlign.Start,
                         style = MaterialTheme.typography.body1.copy(color = Color.White),
                         modifier = Modifier
@@ -97,16 +99,21 @@ fun PopUpComment(
 
 
                 Column(
-                    modifier = Modifier.fillMaxWidth().height(200.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(200.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
 
                     TextField(
+                        enabled = !isOrders,
                         value = currentComment.value,
                         onValueChange = { currentComment.value = it },
                         maxLines = 5,
                         textStyle = TextStyle(color = Color.White, fontWeight = FontWeight.Bold),
-                        modifier = Modifier.padding(20.dp).height(200.dp)
+                        modifier = Modifier
+                            .padding(20.dp)
+                            .height(200.dp)
                     )
                     Spacer(modifier = Modifier.height(customSpacing.small))
 
@@ -117,13 +124,13 @@ fun PopUpComment(
                     modifier = Modifier
                         .fillMaxWidth()
                         .clickable(onClick = {
-                            comment.value = currentComment.value
+                            comment.value = currentComment.value.trim()
                             openPopUpComment.value = false
                         })
                 ) {
 
                     Text(
-                        text = stringResource(R.string.save),
+                        text = if (isOrders) stringResource(R.string.Ok) else stringResource(R.string.save),
                         textAlign = TextAlign.Center,
                         style = MaterialTheme.typography.body1.copy(color = Color.White),
                         modifier = Modifier

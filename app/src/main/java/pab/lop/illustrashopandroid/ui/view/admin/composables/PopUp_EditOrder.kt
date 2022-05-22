@@ -11,6 +11,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Comment
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -36,6 +37,7 @@ import pab.lop.illustrashopandroid.data.model.order.order_response
 import pab.lop.illustrashopandroid.ui.theme.Spacing
 import pab.lop.illustrashopandroid.ui.theme.SurfaceAlmostBlack
 import pab.lop.illustrashopandroid.ui.view.admin.AdminViewModel
+import pab.lop.illustrashopandroid.ui.view.main.composables.PopUpComment
 import pab.lop.illustrashopandroid.utils.*
 import java.util.*
 
@@ -53,6 +55,18 @@ fun PopUp_EditOrder(
     val filter = remember { mutableStateOf(orderSelected.value!!.status) }
     val pending: String = stringResource(R.string.PENDING)
     val sent: String = stringResource(R.string.SENT)
+    val openPopUpComment = remember { mutableStateOf(false) }
+    val comment = remember { mutableStateOf(orderSelected.value!!.comments) }
+
+    if (openPopUpComment.value) {
+        PopUpComment(
+            verticalGradient = verticalGradient,
+            openPopUpComment = openPopUpComment,
+            customSpacing = customSpacing,
+            comment = comment,
+            isOrders = true
+        )
+    }
 
     Dialog(
         onDismissRequest = { isEditOpen.value = false }
@@ -71,6 +85,19 @@ fun PopUp_EditOrder(
                         .fillMaxWidth()
                         .background(brush = verticalGradient)
                 ) {
+
+                    /************ COMMENT ************/
+                    if (orderSelected.value!!.comments.isNotEmpty()) {
+                        IconButton(
+                            onClick = { openPopUpComment.value = true }
+                        ) {
+                            Icon(
+                                imageVector = Icons.Filled.Comment,
+                                contentDescription = "Comments",
+                                tint = Color.White
+                            )
+                        }
+                    }
 
 
                     /************ TITLE ************/

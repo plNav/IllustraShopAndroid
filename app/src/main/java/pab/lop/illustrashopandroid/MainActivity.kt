@@ -113,7 +113,8 @@ class MainActivity : ComponentActivity() {
                             mainViewModel = mainViewModel,
                             adminViewModel = adminViewModel,
                             context = applicationContext,
-                            customSpacing = customSpacing
+                            customSpacing = customSpacing,
+                            loginRegisterViewModel = loginRegisterViewModel
                         )
                         BackHandler(true) { }
                     }

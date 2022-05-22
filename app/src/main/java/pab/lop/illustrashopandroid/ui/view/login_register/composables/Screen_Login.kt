@@ -334,10 +334,12 @@ fun Login(
                     .padding((customSpacing.small + customSpacing.extraSmall))
             )
         }
+        Spacer(modifier = Modifier.height(customSpacing.mediumLarge))
 
-        GoogleSignInButton(text = "Sign In with Google",
+
+        GoogleSignInButton(text = stringResource(R.string.sign_google),
             icon = painterResource(R.drawable.google),
-            loadingText = "Signing In...",
+            loadingText = stringResource(R.string.signing),
             isLoading = isLoading.value,
             onClick = {
                 isLoading.value = true
@@ -390,7 +392,6 @@ fun validateLoginClick(
 }
 
 
-//NEWWWWWWWWWWWWWWWW
 fun getGoogleSignInClient(context: Context): GoogleSignInClient {
     val signInOption = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
         .requestEmail()
