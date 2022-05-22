@@ -136,7 +136,7 @@ fun Register(
     val basicInfoChecked = remember { mutableStateOf(isEditionMode) }
     val payInfoChecked = remember { mutableStateOf(false) }
 
-    basicInfoChecked.value = (emailChecked.value && usernameChecked.value && passwordChecked.value)
+    basicInfoChecked.value = ((emailChecked.value && usernameChecked.value && passwordChecked.value) || userSelected!!.google)
     payInfoChecked.value = (nameChecked.value
             && lastNameChecked.value
             && countryChecked.value
@@ -284,7 +284,6 @@ fun Register(
 }
 
 
-
 @Composable
 private fun TitleAndBack(
     customSpacing: Spacing,
@@ -316,7 +315,7 @@ private fun TitleAndBack(
 
         Text(
             text = if (isEditionMode) stringResource(R.string.edit_personal_info) else stringResource(R.string.register),
-            fontSize = 20.sp,
+            fontSize = 16.sp,
             fontWeight = FontWeight.ExtraBold,
             modifier = Modifier.align(Alignment.CenterHorizontally)
         )

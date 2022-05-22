@@ -67,6 +67,7 @@ fun RegisterButton(
     popUpPasswordOpen: MutableState<Boolean>,
     passwordValidated: MutableState<Boolean>,
 ) {
+    passwordValidated.value = userSelected!!.google
 
     Card(
         modifier = Modifier
@@ -217,16 +218,19 @@ fun validateClick(
     name: MutableState<String>
 ) {
     if (isEditionMode) {
-        popUpPasswordOpen.value = true
-
+        if(userSelected!!.google){
+            passwordValidated.value = true
+        }else{
+            popUpPasswordOpen.value = true
+        }
 
     } else {
         val newUser = user_request(
             name = if (!allFields) "" else name.value,
             last_name = if (!allFields) "" else lastName.value,
-            username = username.value,
-            email = email.value,
-            password = getSHA256(password.value),
+            username = if(userSelected!!.google) userSelected!!.username else username.value,
+            email = if(userSelected!!.google) userSelected!!.email else email.value,
+            password = if(userSelected!!.google) "" else getSHA256(password.value),
             rol = context.getString(R.string.Standard),
             address = if (!allFields) "" else address.value,
             country = if (!allFields) "" else country.value,
@@ -234,7 +238,7 @@ fun validateClick(
             phone = if (!allFields) "" else phone.value,
             pay_method = if (!allFields) "" else "",
             pay_number = if (!allFields) "" else "",
-            google = true
+            google = userSelected!!.google
         )
 
         loginRegisterViewModel.createUser(newUser){
