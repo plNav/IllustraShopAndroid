@@ -1,13 +1,11 @@
 package pab.lop.illustrashopandroid.ui.view.login_register.composables
 
 import android.content.Context
-import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -23,19 +21,14 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.*
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavController
 import pab.lop.illustrashopandroid.R
 import pab.lop.illustrashopandroid.ui.theme.Spacing
 import pab.lop.illustrashopandroid.ui.view.login_register.LoginRegisterViewModel
 import pab.lop.illustrashopandroid.utils.ScreenNav
-import pab.lop.illustrashopandroid.utils.getSHA256
 import pab.lop.illustrashopandroid.utils.userSelected
 
 
@@ -83,7 +76,6 @@ fun Register(
     val passwordUpdate = remember { mutableStateOf(false) }
 
 
-    //Pay Fields //TODO PAY_METHOD & PAY_NUMBER
     val name = remember { mutableStateOf(if (isEditionMode) userSelected!!.name else "") }
     val nameChecked = remember {
         mutableStateOf(
@@ -136,7 +128,7 @@ fun Register(
     val basicInfoChecked = remember { mutableStateOf(isEditionMode) }
     val payInfoChecked = remember { mutableStateOf(false) }
 
-    basicInfoChecked.value = ((emailChecked.value && usernameChecked.value && passwordChecked.value) || userSelected!!.google)
+    basicInfoChecked.value = ((emailChecked.value && usernameChecked.value && passwordChecked.value) || userSelected?.google ?: false)
     payInfoChecked.value = (nameChecked.value
             && lastNameChecked.value
             && countryChecked.value
@@ -165,24 +157,45 @@ fun Register(
     val popUpPasswordOpen = remember { mutableStateOf(false) }
     val passwordValidated = remember { mutableStateOf(false) }
     if (popUpPasswordOpen.value) {
-        PopUpPassword(
-            popUpPasswordOpen = popUpPasswordOpen,
-            passwordValidated = passwordValidated,
-            customSpacing = customSpacing,
-            verticalGradient = verticalGradient,
-            context = context,
-            allFields = openBuyInfo.value,
-            name = name,
-            lastName = lastName,
-            username = username,
-            email = email,
-            phone = phone,
-            postalCode = postalCode,
-            address = address,
-            country = country,
-            navController = navController,
-            loginRegisterViewModel = loginRegisterViewModel
-        )
+        if(userSelected!!.google){
+            updateUser(
+                password = password1,
+                allFields = true,
+                name = name,
+                lastName = lastName,
+                username = username,
+                email = email,
+                phone = phone,
+                postalCode = postalCode,
+                address = address,
+                country = country,
+                loginRegisterViewModel = loginRegisterViewModel,
+                navController = navController,
+                context = context,
+                popUpPasswordOpen = popUpPasswordOpen,
+                passwordUpdate = passwordUpdate
+            )
+        }else{
+            PopUpPassword(
+                popUpPasswordOpen = popUpPasswordOpen,
+                passwordValidated = passwordValidated,
+                customSpacing = customSpacing,
+                verticalGradient = verticalGradient,
+                context = context,
+                allFields = openBuyInfo.value,
+                name = name,
+                lastName = lastName,
+                username = username,
+                email = email,
+                phone = phone,
+                postalCode = postalCode,
+                address = address,
+                country = country,
+                navController = navController,
+                loginRegisterViewModel = loginRegisterViewModel,
+                passwordUpdate = passwordUpdate
+            )
+        }
     }
 
     LazyColumn(
@@ -277,7 +290,8 @@ fun Register(
                 phone = phone,
                 phoneChecked = phoneChecked,
                 popUpPasswordOpen = popUpPasswordOpen,
-                passwordValidated = passwordValidated
+                passwordValidated = passwordValidated,
+                passwordUpdate = passwordUpdate
             )
         }
     }

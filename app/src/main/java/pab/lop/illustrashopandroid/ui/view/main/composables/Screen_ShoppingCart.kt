@@ -3,6 +3,7 @@ package pab.lop.illustrashopandroid.ui.view.main.composables
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -51,6 +52,7 @@ fun ShoppingCart(
     val total = remember { mutableStateOf(0f) }
 
     val currentContext = LocalContext.current
+    val addressNeeded = stringResource(R.string.address_needed)
 
     if (isSaved.value) {
         total.value = 0f
@@ -149,7 +151,7 @@ fun ShoppingCart(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clickable(onClick = {
+                    .clickable {
                         val order = order_request(
                             user = userSelected!!,
                             products = currentShoppingProducts.filter { !it.bought },
@@ -158,13 +160,17 @@ fun ShoppingCart(
                             comments = comment.value
                         )
 
-                        mainViewModel.createOrder(order) {
-                            mainViewModel.markBoughtProducts(currentShoppingProducts) {
-                                linkToWebpage(currentContext, mainViewModel)
-                                navController.navigate(ScreenNav.MainScreen.route)
+                        if (userSelected!!.address.isEmpty()) {
+                            Toast.makeText(context, addressNeeded, Toast.LENGTH_SHORT).show()
+                        } else {
+                            mainViewModel.createOrder(order) {
+                                mainViewModel.markBoughtProducts(currentShoppingProducts) {
+                                    linkToWebpage(currentContext, mainViewModel)
+                                    navController.navigate(ScreenNav.MainScreen.route)
+                                }
                             }
                         }
-                    })
+                    }
             ) {
 
                 Text(

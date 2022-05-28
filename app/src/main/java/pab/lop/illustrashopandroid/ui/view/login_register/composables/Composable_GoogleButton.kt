@@ -60,7 +60,8 @@ fun GoogleSignInButton(
             Spacer(modifier = Modifier.width(8.dp))
 
             Text(
-                text = if (isLoading) loadingText else text
+                text = if (isLoading) loadingText else text,
+                color = Color.White
             )
             if (isLoading) {
                 Spacer(modifier = Modifier.width(16.dp))

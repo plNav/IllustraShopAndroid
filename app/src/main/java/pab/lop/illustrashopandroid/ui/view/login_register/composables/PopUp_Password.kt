@@ -53,6 +53,7 @@ fun PopUpPassword(
     country: MutableState<String>,
     navController: NavController,
     loginRegisterViewModel: LoginRegisterViewModel,
+    passwordUpdate: MutableState<Boolean>,
 ) {
     val password = remember { mutableStateOf("") }
     val passwordVisibility = remember { mutableStateOf(false) }
@@ -181,60 +182,95 @@ fun PopUpPassword(
                             .background(brush = verticalGradient)
                             .padding(12.dp)
                             .clickable(onClick = {
-                                val passwordCyphered = getSHA256(password.value)
-                                if (passwordCyphered == userSelected!!.password) {
-                                    userSelected!!.password = passwordCyphered
-                                    // passwordValidated.value = true
-                                    userSelected!!.name = if (!allFields) "" else name.value
-                                    userSelected!!.last_name = if (!allFields) "" else lastName.value
-                                    userSelected!!.username = username.value
-                                    userSelected!!.email = email.value
-                                    userSelected!!.phone = if (!allFields) userSelected!!.phone else phone.value
-                                    userSelected!!.postal_code = if (!allFields) userSelected!!.postal_code else postalCode.value
-                                    userSelected!!.address = if (!allFields) userSelected!!.address else address.value
-                                    userSelected!!.country = if (!allFields) userSelected!!.country else country.value
-
-                                    if (allFields)
-                                        loginRegisterViewModel.updateUserComplete(
-                                            id = userSelected!!._id,
-                                            user = userSelected!!
-                                        ) {
-                                            navController.navigate(ScreenNav.MainScreen.route)
-                                            Toast
-                                                .makeText(
-                                                    context,
-                                                    context.getString(R.string.update_complete),
-                                                    Toast.LENGTH_SHORT
-                                                )
-                                                .show()
-                                            popUpPasswordOpen.value = false
-
-                                        }
-                                    else
-                                        loginRegisterViewModel.updateUserPartial(id = userSelected!!._id, user = userSelected!!) {
-                                            navController.navigate(ScreenNav.MainScreen.route)
-                                            Toast
-                                                .makeText(
-                                                    context,
-                                                    context.getString(R.string.update_complete),
-                                                    Toast.LENGTH_SHORT
-                                                )
-                                                .show()
-                                            popUpPasswordOpen.value = false
-
-                                        }
-
-                                } else {
-                                    popUpPasswordOpen.value = false
-                                    Toast
-                                        .makeText(context, context.getString(R.string.password_incorrect), Toast.LENGTH_SHORT)
-                                        .show()
-                                }
+                                updateUser(
+                                    password = password,
+                                    allFields = allFields,
+                                    name = name,
+                                    lastName = lastName,
+                                    username = username,
+                                    email = email,
+                                    phone = phone,
+                                    postalCode = postalCode,
+                                    address = address,
+                                    country = country,
+                                    loginRegisterViewModel = loginRegisterViewModel,
+                                    navController = navController,
+                                    context = context,
+                                    popUpPasswordOpen = popUpPasswordOpen,
+                                    passwordUpdate = passwordUpdate
+                                )
                             })
                     )
                     Text("")
                 }
             }
         }
+    }
+}
+
+fun updateUser(
+    password: MutableState<String>,
+    allFields: Boolean,
+    name: MutableState<String>,
+    lastName: MutableState<String>,
+    username: MutableState<String>,
+    email: MutableState<String>,
+    phone: MutableState<String>,
+    postalCode: MutableState<String>,
+    address: MutableState<String>,
+    country: MutableState<String>,
+    loginRegisterViewModel: LoginRegisterViewModel,
+    navController: NavController,
+    context: Context,
+    popUpPasswordOpen: MutableState<Boolean>,
+    passwordUpdate: MutableState<Boolean>
+) {
+    val passwordCyphered = getSHA256(password.value)
+    if (passwordCyphered == userSelected!!.password || userSelected!!.google) {
+        userSelected!!.password = if(userSelected!!.google) "" else (if (passwordUpdate.value) passwordCyphered else userSelected!!.password)
+        userSelected!!.name = if (!allFields) userSelected!!.name else name.value
+        userSelected!!.last_name = if (!allFields) userSelected!!.last_name else lastName.value
+        userSelected!!.username = username.value
+        userSelected!!.email = email.value
+        userSelected!!.phone = if (!allFields) userSelected!!.phone else phone.value
+        userSelected!!.postal_code = if (!allFields) userSelected!!.postal_code else postalCode.value
+        userSelected!!.address = if (!allFields) userSelected!!.address else address.value
+        userSelected!!.country = if (!allFields) userSelected!!.country else country.value
+
+        if (allFields)
+            loginRegisterViewModel.updateUserComplete(
+                id = userSelected!!._id,
+                user = userSelected!!
+            ) {
+                navController.navigate(ScreenNav.MainScreen.route)
+                Toast
+                    .makeText(
+                        context,
+                        context.getString(R.string.update_complete),
+                        Toast.LENGTH_SHORT
+                    )
+                    .show()
+                popUpPasswordOpen.value = false
+
+            }
+        else
+            loginRegisterViewModel.updateUserPartial(id = userSelected!!._id, user = userSelected!!) {
+                navController.navigate(ScreenNav.MainScreen.route)
+                Toast
+                    .makeText(
+                        context,
+                        context.getString(R.string.update_complete),
+                        Toast.LENGTH_SHORT
+                    )
+                    .show()
+                popUpPasswordOpen.value = false
+
+            }
+
+    } else {
+        popUpPasswordOpen.value = false
+        Toast
+            .makeText(context, context.getString(R.string.password_incorrect), Toast.LENGTH_SHORT)
+            .show()
     }
 }

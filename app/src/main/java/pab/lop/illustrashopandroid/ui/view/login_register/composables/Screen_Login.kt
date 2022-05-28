@@ -192,6 +192,12 @@ fun Login(
                     stringResource(R.string.email)
                 )
             },
+            keyboardOptions = KeyboardOptions.Default.copy(
+                capitalization = KeyboardCapitalization.None,
+                autoCorrect = false,
+                keyboardType = KeyboardType.Email,
+                imeAction = ImeAction.Next,
+            ),
             colors = TextFieldDefaults.outlinedTextFieldColors(
                 focusedBorderColor = MaterialTheme.colors.primary,
                 unfocusedBorderColor = MaterialTheme.colors.secondary,
@@ -306,7 +312,7 @@ fun Login(
 
         Spacer(modifier = Modifier.height(customSpacing.mediumLarge))
 
-        /************ REGISTER ************/
+        /************ REGISTER  ************/
         Button(
             elevation = ButtonDefaults.elevation(0.dp),
             onClick = { navController.navigate(ScreenNav.RegisterScreen.withArgs(false)) },
@@ -337,6 +343,7 @@ fun Login(
         Spacer(modifier = Modifier.height(customSpacing.mediumLarge))
 
 
+        /************GOOGLE************/
         GoogleSignInButton(text = stringResource(R.string.sign_google),
             icon = painterResource(R.drawable.google),
             loadingText = stringResource(R.string.signing),
@@ -370,8 +377,10 @@ fun validateLoginClick(
     email: MutableState<String>,
     password: MutableState<String>
 ) {
-    if (email.value.isEmpty() || password.value.isEmpty())
-        Toast.makeText(context, context.getString(R.string.login_incorrect), Toast.LENGTH_SHORT).show()
+    if (email.value.isEmpty() || password.value.isEmpty() || password.value.length < 4){
+        if(password.value.length < 4) Toast.makeText(context, context.getString(R.string.login_incorrect_length), Toast.LENGTH_SHORT).show()
+        else Toast.makeText(context, context.getString(R.string.login_incorrect), Toast.LENGTH_SHORT).show()
+    }
     else {
         loginRegisterViewModel.validateUser(email.value, password.value, onSuccessCallback = {
             userSelected = loginRegisterViewModel.currentUserResponse.value
@@ -399,88 +408,4 @@ fun getGoogleSignInClient(context: Context): GoogleSignInClient {
 
     return GoogleSignIn.getClient(context, signInOption)
 }
-
-@Composable
-fun SignInScreen(signInViewModel: LoginRegisterViewModel) {
-    val scope = rememberCoroutineScope()
-    val text = remember { mutableStateOf<String?>(null) }
-    val user = remember(signInViewModel) { signInViewModel.user }.collectAsState()
-    val signInRequestCode = 1
-
-    val authResultLaucher = rememberLauncherForActivityResult(contract = AuthResult()) { task ->
-        try {
-            val account = task?.getResult(ApiException::class.java)
-            if (account == null) {
-                text.value = "Google Sign In Failed"
-
-            } else {
-                scope.launch {
-                    signInViewModel.setSignInValue(
-                        email = account.email!!,
-                        displayName = account.displayName!!
-                    )
-                }
-            }
-
-        } catch (e: ApiException) {
-            text.value = e.localizedMessage
-        }
-    }
-
-    AuthView(errorText = text.value, onClick = {
-        text.value = null
-        authResultLaucher.launch(signInRequestCode)
-    }
-    )
-    user.value?.let {
-        GoogleSignInScreen(user.value!!)
-    }
-
-}
-
-@Composable
-fun AuthView(
-    errorText: String?,
-    onClick: () -> Unit
-) {
-    var isLoading = remember { mutableStateOf(false) }
-
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        GoogleSignInButton(text = "Sign In with Google",
-            icon = painterResource(R.drawable.google),
-            loadingText = "Signing In...",
-            isLoading = isLoading.value,
-            onClick = {
-                isLoading.value = true
-                onClick()
-            }
-        )
-
-        errorText?.let {
-            isLoading.value = false
-
-            Spacer(modifier = Modifier.height(10.dp))
-
-            Text(text = it)
-        }
-    }
-}
-
-@Composable
-fun GoogleSignInScreen(user: user_google) {
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Text("Sign In Success")
-        Text(user.email)
-        Text(user.displayName)
-    }
-}
-
 

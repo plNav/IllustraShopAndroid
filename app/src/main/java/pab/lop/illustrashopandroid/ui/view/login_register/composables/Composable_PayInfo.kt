@@ -330,7 +330,7 @@ fun PayInfo(
                 capitalization = KeyboardCapitalization.Words,
                 autoCorrect = false,
                 keyboardType = KeyboardType.Number,
-                imeAction = ImeAction.Next,
+                imeAction = ImeAction.Done,
             ),
             label = {
                 Text(

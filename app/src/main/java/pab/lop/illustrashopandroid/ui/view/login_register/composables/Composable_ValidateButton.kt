@@ -66,6 +66,7 @@ fun RegisterButton(
     phoneChecked: MutableState<Boolean>,
     popUpPasswordOpen: MutableState<Boolean>,
     passwordValidated: MutableState<Boolean>,
+    passwordUpdate: MutableState<Boolean>,
 ) {
     passwordValidated.value = userSelected!!.google
 
@@ -220,17 +221,15 @@ fun validateClick(
     if (isEditionMode) {
         if(userSelected!!.google){
             passwordValidated.value = true
-        }else{
-            popUpPasswordOpen.value = true
         }
-
+        popUpPasswordOpen.value = true
     } else {
         val newUser = user_request(
             name = if (!allFields) "" else name.value,
             last_name = if (!allFields) "" else lastName.value,
             username = if(userSelected!!.google) userSelected!!.username else username.value,
             email = if(userSelected!!.google) userSelected!!.email else email.value,
-            password = if(userSelected!!.google) "" else getSHA256(password.value),
+            password = if(userSelected!!.google) userSelected!!.password else getSHA256(password.value),
             rol = context.getString(R.string.Standard),
             address = if (!allFields) "" else address.value,
             country = if (!allFields) "" else country.value,

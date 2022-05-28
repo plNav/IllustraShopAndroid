@@ -98,4 +98,6 @@
     <string name="sign_google">Sign In with Google</string>
     <string name="signing">Signing In...</string>
     <string name="comment">Comment</string>
+    <string name="login_incorrect_length">Password min 4 characters</string>
+    <string name="address_needed">Register your pay info in options</string>
 </resources>

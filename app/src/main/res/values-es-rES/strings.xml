@@ -99,5 +99,7 @@
     <string name="sign_google">Inicia con Google</string>
     <string name="signing">Iniciando...</string>
     <string name="comment">Comentario</string>
+    <string name="login_incorrect_length">La contraseña debe contener 4 caracteres mínimo</string>
+    <string name="address_needed">Registra tu información de pago en opciones</string>
 
 </resources>

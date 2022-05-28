@@ -28,7 +28,6 @@ val regexSpecialChars = Regex("[^A-Za-z0-9 ]")
 
 var productSelected : product_stock_response? = null
 var familySelected : family_response? = null
-var userSelected : user_response? = null
 var shoppingCartSelected : shopping_cart_response? = null
 var currentShoppingProducts : MutableList<product_shopping_response> = mutableListOf()
 var allOrders : MutableList<order_response> = mutableListOf()
@@ -57,6 +56,9 @@ val userDefaultNoAuth = user_response(
     last_register = Date(),
     google = false
 )
+
+var userSelected : user_response? = userDefaultNoAuth
+
 
 val shoppingCartDefaultNoAuth = shopping_cart_response(
     _id = "",
