@@ -6,14 +6,17 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.HighlightOff
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import pab.lop.illustrashopandroid.R
 
 @Composable
-fun SnackBar(snackbarHostState: SnackbarHostState) {
+fun SnackBar(snackbarHostState: SnackbarHostState, isShoppingCart: MutableState<Boolean>) {
     SnackbarHost(
         hostState = snackbarHostState,
         snackbar = {
@@ -32,7 +35,7 @@ fun SnackBar(snackbarHostState: SnackbarHostState) {
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Text(
-                            text = "Added to Shopping Cart",
+                            text = if(isShoppingCart.value)stringResource(R.string.added_shopping) else stringResource(R.string.added_wishlist),
                             color = Color.White,
                             fontWeight = FontWeight.Bold,
                             modifier = Modifier
@@ -44,7 +47,7 @@ fun SnackBar(snackbarHostState: SnackbarHostState) {
                         ) {
                             Icon(
                                 Icons.Filled.HighlightOff,
-                                contentDescription = "Ver comentario",
+                                contentDescription = stringResource(R.string.Close),
                                 tint = Color.White
                             )
                         }

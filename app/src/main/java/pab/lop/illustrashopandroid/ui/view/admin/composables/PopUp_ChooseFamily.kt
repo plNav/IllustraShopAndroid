@@ -44,7 +44,6 @@ fun PopUp_Choose_Family(
     familiesToAssign: MutableState<List<String>>
 ) {
 
-    //TODO ANTES DE ENTRAR A ESTE MENU HAY QUE LIMPIAR LAS FAMILIAS
     Logger.wtf(familyNames.value.toString())
 
     Dialog(onDismissRequest = { chooseFamiliesOpen.value = false }) {

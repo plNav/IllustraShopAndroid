@@ -37,9 +37,8 @@ import java.io.*
 class AdminViewModel : ViewModel() {
 
     private var errorMessage: String by mutableStateOf("")
-    var familyProductsResponse: HashMap<String, List<product_stock_response>> by mutableStateOf(hashMapOf())
-    private var byteArray: ByteArray? by mutableStateOf(null)
     private var currentFamilyResponse : family_response by mutableStateOf(family_response("",""))
+    var familyProductsResponse: HashMap<String, List<product_stock_response>> by mutableStateOf(hashMapOf())
     var familyNameListResponse : List<String> by mutableStateOf(listOf())
     var productListResponse : List<product_stock_response> by mutableStateOf(listOf())
     var familyListResponse : List<family_response> by mutableStateOf(listOf())
@@ -156,7 +155,6 @@ class AdminViewModel : ViewModel() {
                     val filesDir: File = context.filesDir
                     val file = File(filesDir, customName.value + ".jpg")
                     val fos = FileOutputStream(file)
-
                     fos.write(byteArray.value)
                     fos.flush()
                     fos.close()
@@ -164,9 +162,7 @@ class AdminViewModel : ViewModel() {
                     val fileBody = ProgressRequestBody(file)
                     val body: MultipartBody.Part = createFormData("upload", file.name, fileBody)
                     val name = RequestBody.create("text/plain".toMediaTypeOrNull(), "upload")
-
                     val mainHandler = Handler(getMainLooper())
-
                     val runnable = Runnable {
                         viewModelScope.async {
                             apiService.postImage(image = body, name = name).await()
@@ -176,7 +172,6 @@ class AdminViewModel : ViewModel() {
                     onSuccess()
                 }
             }
-
         } catch (e: FileNotFoundException) {
             e.printStackTrace()
             Logger.wtf("ERROR UPLOAD FILE NOT FOUND EXCEPTION \n ${e.message}")
@@ -192,100 +187,6 @@ class AdminViewModel : ViewModel() {
         }
     }
 
-    fun getProductsFamily(onSuccessCallback: () -> Unit) {
-        viewModelScope.launch {
-            val apiServices = ApiServices.getInstance()
-            val hasMapFamilyProduct: HashMap<String, List<product_stock_response>> = hashMapOf()
-            val productsFamily: MutableList<product_stock_response> = mutableListOf()
-            try {
-                var familyName: String
-
-                val list = apiServices.getProductsFamily()
-
-                for (item in list) {
-
-                    if (item == "") continue
-
-                    val parts = item.toString().split(", separator=null,")
-                    val replaced = parts[1].replace("products=[[{", "").replace("]]}", "")
-                    val splitted = replaced.split("__v=0.0}")
-
-                    familyName = parts[0].replace("{family=", "").replace(",", "")
-
-                    for (s in splitted) {
-
-                        var _id = ""
-                        var name = ""
-                        var image = ""
-                        var price = 0.0f
-                        var stock = 0.0f
-                        var sales = 0.0f
-                        var wishlists = 0.0f
-                        val likes: MutableList<String> = mutableListOf()
-                        val families: MutableList<String> = mutableListOf()
-
-
-                        if (s.isEmpty()) continue
-                        val sReplaced = s.replace(", {", "")
-                        val familiesRaw = sReplaced.split("families=")
-                        val fam = familiesRaw[1].replace("[", "").replace("]", "").split(",")
-                        for (i in 0..fam.size - 2) {
-                            families.add(fam[i].trim())
-                        }
-
-
-                        val likesRaw = familiesRaw[0].split("likes=")
-                        val restAtr = likesRaw[0].split(",")
-                        val lik = likesRaw[1].replace("[", "").replace("]", "").split(",")
-                        for (i in 0..lik.size - 2) {
-                            if (lik[i].trim().isNotEmpty()) likes.add(lik[i].trim())
-                        }
-
-
-                        for (atr in restAtr) {
-
-                            if (atr.contains("=") && atr.isNotEmpty()) {
-                                val atrValue = atr.split("=")
-                                if (atrValue.size < 2) continue
-                                when {
-                                    atrValue[0].trim() == "_id" -> _id = atrValue[1]
-                                    atrValue[0].trim() == "name" -> name = atrValue[1]
-                                    atrValue[0].trim() == "image" -> image = atrValue[1]
-                                    atrValue[0].trim() == "price" -> price = atrValue[1].toFloat()
-                                    atrValue[0].trim() == "stock" -> stock = atrValue[1].toFloat()
-                                    atrValue[0].trim() == "sales" -> sales = atrValue[1].toFloat()
-                                    atrValue[0].trim() == "wishlists" -> wishlists = atrValue[1].toFloat()
-                                    else -> Logger.i(" *** NEXT PRODUCT *** ")
-                                }
-                            }
-                        }
-
-                        val p = product_stock_response(
-                            _id = _id,
-                            name = name,
-                            image = image,
-                            price = price,
-                            stock = stock,
-                            sales = sales,
-                            wishlists = wishlists,
-                            likes = likes,
-                            families = families
-                        )
-                        productsFamily.add(p)
-
-                    }
-                    hasMapFamilyProduct.put(familyName, productsFamily.toList())
-                    productsFamily.clear()
-                }
-                familyProductsResponse = hasMapFamilyProduct
-                Logger.i("SUCCESS getProductsFamily")
-                onSuccessCallback()
-
-            } catch (e: Exception) {
-                Logger.e("FAILURE getProductsFamily \n $e")
-            }
-        }
-    }
 
     fun updateFamily(
         newName: String,
@@ -455,6 +356,4 @@ class AdminViewModel : ViewModel() {
 
         }
     }
-
-
 }

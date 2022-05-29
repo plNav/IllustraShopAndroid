@@ -54,7 +54,7 @@ fun Body(
 
                     state = rememberPagerState(),
                         modifier = Modifier
-                            .height(400.dp) //TODO DEPEND ON SCREEN SIZE
+                            .height(400.dp) // Image Size
                     ) { page ->
                         ImageContent(
                             page = page,

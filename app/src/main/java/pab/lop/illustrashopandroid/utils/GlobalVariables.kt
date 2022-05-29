@@ -8,9 +8,8 @@ import pab.lop.illustrashopandroid.data.model.shopping_cart.shopping_cart_respon
 import pab.lop.illustrashopandroid.data.model.user.user_response
 import java.util.*
 import kotlin.collections.HashMap
-
-const val URL_HEAD_API : String = "http://192.168.1.93:8082/api/"
-const val URL_HEAD_IMAGES : String = "http://192.168.1.93:8082/api/images/"
+const val URL_HEAD_API : String = "http://illustrashop.herokuapp.com/api/"
+const val URL_HEAD_IMAGES : String = "http://illustrashop.herokuapp.com/api/images/"
 
 const val TEST_BANNER : String = "ca-app-pub-3940256099942544/6300978111"
 //const val TEST_ADAPTIVE_BANNER : String = "ca-app-pub-3940256099942544~3347511713"

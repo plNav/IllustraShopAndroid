@@ -74,9 +74,9 @@ fun Login(
 
     val keyboardController = LocalSoftwareKeyboardController.current
 
-    //TODO DEV CREDENTIALS HARDCODED
-    val email = remember { mutableStateOf("pab@email.com") }
-    val password = remember { mutableStateOf("1234") }
+    //CREDENTIALS
+    val email = remember { mutableStateOf("") }
+    val password = remember { mutableStateOf("") }
 
     var passwordVisibility by remember { mutableStateOf(false) }
 

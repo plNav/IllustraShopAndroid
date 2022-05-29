@@ -56,6 +56,7 @@ fun PopUpDetails(
     verticalGradientDisabled: Brush,
     isWishList: Boolean,
     navController: NavController,
+    isShoppingCart: MutableState<Boolean>,
 ) {
 
     val verticalGradientIncomplete = Brush.verticalGradient(
@@ -162,6 +163,7 @@ fun PopUpDetails(
                                     } else {
                                         addShoppingCart.value = true
                                         popUpDetailsOpen.value = false
+                                        isShoppingCart.value = true
                                         scope.launch {
                                             snackbarHostState.currentSnackbarData?.dismiss()
                                             snackbarHostState.showSnackbar("")
@@ -208,6 +210,11 @@ fun PopUpDetails(
                                         userSelected!!.wishlist.add(productSelected!!._id)
                                         mainViewModel.updateUserComplete(userSelected!!._id, userSelected!!) {
                                             popUpDetailsOpen.value = false
+                                            isShoppingCart.value = false
+                                            scope.launch {
+                                                snackbarHostState.currentSnackbarData?.dismiss()
+                                                snackbarHostState.showSnackbar("")
+                                            }
                                         }
                                     } else {
                                         Toast

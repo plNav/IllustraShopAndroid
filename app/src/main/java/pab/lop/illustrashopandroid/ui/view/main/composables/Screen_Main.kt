@@ -12,7 +12,6 @@ import androidx.compose.ui.graphics.*
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.navigation.NavController
-import com.google.accompanist.pager.ExperimentalPagerApi
 import com.orhanobut.logger.Logger
 import kotlinx.coroutines.CoroutineScope
 import pab.lop.illustrashopandroid.data.model.product_stock.product_stock_response
@@ -37,6 +36,7 @@ fun Main(
     val startLoading = remember { mutableStateOf(false) }
     val popUpDetailsOpen = remember { mutableStateOf(false) }
     val addShoppingCart = remember { mutableStateOf(false) }
+    val isShoppingCart = remember { mutableStateOf(true) }
 
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
@@ -93,7 +93,8 @@ fun Main(
             addShoppingCart = addShoppingCart,
             customSpacing = customSpacing,
             adminViewModel = adminViewModel,
-            loginRegisterViewModel = loginRegisterViewModel
+            loginRegisterViewModel = loginRegisterViewModel,
+            isShoppingCart = isShoppingCart
         )
 
     if (popUpDetailsOpen.value) {
@@ -108,7 +109,8 @@ fun Main(
             context = context,
             verticalGradientDisabled = verticalGradientDisabled,
             isWishList = false,
-            navController = navController
+            navController = navController,
+            isShoppingCart = isShoppingCart
         )
     }
 }
@@ -129,12 +131,13 @@ fun MainStart(
     customSpacing: Spacing,
     verticalGradientDisabled: Brush,
     adminViewModel: AdminViewModel,
-    loginRegisterViewModel: LoginRegisterViewModel
+    loginRegisterViewModel: LoginRegisterViewModel,
+    isShoppingCart: MutableState<Boolean>
 ) {
 
     Scaffold(
         scaffoldState = scaffoldState,
-        snackbarHost = { SnackBar(snackbarHostState) },
+        snackbarHost = { SnackBar(snackbarHostState, isShoppingCart) },
         drawerBackgroundColor = MaterialTheme.colors.primaryVariant,
         drawerShape = customShape(),
         drawerContent = {

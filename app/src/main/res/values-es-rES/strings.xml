@@ -89,7 +89,7 @@
     <string name="FINISHED">TERMINADO</string>
     <string name="logged_as">Registrado como:</string>
     <string name="already_wishlist">El producto ya esta en la lista de deseos</string>
-    <string name="delete_wishlist">Delete from Wishlist</string>
+    <string name="delete_wishlist">Borrar de la lista</string>
     <string name="upaid">sin pagar</string>
     <string name="buys">Compras</string>
     <string name="users">Usuarios</string>
@@ -101,5 +101,7 @@
     <string name="comment">Comentario</string>
     <string name="login_incorrect_length">La contraseña debe contener 4 caracteres mínimo</string>
     <string name="address_needed">Registra tu información de pago en opciones</string>
+    <string name="added_shopping">Añadido al carrito</string>
+    <string name="added_wishlist">Añadido a la lista de deseos</string>
 
 </resources>

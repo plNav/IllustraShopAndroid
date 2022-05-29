@@ -23,46 +23,15 @@ import retrofit2.Response
 @Suppress("UNCHECKED_CAST")
 class MainViewModel : ViewModel() {
 
-    var allUsersClientResponse: List<user_response> by mutableStateOf(listOf())
     var familyProductsResponse: HashMap<String, List<product_stock_response>> by mutableStateOf(hashMapOf())
     var currentShoppingCartResponse: shopping_cart_response? by mutableStateOf(null)
     var currentProductsShopping : MutableList<product_shopping_response> by mutableStateOf(mutableListOf())
     var updateOkResponse : Boolean by mutableStateOf(false)
     var currentProductShoppingResponse : product_shopping_response? by mutableStateOf(null)
-    var productStockResponse : product_stock_response? by mutableStateOf(null)
     var productListResponse : MutableList<product_stock_response> by mutableStateOf(mutableListOf())
     var currentPayPalresponse : String by mutableStateOf("")
-
-
     private var errorMessage: String by mutableStateOf("")
 
-
-    fun getAllUsers(onSuccessCallback: () -> Unit) {
-        viewModelScope.launch {
-            val apiServices = ApiServices.getInstance()
-
-            try {
-                allUsersClientResponse = apiServices.getAllUsers()
-                Logger.i("get all users OK")
-                onSuccessCallback()
-
-            } catch (e: Exception) {
-                Logger.e("FAILURE getAllUsers \n $e")
-            }
-        }
-    }
-
-    private fun getProductStock(id: String, onSuccessCallback: () -> Unit){
-        val apiServices = ApiServices.getInstance()
-        viewModelScope.launch {
-            val response: Response<product_stock_response> = apiServices.getProductStock(id)
-            if (response.isSuccessful) {
-                Logger.i("Get productStock \n${response.body().toString()}")
-                productStockResponse = response.body()
-                onSuccessCallback()
-            }
-        }
-    }
 
     fun getAllProductStock(productList : MutableList<String>, onSuccessCallback: () -> Unit){
            val apiServices = ApiServices.getInstance()
@@ -81,20 +50,6 @@ class MainViewModel : ViewModel() {
                 Logger.e("Error get all products wish \n ${e.message}")
             }
         }
-
-
-
-
-    // productListResponse.clear()
-           /* for(product in productList){
-                viewModelScope.launch {
-
-                getProductStock(product){
-                  productStockResponse?.let { productListResponse.add(it) }
-              }
-            }
-            onSuccessCallback()
-        }*/
     }
 
     fun getProductsFamily(onSuccessCallback: () -> Unit) {
@@ -319,25 +274,6 @@ class MainViewModel : ViewModel() {
         }
     }
 
-    fun deleteProductsCart(products : List<product_shopping_response>, onSuccessCallback: () -> Unit){
-        viewModelScope.launch {
-            val apiServices = ApiServices.getInstance()
-            updateOkResponse = false
-            try{
-                for(product in products){
-                    val response = apiServices.deleteProductShopping(product._id)
-                    if(response.isSuccessful) continue
-                    else throw Exception("Fail deleting $product")
-                }
-                Logger.i("All products cart deleted OK")
-                onSuccessCallback()
-
-            }catch (e: Exception){
-                errorMessage = e.message.toString()
-                Logger.e("FAILURE deleting all products shopping \n${e.message.toString()}")
-            }
-        }
-    }
 
     fun deleteProductSelected(id: String, onSuccessCallback: () -> Unit) {
 
@@ -375,6 +311,5 @@ class MainViewModel : ViewModel() {
             }
         }
     }
-
 
 }

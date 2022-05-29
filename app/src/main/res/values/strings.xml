@@ -100,4 +100,6 @@
     <string name="comment">Comment</string>
     <string name="login_incorrect_length">Password min 4 characters</string>
     <string name="address_needed">Register your pay info in options</string>
+    <string name="added_shopping">Added to Shopping Cart</string>
+    <string name="added_wishlist">Added to WishList</string>
 </resources>

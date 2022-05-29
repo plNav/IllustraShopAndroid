@@ -47,6 +47,7 @@ fun WishList(
     val scope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
     val addToShoppingCart = remember { mutableStateOf(false) }
+    val isShoppingCart = remember { mutableStateOf(true) }
 
 
     val verticalGradient = Brush.verticalGradient(
@@ -72,7 +73,8 @@ fun WishList(
             context = context,
             verticalGradientDisabled = verticalGradientDisabled,
             isWishList = true,
-            navController = navController
+            navController = navController,
+            isShoppingCart = isShoppingCart
         )
     }
 
